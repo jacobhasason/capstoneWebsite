@@ -1,0 +1,287 @@
+* {
+    font-family: sans-serif;
+    box-sizing: border-box;
+}
+html {
+    background-color: lightsteelblue;
+    
+}
+
+h1, h2, h3, p {
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    width: 800px;
+    margin: 20px auto;
+    border: 2px solid black;
+    background-color: white;
+    box-shadow: 0 10px 5px lightcyan;
+}
+
+a {
+    font-weight: bold;
+}
+
+a:link {
+    color: black;
+}
+a:visited {
+    color: #12395b;
+}
+a:hover,
+a:focus {
+    color: #2880b9;
+}
+
+header {
+    border-bottom: 2px solid black;
+    background: linear-gradient(45deg, white 0%, lightcyan 75%, black 100%);
+    padding: 15px 15px 35px 15px;
+}
+header img {
+    padding-right: 55px;
+    float: left;
+    width: 85px;
+}
+
+header h2 {
+    font-size: 2em;
+}
+
+header h3 {
+    font-size: 1.25em;
+    text-indent: 25px;
+}
+/* --- Centering the whole layout --- */
+.container {
+    max-width: 800px; 
+    margin: 0 auto;   
+}
+
+/* --- Navigation Bar --- */
+.main-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex; /* Replaces floats for easier centering */
+    background-color: lightblue;
+    border-top: 2px solid black;
+    border-bottom: 2px solid black;
+}
+
+.main-nav > li {
+    flex: 1; /* Makes "Date", "Topic", "Medium" exactly equal width */
+    position: relative;
+}
+
+.main-nav > li > a {
+    display: block;
+    padding: 15px 0;
+    text-align: center;
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+}
+
+/* --- Dropdown Styling --- */
+.dropdown {
+    display: none; /* Hide until hover */
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background-color: #f0f8ff; /* Lighter blue for menu */
+    border: 1px solid black;
+    z-index: 100;
+}
+
+.main-nav li:hover .dropdown {
+    display: block;
+}
+
+.dropdown li a {
+    display: flex;       /* Aligns checkbox and text */
+    align-items: center; 
+    padding: 10px 15px;
+    text-decoration: none;
+    color: black;
+    font-size: 0.9rem;
+    gap: 10px;           /* Gap between checkbox and label */
+}
+
+.dropdown li a:hover {
+    background-color: #d1e8ff;
+}
+
+/* --- The Checkbox Box --- */
+.checkbox-box {
+    width: 14px;
+    height: 14px;
+    border: 1px solid black;
+    background-color: white;
+    flex-shrink: 0; /* Prevents shrinking on long text */
+}
+aside {
+    float: left;
+    width: 160px;
+    padding: 20px 0;
+    line-height: 150%;
+    margin-left: 5px;
+}
+
+aside ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+aside li {
+    margin-bottom: 10px;
+}
+
+aside a {
+    display: block;
+    padding: 8px;
+    text-decoration: none;
+    color: white;
+    border: 2px solid;
+    background-color: lightcoral;
+    text-align: center;
+}
+
+aside a:hover {
+    background-color: lightblue;
+}
+section {
+    float: right;
+    width: 580px;
+    padding: 20px 25px 0 25px;
+}
+section h1 {
+    font-size: 1.5em;
+    margin-bottom: 0.5em;
+}
+section h1::first-letter {
+    font-size: 2em;
+}
+
+section h2 {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    font-size: 1.25em;
+}
+
+section h3 {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    font-size: 1.1em;
+}
+
+section img {
+    display: block;
+    margin-bottom: 0.5em;
+}
+
+section p{
+    margin-bottom: 0.5em;
+}
+:root {
+  --bg-light: #d6e4f0; /* Light blue */
+  --accent-blue: #5d93e1; /* Darker blue for bottom bar */
+  --border-color: #333;
+}
+
+body {
+  font-family: sans-serif;
+  padding: 20px;
+}
+
+
+/*the grey box listing*/
+.source-item {
+
+  float: none; 
+  padding-right: 15px; 
+  border-color: black;
+
+  width: 100%; 
+  max-width: 1000px; 
+  
+
+  margin-left: auto;
+  margin-right: auto;
+
+  display: flex;
+  height: 150px;
+  align-items: center; 
+  background-color: var(--bg-light);
+  padding: 15px;
+  border-bottom: 2px solid var(--border-color);
+  gap: 20px;
+  
+
+  box-sizing: border-box; 
+  
+}
+
+/* grey suare thumbnail this acts like a checkbox*/
+.thumbnail {
+  width: 80px;
+  height: 80px;
+  background-color: #ccc;
+  border: 1px solid #777;
+  flex-shrink: 0;
+}
+/*the text in the box*/
+.source-details {
+  flex-grow: 1;      
+  text-align: left;
+}
+
+.source-details h3, .source-details p {
+  margin: 4px 0;
+  font-size: 0.95rem;
+}
+
+/* right-side icon box */
+.source-icon {
+  width: 60px;
+  height: 60px;
+  float:right;
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border-radius: 4px;
+}
+
+
+
+ul {
+    line-height: 1.5;
+}
+
+footer {
+    font-size: 0.9em;
+    clear: both;
+    border-top: 2px solid black;
+    padding: 15px;
+    background: linear-gradient(45deg, black 0%, lightcyan 25%, white 100%);
+}
+
+footer div:first-child {
+    display: inline;
+    padding-left: 20em;
+}
+footer div:last-child {
+    display: inline;
+    padding-left: 16em;
+
+}
+
