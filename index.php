@@ -11,7 +11,7 @@
     <div class="source-details">
       <h3><strong>Title:</strong> Does AI Improve Agriculture Production?</h3>
       <p><strong>Author:</strong> John Smith</p>
-      <p><strong>Date:</strong> 4/8/2026</p>
+      <p><strong>Date:</strong> 4/15/2026</p>
     </div>
     <div class="source-icon">
       <span class="icon">🔊</span>
