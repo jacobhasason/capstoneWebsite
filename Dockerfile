@@ -1,14 +1,15 @@
-# Use nginx to serve static files
-FROM nginx:alpine
+FROM php:8.2-apache
 
-# Remove default nginx files
-RUN rm -rf /usr/share/nginx/html/*
+# Copy all files into Apache's root directory
+COPY . /var/www/html/
 
-# Copy your website files into nginx
-COPY . /usr/share/nginx/html
+# Set working directory (helps with relative paths)
+WORKDIR /var/www/html
 
-# Expose port
+# Enable rewrite module (useful if you add routing later)
+RUN a2enmod rewrite
+
+# Fix permissions (prevents weird access bugs)
+RUN chown -R www-data:www-data /var/www/html
+
 EXPOSE 80
-
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
