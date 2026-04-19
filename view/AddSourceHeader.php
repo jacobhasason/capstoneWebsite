@@ -1,15 +1,16 @@
 <!DOCTYPE html> 
 <html lang="en">
     <meta charset="UTF-8">
-    <title>Artificial Intelligence and Visual Knowledge</title>
+    <title>Add Source</title>
     <body>
         <header>
            
             
-            <h2>Artificial Intelligence and Visual Knowledge Discovery (AI-VKD)</h2>
+            <h2>Add Listing</h2>
+          
+            
+            <link rel="stylesheet" href="styles/AddSource.css">
             <link rel="stylesheet" href="styles/main.css">
-
-
         </header>
     </body>
 </html>
