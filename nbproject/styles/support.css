@@ -1,0 +1,21 @@
+
+section ul {
+    padding-left: 45px;
+}
+
+section li {
+    padding-bottom: .5em;
+}
+
+section div div {
+    padding-bottom: .5em;
+}
+
+nav ul li ul {
+    z-index: 100;
+}
+
+section h3 {
+    z-index: 1;
+}
+

@@ -6,7 +6,7 @@
         <header>
            
             
-            <h2>Artificial Intelligence and Visual Knowledge Discovery (AI-VKD)</h2>
+            <h2> Intelligence and Visual Knowledge Discovery (AI-VKD)</h2>
             <link rel="stylesheet" href="styles/main.css">
 
 
