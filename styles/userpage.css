@@ -1,0 +1,211 @@
+.users-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 15px;
+}
+
+/* =========================
+   USER ROW CARD
+========================= */
+.user-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 14px 16px;
+
+    background: linear-gradient(90deg, #d6e4f0, #eaf3ff);
+    border: 1px solid #333;
+    border-radius: 10px;
+
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.user-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(0,0,0,0.12);
+}
+
+/* =========================
+   LEFT SIDE (USER INFO)
+========================= */
+.user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.user-info p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #222;
+}
+
+/* highlight username slightly */
+.user-info strong {
+    color: #12395b;
+}
+
+/* =========================
+   RIGHT SIDE (ACTIONS)
+========================= */
+.user-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+.btn {
+    padding: 7px 14px;
+
+    border: 1px solid #333;
+    border-radius: 6px;
+
+    background: white;
+    color: black;
+
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: bold;
+
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    background: #e6f2ff;
+    transform: translateY(-1px);
+}
+
+/* delete button */
+.btn.danger {
+    background: #fff0f0;
+}
+
+.btn.danger:hover {
+    background: #ffdddd;
+    border-color: #cc0000;
+    color: #cc0000;
+}
+
+/* =========================
+   PAGE TITLE
+========================= */
+.users-list + h2,
+main h2 {
+    margin-top: 10px;
+    font-size: 1.4rem;
+    color: #12395b;
+}
+
+.user-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 12px 18px;
+    margin-bottom: 18px;
+
+    background: linear-gradient(90deg, #eaf3ff, #d6e4f0);
+    border: 1px solid #333;
+    border-radius: 10px;
+
+    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.user-bar:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+}
+
+/* LEFT SIDE */
+.user-left {
+    font-size: 0.95rem;
+    color: #222;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* makes username stand out */
+.user-left strong {
+    color: #12395b;
+    font-size: 1rem;
+}
+
+/* optional small label feel */
+.user-left::before {
+    content: "👤";
+    margin-right: 6px;
+}
+
+/* RIGHT SIDE */
+.user-right {
+    display: flex;
+    align-items: center;
+}
+
+/* logout button */
+.logout-btn {
+    padding: 7px 14px;
+
+    background: white;
+    border: 1px solid #333;
+    border-radius: 6px;
+
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.9rem;
+    color: black;
+
+    transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+    background: #ffdddd;
+    border-color: #cc0000;
+    color: #cc0000;
+
+    transform: translateY(-1px);
+}
+
+
+.create-user-panel {
+    margin-top: 25px;
+    padding: 16px;
+
+    background: #d6e4f0;
+    border: 1px solid #333;
+    border-radius: 10px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.create-user-panel h3 {
+    margin: 0 0 5px 0;
+    color: #12395b;
+}
+
+.create-user-panel .btn {
+    width: 100%;
+    text-align: center;
+}
+
+.create-user-panel .btn.danger {
+    background: #fff0f0;
+}
+
+.create-user-panel .btn.danger:hover {
+    background: #ffdddd;
+    border-color: #cc0000;
+    color: #cc0000;
+}
