@@ -3,14 +3,16 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/xampp/htdocs/capstoneWebsite/index.php</file>
-            <file>file:/C:/xampp/htdocs/capstoneWebsite/styles/main.css</file>
-            <file>file:/C:/xampp/htdocs/capstoneWebsite/styles/AddSource.css</file>
-            <file>file:/C:/xampp/htdocs/capstoneWebsite/AddSource.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/view/footer.php</file>
             <file>file:/C:/xampp/htdocs/capstoneWebsite/view/header.php</file>
             <file>file:/C:/xampp/htdocs/capstoneWebsite/view/horizontal_nav_bar.php</file>
-            <file>file:/C:/xampp/htdocs/capstoneWebsite/view/AddSourceHeader.php</file>
-            <file>file:/C:/xampp/htdocs/capstoneWebsite/ListingInfo.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/index.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/styles/index.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/AddSource.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/view/index.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/model/db.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/model/listings.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/uploads/1776882638_Class%20Flow%20Diagram.jpg</file>
         </group>
     </open-files>
 </project-private>
