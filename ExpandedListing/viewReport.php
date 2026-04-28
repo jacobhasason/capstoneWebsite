@@ -1,77 +1,116 @@
 <?php
 require "../DBConnect/db.php";
 
-$id = $_GET["id"] ?? null;
+// Load listings
+$stmt = $db->query('SELECT * FROM "Listing" ORDER BY "listingID" DESC');
+$listings = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-if (!$id) {
-    die("No listing selected");
+if (!$listings) {
+    die("No listings found");
 }
 
-$stmt = $db->prepare('SELECT * FROM "Listing" WHERE "listingID" = ?');
-$stmt->execute([$id]);
 
-$current = $stmt->fetch();
+  // Carousel indexing
 
-if (!$current) {
-    die("Listing not found");
+$index = isset($_GET['i']) ? (int) $_GET['i'] : 0;
+
+if ($index < 0) {
+    $index = count($listings) - 1;
+}
+if ($index >= count($listings)) {
+    $index = 0;
+}
+
+$current = $listings[$index];
+
+ // prev / nexy
+$prevIndex = $index - 1;
+$nextIndex = $index + 1;
+
+if ($prevIndex < 0) {
+    $prevIndex = count($listings) - 1;
+}
+if ($nextIndex >= count($listings)) {
+    $nextIndex = 0;
 }
 ?>
 
 <?php include '../view/reportHeader.php'; ?>
+
 <link rel="stylesheet" href="../styles/main.css">
 <link rel="stylesheet" href="../styles/reportPage.css">
 
 <main class="report-page">
 
-    <!-- CAROUSEL (STATIC VISUAL ONLY) -->
+    <!-- Carousel -->
     <div class="carousel">
 
-        <!-- LEFT ARROW -->
-        <div class="arrow">◀</div>
+        <!-- Left arrow -->
+        <a class="arrow" href="?i=<?= $prevIndex ?>">◀</a>
 
-        <!-- CONTENT -->
+        <!-- Content -->
         <div class="carousel-content">
 
-            <h2><?= htmlspecialchars($current["title"]) ?></h2>
+            <h2><?= htmlspecialchars($current["title"] ?? 'Untitled') ?></h2>
 
-            <p><strong>Author:</strong> <?= htmlspecialchars($current["author"]) ?></p>
-            <p><strong>Topic:</strong> <?= htmlspecialchars($current["topic"]) ?></p>
+            <p>
+                <strong>Author:</strong>
+                <?= htmlspecialchars($current["author"] ?? 'Unknown') ?>
+            </p>
+
+            <p>
+                <strong>Topic:</strong>
+                <?= htmlspecialchars($current["topic"] ?? 'Uncategorized') ?>
+            </p>
 
             <hr>
 
             <div class="preview">
-                <?= nl2br(htmlspecialchars($current["abstract"])) ?>
+                <?= nl2br(htmlspecialchars($current["abstract"] ?? 'No description available')) ?>
             </div>
 
         </div>
 
-        <!-- RIGHT ARROW -->
-        <div class="arrow">▶</div>
+        <!-- Right arrow -->
+        <a class="arrow" href="?i=<?= $nextIndex ?>">▶</a>
 
     </div>
 
-    <!-- CONTROL BAR -->
+    <!-- Control bar -->
     <div class="report-controls">
 
-        <!-- TOPIC DROPDOWN -->
+        <!-- Topic drop down -->
         <select>
-            <option selected><?= htmlspecialchars($current["topic"]) ?></option>
-            <option>AI/Machine Learning</option>
-            <option>Visual Knowledge</option>
+            <option selected>
+                <?= htmlspecialchars($current["topic"] ?? 'Uncategorized') ?>
+            </option>
         </select>
 
-        <!-- TITLE -->
+        <!-- Title -->
         <div class="current-title">
-            <?= htmlspecialchars($current["title"]) ?>
+            <?= htmlspecialchars($current["title"] ?? 'Untitled') ?>
         </div>
 
-        <!-- DOWNLOAD BUTTON (ALWAYS VISIBLE, NOT WIRED) -->
-        <button class="btn">
-            Download
-        </button>
+        <!-- Download button -->
+        <?php if (!empty($current["file"])): ?>
+            <a class="btn"
+               href="<?= htmlspecialchars($current["file"]) ?>"
+               download>
+                Download
+            </a>
+        <?php else: ?>
+            <button class="btn" disabled>No file</button>
+        <?php endif; ?>
 
     </div>
-<a href="../index.php" class="fab"><<</a>
+
+    <!-- Position -->
+    <p style="text-align:center; margin-top:10px;">
+        <?= $index + 1 ?> / <?= count($listings) ?>
+    </p>
+
+    <a href="../index.php" class="fab"><<</a>
+
 </main>
 
 <?php include '../view/footer.php'; ?>

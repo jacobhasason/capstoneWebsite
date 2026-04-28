@@ -20,45 +20,45 @@ if (!$listing) {
 }
 ?>
 
-
-
-
 <body>
-    
-       <main class="listing-full">
 
-    <h1><?= htmlspecialchars($listing['title']) ?></h1>
+<main class="listing-full">
 
-    <p><strong>Author:</strong> <?= htmlspecialchars($listing['author']) ?></p>
-    <p><strong>Date:</strong> <?= htmlspecialchars($listing['date']) ?></p>
-    <p><strong>Medium:</strong> <?= htmlspecialchars($listing['medium']) ?></p>
-    <p><strong>Topic:</strong> <?= htmlspecialchars($listing['topic']) ?></p>
+    <h1><?= htmlspecialchars($listing['title'] ?? 'Untitled') ?></h1>
+
+    <p><strong>Author:</strong> <?= htmlspecialchars($listing['author'] ?? 'Unknown') ?></p>
+
+    <p><strong>Date:</strong> <?= htmlspecialchars($listing['date'] ?? 'N/A') ?></p>
+
+    <p><strong>Medium:</strong> <?= htmlspecialchars($listing['medium'] ?? 'N/A') ?></p>
+
+    <p><strong>Topic:</strong> <?= htmlspecialchars($listing['topic'] ?? 'Uncategorized') ?></p>
 
     <hr>
 
     <p class="abstract">
-        <?= nl2br(htmlspecialchars($listing['abstract'])) ?>
+        <?= nl2br(htmlspecialchars($listing['abstract'] ?? 'No abstract available')) ?>
     </p>
 
-    <!-- ACTIONS -->
+    <!-- Actions -->
     <div class="listing-actions">
 
-    <div class="action-buttons">
+        <div class="action-buttons">
 
-        <button class="btn">View Abstract</button>
-        <button class="btn">Copy Citation</button>
+            <button class="btn">View Abstract</button>
+            <button class="btn">Copy Citation</button>
 
-        <a class="btn external"
-           href="ViewReport.php?id=<?= $listing['listingID'] ?>">
-            View Report & External Resources
-        </a>
+            <a class="btn external"
+               href="ViewReport.php?id=<?= $listing['listingID'] ?>">
+                View Report & External Resources
+            </a>
+
+        </div>
 
     </div>
 
-</div>
-
-    <!-- OPTIONAL EXTRA LINKS -->
-    <?php if ($listing['links']): ?>
+    <!-- OPtional links -->
+    <?php if (!empty($listing['links'])): ?>
         <p class="extra-link">
             <a href="<?= htmlspecialchars($listing['links']) ?>" target="_blank">
                 External Link
@@ -66,16 +66,19 @@ if (!$listing) {
         </p>
     <?php endif; ?>
 
-    <?php if ($listing['file']): ?>
-        <p class="extra-link">
-            <a href="../uploads/<?= htmlspecialchars($listing['file']) ?>" download>
-                Download File
-            </a>
-        </p>
-    <?php endif; ?>
+<!-- File download -->
+<?php if (!empty($listing['file'])): ?>
+    <p class="extra-link">
+        <a href="<?= htmlspecialchars($listing['file']) ?>" download>
+            Download File
+        </a>
+    </p>
+<?php endif; ?>
 
 </main>
+
 </body>
+
 <a href="../index.php" class="fab"><<</a>
 
 <script src="../scripts/date.js"></script>
