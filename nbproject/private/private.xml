@@ -3,16 +3,27 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/xampp/htdocs/capstoneWebsite-saul-DbConnect/AddListing/AddSource.php</file>
-            <file>file:/C:/xampp/htdocs/capstoneWebsite-saul-DbConnect/ExpandedListing/ListingInfo.php</file>
-            <file>file:/C:/xampp/htdocs/capstoneWebsite-saul-DbConnect/view/header.php</file>
-            <file>file:/C:/xampp/htdocs/capstoneWebsite-saul-DbConnect/cocoNut.jpg</file>
-            <file>file:/C:/xampp/htdocs/capstoneWebsite-saul-DbConnect/scripts/checkmark.js</file>
-            <file>file:/C:/xampp/htdocs/capstoneWebsite-saul-DbConnect/view/horizontal_nav_bar.php</file>
-            <file>file:/C:/xampp/htdocs/capstoneWebsite-saul-DbConnect/index.php</file>
-            <file>file:/C:/xampp/htdocs/capstoneWebsite-saul-DbConnect/styles/main.css</file>
-            <file>file:/C:/xampp/htdocs/capstoneWebsite-saul-DbConnect/getListing.php</file>
-            <file>file:/C:/xampp/htdocs/capstoneWebsite-saul-DbConnect/ViewReport/ViewReport.php</file>
+            <file>file:/C:/wamp64/www/capstoneWebsite/DBConnect/db.php</file>
+            <file>file:/C:/wamp64/www/capstoneWebsite/test.php</file>
+            <file>file:/C:/wamp64/www/capstoneWebsite/styles/AddSource.css</file>
+            <file>file:/C:/wamp64/www/capstoneWebsite/ExpandedListing/ListingInfo.php</file>
+            <file>file:/C:/wamp64/www/capstoneWebsite/AddListing/AddSource.php</file>
+            <file>file:/C:/wamp64/www/capstoneWebsite/ExpandedListing/viewReport.php</file>
+            <file>file:/C:/wamp64/www/capstoneWebsite/Model/Listing.php</file>
+            <file>file:/C:/wamp64/www/capstoneWebsite/scripts/dragdrop.js</file>
+            <file>file:/C:/wamp64/www/capstoneWebsite/scripts/index.php</file>
+            <file>file:/C:/wamp64/www/capstoneWebsite/scripts/checkmark.js</file>
+            <file>file:/C:/wamp64/www/capstoneWebsite/styles/main.css</file>
+            <file>file:/C:/wamp64/www/capstoneWebsite/Login/login.php</file>
+            <file>file:/C:/wamp64/www/capstoneWebsite/getListing.php</file>
+            <file>file:/C:/wamp64/www/capstoneWebsite/view/userPageHeader.php</file>
+            <file>file:/C:/wamp64/www/capstoneWebsite/view/modifyUserHeader.php</file>
+            <file>file:/C:/wamp64/www/capstoneWebsite/view/header.php</file>
+            <file>file:/C:/wamp64/www/capstoneWebsite/view/LoginHeader.php</file>
+            <file>file:/C:/wamp64/www/capstoneWebsite/styles/index.php</file>
+            <file>file:/C:/wamp64/www/capstoneWebsite/styles/userpage.css</file>
+            <file>file:/C:/wamp64/www/capstoneWebsite/styles/reportPage.css</file>
+            <file>file:/C:/wamp64/www/capstoneWebsite/Users/usersPage.php</file>
         </group>
     </open-files>
 </project-private>
