@@ -1,4 +1,3 @@
-<link rel="stylesheet" href="styles/main.css">
 <?php
 session_start();
 
@@ -14,6 +13,7 @@ $stmt = $db->prepare('SELECT * FROM "Listing" ORDER BY "listingID" DESC');
 $stmt->execute();
 $listings = $stmt->fetchAll();
 ?>
+<link rel="stylesheet" href="styles/main.css">
 <body>
     <main>
     
