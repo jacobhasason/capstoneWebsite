@@ -1,4 +1,5 @@
 <?php
+session_start();
 require "../DBConnect/db.php";
 
 if (!isset($_SESSION["userID"])) {
