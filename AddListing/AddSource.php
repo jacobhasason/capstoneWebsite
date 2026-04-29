@@ -1,17 +1,6 @@
 <?php
 session_start();
 
-?>
-
-<?php include '../view/AddSourceHeader.php'; ?>
-
-<link rel="stylesheet" href="../styles/AddSource.css">
-<link rel="stylesheet" href="../styles/main.css">
-
-
-
-
-
 // Validation for user input
 if (!isset($_SESSION['userID'])) {
     die("Not logged in");
@@ -130,7 +119,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 }
 ?>
+<?php include '../view/AddSourceHeader.php'; ?>
 
+<link rel="stylesheet" href="../styles/AddSource.css">
+<link rel="stylesheet" href="../styles/main.css">
 
 
 <main>
