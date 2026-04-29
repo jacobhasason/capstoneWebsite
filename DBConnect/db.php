@@ -1,9 +1,9 @@
 <?php
 // this here is the black magic page
-$host = "db.zdysuvkcmymlwpernryq.supabase.co";
+$host = "aws-1-us-east-2.pooler.supabase.com";
 $port = "5432";
 $dbname = "postgres";
-$user = "postgres";
+$user = "postgres.zdysuvkcmymlwpernryq";
 $password = "Of9Be0I27sUugiTP";
 
 $dsn = "pgsql:host=$host;port=$port;dbname=$dbname;sslmode=require";
