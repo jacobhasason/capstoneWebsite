@@ -1,6 +1,5 @@
 
 <?php
-session_start();
 require "../DBConnect/db.php";
 
 // If already logged in, redirect to users page
