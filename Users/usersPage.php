@@ -2,10 +2,10 @@
 session_start();
 require "../DBConnect/db.php";
 
-//if (!isset($_SESSION["userID"])) {
-//    header("Location: ../Login/login.php");
-//    exit();
-//}
+if (!isset($_SESSION["userID"])) {
+    header("Location: ../Login/login.php");
+    exit();
+}
 
 $currentUserID = $_SESSION["userID"];
 $currentUserType = $_SESSION["userType"];
