@@ -1,5 +1,5 @@
-
 <?php
+session_start();
 
 include 'view/header.php';
 include 'view/horizontal_nav_bar.php';
