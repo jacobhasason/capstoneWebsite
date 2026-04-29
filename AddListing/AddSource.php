@@ -196,7 +196,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             </div>
 
             <div class="field">
-                <label>Links:</label>
+                <label>Citations:</label>
                 <input type="text" name="links">
             </div>
 
