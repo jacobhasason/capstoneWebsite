@@ -1,5 +1,4 @@
 <?php
-session_start();
 require "../DBConnect/db.php";
 
 // must be logged in as superuser
