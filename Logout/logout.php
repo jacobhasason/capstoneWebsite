@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 // clear all session data
 $_SESSION = [];
