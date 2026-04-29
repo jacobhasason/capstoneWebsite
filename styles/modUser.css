@@ -1,0 +1,109 @@
+.modify-user-page {
+    max-width: 520px;
+    margin: 20px auto;
+    padding: 10px;
+}
+
+/* =========================
+   USER INFO BOX
+========================= */
+.user-box {
+    padding: 14px 16px;
+
+    background: linear-gradient(90deg, #d6e4f0, #eaf3ff);
+    border: 1px solid #333;
+    border-radius: 10px;
+
+    margin-bottom: 18px;
+
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+/* =========================
+   PASSWORD FORM
+========================= */
+.modify-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    margin-bottom: 28px; /* spacing between input and buttons */
+}
+
+.modify-form label {
+    font-weight: bold;
+    color: #12395b;
+}
+
+.modify-form input {
+    padding: 10px;
+
+    border: 1px solid #333;
+    border-radius: 8px;
+
+    font-size: 0.95rem;
+}
+
+.modify-form input:focus {
+    outline: none;
+    border-color: #5d93e1;
+    box-shadow: 0 0 4px rgba(93,147,225,0.4);
+}
+
+/* =========================
+   BUTTON GROUP (STACKED)
+========================= */
+.source-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* =========================
+   BUTTON BASE STYLE
+========================= */
+.btn {
+    display: block;
+    width: 100%;
+
+    padding: 10px 14px;
+
+    border: 1px solid #333;
+    border-radius: 8px;
+
+    background: white;
+    color: black;
+
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.95rem;
+
+    text-align: center;
+
+    transition: all 0.2s ease;
+}
+
+/* hover effect */
+.btn:hover {
+    background: #e6f2ff;
+    transform: translateY(-2px);
+}
+
+/* danger button (Remove Sources) */
+.btn.danger {
+    background: #fff0f0;
+}
+
+.btn.danger:hover {
+    background: #ffdddd;
+    border-color: #cc0000;
+    color: #cc0000;
+}
+
+/* =========================
+   PAGE TITLE
+========================= */
+.modify-user-page h2 {
+    margin-bottom: 15px;
+    color: #12395b;
+}

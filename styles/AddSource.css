@@ -122,3 +122,40 @@
 .submit-btn:active {
     transform: translateY(0);
 }
+
+.field {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.field-inline {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.error-text {
+    color: red;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.remove-file {
+    position: absolute;
+    top: 5px;
+    right: 8px;
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    display: none;
+}
+
+.drop-area {
+    position: relative;
+}
