@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 // Validation for user input
 if (!isset($_SESSION['userID'])) {
