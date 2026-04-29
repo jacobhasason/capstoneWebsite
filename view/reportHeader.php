@@ -9,7 +9,7 @@
             <h2>View Report & External Resources</h2>
           
             
-            <link rel="stylesheet" href="styles/main.css">
+
         </header>
     </body>
 </html>
