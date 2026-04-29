@@ -1,5 +1,5 @@
 <?php include '../view/header.php'; ?>
-<link rel="stylesheet" href="../styles/main.css">
+<link rel="stylesheet" href="/styles/main.css">
 
 <?php
 require "../DBConnect/db.php";
