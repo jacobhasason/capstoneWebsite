@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+?>
+
 <?php include '../view/AddSourceHeader.php'; ?>
 
 <link rel="stylesheet" href="../styles/AddSource.css">
