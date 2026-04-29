@@ -1,15 +1,12 @@
 FROM php:8.2-apache
 
-# Copy all files into Apache's root directory
+# install postgres dependencies
+RUN apt-get update && apt-get install -y libpq-dev \
+    && docker-php-ext-install pdo pdo_pgsql pgsql
+
+# copy your project files
 COPY . /var/www/html/
 
-# Set working directory (helps with relative paths)
-WORKDIR /var/www/html
-
-# Enable rewrite module (useful if you add routing later)
+# enable apache rewrite if needed
 RUN a2enmod rewrite
-
-# Fix permissions (prevents weird access bugs)
-RUN chown -R www-data:www-data /var/www/html
-
 EXPOSE 80
