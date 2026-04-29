@@ -1,6 +1,7 @@
+<link rel="stylesheet" href="styles/main.css">
 <?php
 session_start();
-<link rel="stylesheet" href="styles/main.css">
+
 include 'view/header.php';
 include 'view/horizontal_nav_bar.php';
 
