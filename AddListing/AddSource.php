@@ -1,5 +1,12 @@
+<?php include '../view/AddSourceHeader.php'; ?>
+
+<link rel="stylesheet" href="../styles/AddSource.css">
+<link rel="stylesheet" href="../styles/main.css">
+
 <?php
 session_start();
+
+
 
 // Validation for user input
 if (!isset($_SESSION['userID'])) {
@@ -120,10 +127,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 }
 ?>
 
-<?php include '../view/AddSourceHeader.php'; ?>
 
-<link rel="stylesheet" href="../styles/AddSource.css">
-<link rel="stylesheet" href="../styles/main.css">
 
 <main>
     <body>
