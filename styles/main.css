@@ -2,22 +2,24 @@
     font-family: sans-serif;
     box-sizing: border-box;
 }
+
 html {
-    background-color: lightsteelblue;
-    
+    background-image: url("../images/wildcat.png");
 }
 
 h1, h2, h3, p {
     margin: 0;
     padding: 0;
 }
+
 body {
     font-family: Verdana, Arial, Helvetica, sans-serif;
     width: 800px;
     margin: 20px auto;
     border: 2px solid black;
     background-color: white;
-    box-shadow: 0 10px 5px lightcyan;
+    box-shadow: 0 10px 5px red;
+    background-repeat: repeat;
 }
 
 a {
@@ -27,22 +29,24 @@ a {
 a:link {
     color: black;
 }
+
 a:visited {
-    color: #12395b;
+    color: #8b0000; /* dark red */
 }
+
 a:hover,
 a:focus {
-    color: #2880b9;
+    color: lightcoral;
 }
 
 header {
     border-bottom: 2px solid black;
-    background: linear-gradient(45deg, white 0%, lightcyan 75%, black 100%);
+    background: linear-gradient(45deg, white 0%, crimson 75%, black 100%);
     padding: 15px 15px 35px 15px;
     display: flex;
     align-items: center;
-
 }
+
 header img {
     padding-right: 55px;
     float: left;
@@ -57,6 +61,7 @@ header h3 {
     font-size: 1.25em;
     text-indent: 25px;
 }
+
 /* --- Centering the whole layout --- */
 .container {
     max-width: 800px; 
@@ -68,14 +73,14 @@ header h3 {
     list-style: none;
     padding: 0;
     margin: 0;
-    display: flex; /* Replaces floats for easier centering */
-    background-color: lightblue;
+    display: flex;
+    background-color: lightcoral;
     border-top: 2px solid black;
     border-bottom: 2px solid black;
 }
 
 .main-nav > li {
-    flex: 1; /* Makes "Date", "Topic", "Medium" exactly equal width */
+    flex: 1;
     position: relative;
 }
 
@@ -90,7 +95,7 @@ header h3 {
 
 /* --- Dropdown Styling --- */
 .dropdown {
-    display: none; /* Hide until hover */
+    display: none;
     position: absolute;
     top: 100%;
     left: 0;
@@ -98,7 +103,7 @@ header h3 {
     list-style: none;
     padding: 0;
     margin: 0;
-    background-color: #f0f8ff; /* Lighter blue for menu */
+    background-color: #ffe5e5; /* light red */
     border: 1px solid black;
     z-index: 100;
 }
@@ -108,52 +113,51 @@ header h3 {
 }
 
 .dropdown li a {
-    display: flex;       /* Aligns checkbox and text */
+    display: flex;
     align-items: center; 
     padding: 10px 15px;
     text-decoration: none;
     color: black;
     font-size: 0.9rem;
-    gap: 10px;           /* Gap between checkbox and label */
+    gap: 10px;
 }
 
 .dropdown li a:hover {
-    background-color: #d1e8ff;
+    background-color: #ffcccc;
 }
 
-/* The base box */
+/* Checkbox */
 .checkbox-box {
     width: 14px;
     height: 14px;
     border: 1px solid black;
     background-color: white;
     flex-shrink: 0;
-    position: relative; /* CRITICAL: This allows the checkmark to anchor inside */
+    position: relative;
 }
 
-/* The checkmark that appears when the 'checked' class is added */
 .checkbox-box.checked::after {
     content: "✓"; 
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%); /* Centers the checkmark perfectly */
+    transform: translate(-50%, -50%);
     font-size: 12px;
-    color: #007bff;
+    color: #cc0000; /* red check */
     font-weight: bold;
 }
-
-
 
 section {
     float: right;
     width: 580px;
     padding: 20px 25px 0 25px;
 }
+
 section h1 {
     font-size: 1.5em;
     margin-bottom: 0.5em;
 }
+
 section h1::first-letter {
     font-size: 2em;
 }
@@ -175,12 +179,14 @@ section img {
     margin-bottom: 0.5em;
 }
 
-section p{
+section p {
     margin-bottom: 0.5em;
 }
+
+/* Theme variables */
 :root {
-  --bg-light: #d6e4f0; /* Light blue */
-  --accent-blue: #5d93e1; /* Darker blue for bottom bar */
+  --bg-light: #f0d6d6; /* light red */
+  --accent-red: #e15d5d;
   --border-color: #333;
 }
 
@@ -188,7 +194,6 @@ body {
   font-family: sans-serif;
   padding: 20px;
 }
-
 
 .source-item {
     width: 100%;
@@ -200,23 +205,20 @@ body {
     transition: background-color 0.3s; 
 }
 
-/* part that handles the layout and clicking */
 .item-link {
-    display: flex;         /* Moves the flex behavior here */
+    display: flex;
     align-items: center;
     padding: 15px;
     gap: 20px;
-    text-decoration: none; /* removes the underline text */
-    color: inherit;        /* keeps text black/dark */
+    text-decoration: none;
+    color: inherit;
     width: 100%;
     height: 150px;
 }
 
-/* highlight whole box when you hover anywhere on it */
 .source-item:hover {
-    background-color: #d1e8ff; 
+    background-color: #ffcccc;
 }
-
 
 .thumbnail {
     width: 80px;
@@ -248,6 +250,7 @@ body {
     background: white;
     border-radius: 4px;
 }
+
 .fab {
   position: fixed;
   bottom: 20px;
@@ -255,20 +258,21 @@ body {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background-color: #007bff;
+  background-color: #cc0000;
   color: white;
   font-size: 30px;
   text-align: center;
-  line-height: 60px;   /* centers the + vertically */
+  line-height: 60px;
   text-decoration: none;
   box-shadow: 0 4px 6px rgba(0,0,0,0.3);
   z-index: 1000;
 }
 
 .fab:hover {
-  background-color: #0056b3;
+  background-color: #990000;
   transform: scale(1.1);
 }
+
 ul {
     line-height: 1.5;
 }
@@ -278,24 +282,22 @@ footer {
     clear: both;
     border-top: 2px solid black;
     padding: 15px;
-    background: linear-gradient(45deg, black 0%, lightcyan 25%, white 100%);
+    background: linear-gradient(45deg, black 0%, crimson 25%, white 100%);
 }
 
 footer div:first-child {
     display: inline;
     padding-left: 20em;
 }
+
 footer div:last-child {
     display: inline;
     padding-left: 16em;
-
 }
-
 
 .listing-actions {
     margin-top: 20px;
 }
-
 
 .action-buttons {
     display: flex;
@@ -303,11 +305,10 @@ footer div:last-child {
     gap: 10px;
 }
 
-/* button styling */
 .btn {
     width: 180px;
     padding: 10px;
-    background-color: #5d93e1;
+    background-color: #e15d5d;
     color: white;
     border: none;
     text-decoration: none;
@@ -317,10 +318,11 @@ footer div:last-child {
 }
 
 .btn.external {
-    background-color: #2d5ca8;
+    background-color: #a83232;
 }
+
 .user-icon-btn {
-    margin-left: auto; /* pushes it to the right if inside flex header */
+    margin-left: auto;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -335,12 +337,10 @@ footer div:last-child {
 }
 
 .user-icon-btn:hover {
-    background: #d1e8ff;
+    background: #ffcccc;
     transform: scale(1.05);
     cursor: pointer;
 }
-
-
 
 main {
     padding-bottom: 60px;
