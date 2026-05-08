@@ -75,11 +75,59 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $thumbnailPath = uploadToSupabase($_FILES['thumbnail']['tmp_name'], $thumbName);
         }
 
+        $abstract = $_POST['abs'] ?? '';
+        $citations = $_POST['links'] ?? '';
+        
         // Main file
         if (!empty($_FILES['file']['name'])) {
+
             $fileName = time() . "_" . basename($_FILES['file']['name']);
-            $filePath = uploadToSupabase($_FILES['file']['tmp_name'], $fileName);
+
+            $filePath = uploadToSupabase(
+                    $_FILES['file']['tmp_name'],
+                    $fileName
+            );
+
+            // Uploaded temp file
+            $uploadedTmpFile = $_FILES['file']['tmp_name'];
+
+            // Original uploaded filename
+            $originalFileName = $_FILES['file']['name'];
+
+            // Python executable
+            $python = "python";
+
+            // Python script path
+            $script = realpath(__DIR__ . '/../scripts/scraping/scraper.py');
+
+            // Build command
+            $command = $python . ' ' .
+                    escapeshellarg($script) . ' ' .
+                    escapeshellarg($uploadedTmpFile) . ' ' .
+                    escapeshellarg($originalFileName) .
+                    ' 2>&1';
+
+            // Execute Python
+            $output = shell_exec($command);
+
+            $scrapedData = json_decode($output, true);
+
+            if ($scrapedData) {
+                if (empty($abstract) && !empty($scrapedData['abstract'])) {
+                    $abstract = $scrapedData['abstract'];
+                }
+
+                if (empty($citations) && !empty($scrapedData['citations'])) {
+                    $citations = implode("\n\n", $scrapedData['citations']);
+                }
+            }
+
+            echo "<pre>";
+            echo htmlspecialchars($output);
+            echo "</pre>";
         }
+
+
 
         $ch = curl_init("https://zdysuvkcmymlwpernryq.supabase.co/rest/v1/Listing");
 
@@ -90,8 +138,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             "medium" => $_POST['medium'],
             "icon" => $thumbnailPath,
             "file" => $filePath,
-            "abstract" => $_POST['abs'] ?? '',
-            "links" => $_POST['links'] ?? '',
+            "abstract" => $abstract,
+            "citations" => $citations,
             "userID" => $_SESSION['userID'],
         ];
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -167,10 +215,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     <div id="drop-zone-icon" class="drop-area">
                         <span class="drop-message">Drag & Drop (pdf/mp3/mp4/wav) <br> File</span>
                         <button type="button" class="remove-file">✕</button>
-                        <input type="file" name="file" accept=".pdf,.mp3,.mp4,.wav" hidden>
-                        <?php if (isset($fieldErrors['file'])): ?>
+                        <input type="file" name="file" accept=".pdf,.docx,.mp3,.mp4,.wav" hidden>
+<?php if (isset($fieldErrors['file'])): ?>
                             <span class="error-text"><?= $fieldErrors['file'] ?></span>
-                        <?php endif; ?>
+<?php endif; ?>
                     </div>
                 </div>
 

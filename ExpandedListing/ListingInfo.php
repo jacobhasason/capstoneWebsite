@@ -50,7 +50,7 @@ if (!$listing) {
 
             <a class="btn external"
                href="ViewReport.php?id=<?= $listing['listingID'] ?>">
-                View Report & External Resources
+                View Primary Source & Related Resources
             </a>
 
         </div>

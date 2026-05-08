@@ -6,7 +6,7 @@
         <header>
            
             
-            <h2>View Report & External Resources</h2>
+            <h2>Primary Source & Related Resources</h2>
           
             
 <!--            <link rel="stylesheet" href="styles/main.css"> -->
