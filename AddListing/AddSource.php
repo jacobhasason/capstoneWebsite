@@ -70,7 +70,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
 
         // Thumbnail 
-        if (!empty($_FILES['thumbnail']['name'])) {
+        if (!empty($_FILES['file']['tmp_name']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
             $thumbName = time() . "_" . basename($_FILES['thumbnail']['name']);
             $thumbnailPath = uploadToSupabase($_FILES['thumbnail']['tmp_name'], $thumbName);
         }
