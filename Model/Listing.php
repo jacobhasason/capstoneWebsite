@@ -36,3 +36,31 @@ function addListing($title, $author, $date, $icon, $medium, $abstract, $links, $
 
     return $response;
 }
+
+function getListing() {
+
+
+    $url = $config['url'] . "/rest/v1/Listing?select=*&order=date.desc";
+
+    $ch = curl_init($url);
+
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "apikey: sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
+        "Authorization: sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
+        "Content-Type: application/json",
+        "Prefer: return=representation"
+    ]);
+
+    $response = curl_exec($ch);
+
+    if (curl_errno($ch)) {
+        curl_close($ch);
+        return json_encode(["error" => "Failed to fetch listings"]);
+    }
+
+    curl_close($ch);
+
+    return $response;
+}
