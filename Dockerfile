@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y \
     gcc \
     g++ \
     make \
+    libmupdf-dev \
     libpq-dev \
     && docker-php-ext-install pdo pdo_pgsql pgsql
 
