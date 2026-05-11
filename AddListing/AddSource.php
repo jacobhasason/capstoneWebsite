@@ -56,6 +56,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 "Content-Type: application/octet-stream"
             ]);
 
+            if (empty($tmpFile) || !file_exists($tmpFile)) {
+                die("Invalid upload file path");
+            }
+
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, file_get_contents($tmpFile));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
