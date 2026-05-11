@@ -95,7 +95,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $originalFileName = $_FILES['file']['name'];
 
             // Python executable
-            $python = "python";
+            $python = getenv("PYTHON_BIN") ?: (PHP_OS_FAMILY === "Windows" ? "python" : "python3");
 
             // Python script path
             $script = realpath(__DIR__ . '/../scripts/scraping/scraper.py');
