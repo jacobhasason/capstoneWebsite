@@ -57,22 +57,29 @@ if (!$listing) {
 
     </div>
 
-    <!-- OPtional links -->
-    <?php if (!empty($listing['links'])): ?>
-        <p class="extra-link">
-            <a href="<?= htmlspecialchars($listing['links']) ?>" target="_blank">
-                External Link
-            </a>
-        </p>
-    <?php endif; ?>
 
-<!-- File download -->
+<!-- Uploaded file -->
 <?php if (!empty($listing['file'])): ?>
+
     <p class="extra-link">
         <a href="<?= htmlspecialchars($listing['file']) ?>" download>
             Download File
         </a>
     </p>
+
+<!-- External hyperlink -->
+<?php elseif (!empty($listing['links'])): ?>
+
+    <p class="extra-link">
+        <a
+            href="<?= htmlspecialchars($listing['links']) ?>"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            Visit Source
+        </a>
+    </p>
+
 <?php endif; ?>
 
 </main>

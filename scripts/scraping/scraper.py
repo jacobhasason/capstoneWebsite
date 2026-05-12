@@ -12,7 +12,9 @@ Created on Thu May  7 20:38:18 2026
 import sys
 import json
 import re
+import requests
 import fitz
+from bs4 import BeautifulSoup
 from docx import Document
 from pathlib import Path
 
@@ -62,51 +64,68 @@ def get_citations(text):
 
     return []
 
+def extract_webpage(url):
+    response = requests.get(
+        url,
+        timeout=15,
+        headers={
+            "User-Agent": "Mozilla/5.0"
+        }
+    )
+    response.raise_for_status()
+
+    soup = BeautifulSoup(response.text, "html.parser")
+
+    for tag in soup(["script", "style", "nav", "footer", "header"]):
+        tag.decompose()
+
+    # Try common abstract meta tags first
+    abstract_meta = soup.find("meta", attrs={"name": "description"})
+    if abstract_meta and abstract_meta.get("content"):
+        meta_text = abstract_meta["content"].strip()
+    else:
+        meta_text = ""
+
+    page_text = soup.get_text("\n", strip=True)
+
+    return meta_text + "\n" + page_text
+
 
 
 def main():
 
-    #print("Python connected successfully")
-
     if len(sys.argv) < 3:
-        print("ERROR: File path and original filename must be passed to Python.")
+        print(json.dumps({
+            "abstract": "",
+            "citations": [],
+            "error": "Missing source or source type"
+        }))
         sys.exit(1)
 
-    tmp_path = sys.argv[1]
-    original_name = sys.argv[2]
-
-    suffix = Path(original_name).suffix.lower()
-    '''
-    print("Uploaded file:")
-    print(tmp_path)
-    print("Original filename:")
-    print(original_name)
-    print("Detected suffix:")
-    print(suffix)
-    '''
+    source = sys.argv[1]
+    source_type = sys.argv[2]
 
     text = ""
 
-    if suffix == ".pdf":
-        text = extract_pdf(tmp_path)
-
-    elif suffix == ".docx":
-        text = extract_docx(tmp_path)
+    if source_type == "url":
+        text = extract_webpage(source)
 
     else:
-        print(f"Unsupported file type: {suffix}")
-    
-    '''
-    print("TEXT LENGTH:", len(text))
-    print("TEXT PREVIEW:")
-    print(text[:1000])
-    '''
-    
+        tmp_path = source
+        original_name = source_type
+        suffix = Path(original_name).suffix.lower()
+
+        if suffix == ".pdf":
+            text = extract_pdf(tmp_path)
+
+        elif suffix == ".docx":
+            text = extract_docx(tmp_path)
+
     result = {
         "abstract": get_abstract(text),
         "citations": get_citations(text)
     }
-    
+
     print(json.dumps(result))
     
 if __name__ == "__main__":

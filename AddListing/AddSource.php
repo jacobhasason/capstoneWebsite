@@ -25,8 +25,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $fieldErrors['medium'] = "Please select a medium";
     }
 
-    if (empty($_FILES['file']['name'])) {
-        $fieldErrors['file'] = "Please upload a file";
+    if (empty($_FILES['file']['name']) && empty($_POST['externalLink'])) {
+        $fieldErrors['file'] = "Please upload a file or provide a link";
     }
 
     if (empty($fieldErrors)) {
@@ -76,9 +76,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
 
         $abstract = $_POST['abs'] ?? '';
-        $citations = $_POST['links'] ?? '';
-        
-        // Main file
+        $citations = $_POST['citations'] ?? '';
+        $sourceLink = !empty($_POST['externalLink']) ? trim($_POST['externalLink']) : null;
+
+        // Main file attachment
         if (!empty($_FILES['file']['name'])) {
 
             $fileName = time() . "_" . basename($_FILES['file']['name']);
@@ -111,6 +112,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $output = shell_exec($command);
 
             $scrapedData = json_decode($output, true);
+            $filePath = null;
 
             if ($scrapedData) {
                 if (empty($abstract) && !empty($scrapedData['abstract'])) {
@@ -125,8 +127,37 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             echo "<pre>";
             echo htmlspecialchars($output);
             echo "</pre>";
-        }
 
+            // Else if attachment is a link
+        } elseif (!empty($sourceLink)) {
+
+            $filePath = null;
+
+            // scrape $sourceLink with Python
+            $python = getenv("PYTHON_BIN") ?: (PHP_OS_FAMILY === "Windows" ? "python" : "python3");
+            $script = realpath(__DIR__ . '/../scripts/scraping/scraper.py');
+
+            $command = $python . ' ' .
+                    escapeshellarg($script) . ' ' .
+                    escapeshellarg($sourceLink) . ' ' .
+                    escapeshellarg("url") .
+                    ' 2>&1';
+
+            $output = shell_exec($command);
+            $scrapedData = json_decode($output, true);
+
+            if ($scrapedData) {
+                if (empty($abstract) && !empty($scrapedData['abstract'])) {
+                    $abstract = $scrapedData['abstract'];
+                }
+
+                if (empty($citations) && !empty($scrapedData['citations'])) {
+                    $citations = implode("\n\n", $scrapedData['citations']);
+                }
+            }
+        } else {
+            echo "Upload failed";
+        }
 
 
         $ch = curl_init("https://zdysuvkcmymlwpernryq.supabase.co/rest/v1/Listing");
@@ -136,8 +167,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             "author" => $_POST['author'],
             "date" => $_POST['datePub'],
             "medium" => $_POST['medium'],
+            "topic" => $_POST['topic'],
             "icon" => $thumbnailPath,
             "file" => $filePath,
+            "links" => $sourceLink,
             "abstract" => $abstract,
             "citations" => $citations,
             "userID" => $_SESSION['userID'],
@@ -201,29 +234,83 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             <div class="drop-row">
 
+                <!-- ICON COLUMN -->
                 <div class="drop-group">
+
                     <label>Icon:</label>
+
                     <div id="drop-zone-thumb" class="drop-area">
-                        <span class="drop-message">Drag & Drop (jpeg/png) <br> Icon</span>
+
+                        <span class="drop-message">
+                            Drag & Drop (jpeg/png)
+                            <br>
+                            Icon
+                        </span>
+
                         <button type="button" class="remove-file">✕</button>
-                        <input type="file" name="thumbnail" accept="image/*" hidden>
+
+                        <input
+                            type="file"
+                            name="thumbnail"
+                            accept="image/*"
+                            hidden
+                            >
+
                     </div>
+
                 </div>
 
-                <div class="drop-group">
+
+                <!-- FILE COLUMN -->
+                <div class="file-column">
+
                     <label>File:</label>
+
                     <div id="drop-zone-icon" class="drop-area">
-                        <span class="drop-message">Drag & Drop (pdf/mp3/mp4/wav) <br> File</span>
+
+                        <span class="drop-message">
+                            Drag & Drop (pdf/docx/mp3/mp4/wav)
+                            <br>
+                            File
+                        </span>
+
                         <button type="button" class="remove-file">✕</button>
-                        <input type="file" name="file" accept=".pdf,.docx,.mp3,.mp4,.wav" hidden>
-<?php if (isset($fieldErrors['file'])): ?>
-                            <span class="error-text"><?= $fieldErrors['file'] ?></span>
-<?php endif; ?>
+
+                        <input
+                            type="file"
+                            name="file"
+                            accept=".pdf,.docx,.mp3,.mp4,.wav"
+                            hidden
+                            >
+
+                        <?php if (isset($fieldErrors['file'])): ?>
+                            <span class="error-text">
+                                <?= $fieldErrors['file'] ?>
+                            </span>
+                        <?php endif; ?>
+
                     </div>
+
+                    <!-- LINK BELOW FILE -->
+                    <div class="link-field">
+
+                        <label for="externalLink">
+                            OR External Link:
+                        </label>
+
+                        <input
+                            type="url"
+                            id="externalLink"
+                            name="externalLink"
+                            placeholder="https://example.com/research-paper"
+                            value="<?= htmlspecialchars($_POST['externalLink'] ?? '') ?>"
+                            >
+
+                    </div>
+
                 </div>
 
             </div>
-
 
             <div class="field">
                 <label>Medium:</label>
@@ -239,6 +326,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             </div>
 
             <div class="field">
+                <label>Topic:</label>
+                <select name="topic">
+                    <option value="">Select</option>
+                    <option value="AI/Machine Learning">AI/Machine Learning</option>
+                    <option value="Visual Knowledge Discovery">Visual Knowledge Discovery</option>
+                </select>
+                <span class="error-text"><?= $fieldErrors['topic'] ?? '' ?></span>
+            </div>
+
+            <div class="field">
                 <label>Abstract:</label>
                 <input type="text" name="abs">
             </div>
@@ -247,6 +344,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <label>Citations:</label>
                 <input type="text" name="links">
             </div>
+
+
 
             <button type="submit">Upload Project</button>
 

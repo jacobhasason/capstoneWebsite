@@ -53,11 +53,46 @@
     background-color: #eef5ff;
 }
 /* Each box + label wrapper */
+.drop-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    margin: 20px 0;
+}
+
 .drop-group {
     display: flex;
-    flex-direction: row;
-    width: 150px; 
+    flex-direction: column;
+    width: 150px;
 }
+
+.file-column {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    width: 220px;
+}
+
+.link-field {
+    width: 100%;
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.link-field label {
+    width: 100%;
+    text-align: left;
+    margin-bottom: 5px;
+}
+
+.link-field input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
 
 /* Make the labels for the boxes bold to like other labels */
 .drop-group label {
@@ -159,3 +194,4 @@
 .drop-area {
     position: relative;
 }
+

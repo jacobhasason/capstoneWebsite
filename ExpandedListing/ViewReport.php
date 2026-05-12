@@ -10,7 +10,7 @@ if (!$listings) {
 }
 
 
-  // Carousel indexing
+// Carousel indexing
 
 $index = isset($_GET['i']) ? (int) $_GET['i'] : 0;
 
@@ -23,7 +23,7 @@ if ($index >= count($listings)) {
 
 $current = $listings[$index];
 
- // prev / nexy
+// prev / nexy
 $prevIndex = $index - 1;
 $nextIndex = $index + 1;
 
@@ -91,15 +91,27 @@ if ($nextIndex >= count($listings)) {
             <?= htmlspecialchars($current["title"] ?? 'Untitled') ?>
         </div>
 
-        <!-- Download button -->
         <?php if (!empty($current["file"])): ?>
+
             <a class="btn"
                href="<?= htmlspecialchars($current["file"]) ?>"
                download>
                 Download
             </a>
+
+        <?php elseif (!empty($current["links"])): ?>
+
+            <a class="btn"
+               href="<?= htmlspecialchars($current["links"]) ?>"
+               target="_blank"
+               rel="noopener noreferrer">
+                Visit Source
+            </a>
+
         <?php else: ?>
-            <button class="btn" disabled>No file</button>
+
+            <button class="btn" disabled>No attachment</button>
+
         <?php endif; ?>
 
     </div>
