@@ -23,6 +23,7 @@ if (!$listing) {
 <body>
 
 <main class="listing-full">
+    
 
     <h1><?= htmlspecialchars($listing['title'] ?? 'Untitled') ?></h1>
 
@@ -39,7 +40,30 @@ if (!$listing) {
     <p class="abstract">
         <?= nl2br(htmlspecialchars($listing['abstract'] ?? 'No abstract available')) ?>
     </p>
+    
+    <div class="listing-image">
 
+        <?php
+        $iconPath = $listing['icon'] ?? '';
+
+        if (!empty($iconPath) && file_exists($_SERVER['DOCUMENT_ROOT'] . $iconPath)):
+        ?>
+
+            <img src="<?= htmlspecialchars($iconPath) ?>"
+                 alt="Listing Icon"
+                 class="listing-img">
+
+        <?php else: ?>
+
+            <div class="no-image">
+                Icon Not Found
+            </div>
+
+        <?php endif; ?>
+
+    </div>
+    
+    
     <!-- Actions -->
     <div class="listing-actions">
 
@@ -66,15 +90,20 @@ if (!$listing) {
         </p>
     <?php endif; ?>
 
-<!-- File download -->
-<?php if (!empty($listing['file'])): ?>
-    <p class="extra-link">
-        <a href="<?= htmlspecialchars($listing['file']) ?>" download>
-            Download File
-        </a>
-    </p>
-<?php endif; ?>
+    <!-- File download -->
+    <?php if (!empty($listing['file'])): ?>
+        <p class="extra-link">
+            <a href="<?= htmlspecialchars($listing['file']) ?>" download>
+                Download File
+            </a>
+        </p>
+    <?php endif; ?>
 
+
+    
+    
+    
+    
 </main>
 
 </body>
