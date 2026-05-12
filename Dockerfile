@@ -1,9 +1,8 @@
 FROM php:8.2-apache
 
-# Install system dependencies (IMPORTANT for PyMuPDF)
 RUN apt-get update && apt-get install -y \
     python3 \
-    python3-pip \
+    python3-venv \
     python3-dev \
     gcc \
     g++ \
@@ -12,16 +11,17 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     && docker-php-ext-install pdo pdo_pgsql pgsql
 
-# Install Python dependencies
-RUN python3 -m pip install --upgrade pip && \
-    pip3 install --no-cache-dir \
-    pymupdf \
-    python-docx
+# Create virtual environment
+RUN python3 -m venv /venv
 
-# Copy project into container
+# Install Python packages inside venv
+RUN /venv/bin/pip install --no-cache-dir pymupdf python-docx
+
+# Make venv default python
+ENV PATH="/venv/bin:$PATH"
+
 COPY . /var/www/html/
 
-# Enable Apache rewrite (safe to keep)
 RUN a2enmod rewrite
 
 WORKDIR /var/www/html
