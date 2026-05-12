@@ -1,103 +1,276 @@
 <?php
 
-require_once __DIR__ . '/../Model/Listing.php';
+header("Content-Type: application/json");
 
-function fetchHTML($url) {
-    $ch = curl_init($url);
+/* =========================
+   FETCH HTML
+========================= */
+function fetchHTML($url)
+{
+    $ch = curl_init();
 
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0");
-
-    // 🔥 FIX: SSL issue (LOCAL DEV ONLY)
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt_array($ch, [
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_USERAGENT => "Mozilla/5.0",
+        CURLOPT_SSL_VERIFYPEER => false
+    ]);
 
     $html = curl_exec($ch);
 
     if (curl_errno($ch)) {
-        echo "CURL ERROR: " . curl_error($ch) . PHP_EOL;
+        echo json_encode([
+            "success" => false,
+            "message" => curl_error($ch)
+        ]);
+        exit;
     }
 
     curl_close($ch);
 
-    echo "HTML LENGTH: " . strlen($html) . PHP_EOL;
-
     return $html;
 }
 
-function scrapeSite($url) {
+/* =========================
+   LOAD PAGE
+========================= */
+$url = "https://borisk.dreamhosters.com/public_html/";
 
-    $html = fetchHTML($url);
+$html = fetchHTML($url);
 
-    if (!$html) {
-        echo "NO HTML RETURNED" . PHP_EOL;
-        return [];
-    }
-
-    $dom = new DOMDocument();
-    libxml_use_internal_errors(true);
-    $dom->loadHTML($html);
-    libxml_clear_errors();
-
-    $xpath = new DOMXPath($dom);
-
-    $items = $xpath->query("//article");
-
-    echo "ARTICLES FOUND: " . $items->length . PHP_EOL;
-
-    $results = [];
-
-    foreach ($items as $item) {
-
-        $titleNode = $xpath->query(".//h1 | .//h2", $item)->item(0);
-        $authorNode = $xpath->query(".//*[contains(@class,'author')]", $item)->item(0);
-        $dateNode = $xpath->query(".//time", $item)->item(0);
-
-        $title = $titleNode ? trim($titleNode->textContent) : null;
-        $author = $authorNode ? trim($authorNode->textContent) : null;
-        $date = $dateNode ? $dateNode->getAttribute("datetime") : null;
-
-        echo "TITLE: " . ($title ?? "NULL") . PHP_EOL;
-
-        if ($title) {
-            $results[] = [
-                "title" => $title,
-                "author" => $author,
-                "date" => $date
-            ];
-        }
-    }
-
-    return $results;
+if (!$html) {
+    echo json_encode([
+        "success" => false,
+        "message" => "Failed to fetch page"
+    ]);
+    exit;
 }
 
-// RUN SCRAPER
-$url = "https://scholar.google.com/citations?user=k12ONA8AAAAJ&hl=en&oi=ao";
+/* =========================
+   PARSE HTML
+========================= */
+libxml_use_internal_errors(true);
 
-$data = scrapeSite($url);
+$dom = new DOMDocument();
+$dom->loadHTML($html);
 
-echo "FINAL DATA:\n";
-var_dump($data);
+libxml_clear_errors();
 
-// INSERT INTO SUPABASE
-foreach ($data as $item) {
+$xpath = new DOMXPath($dom);
 
-    echo "INSERTING: " . $item['title'] . PHP_EOL;
+/* =========================
+   STEP 1: SEGMENTATION
+========================= */
 
-    addListing(
-        $item['title'],
-        $item['author'],
-        $item['date'],
-        null,
-        "article",
-        null,
-        $url,
-        null,
-        1,
-        null,
-        null,
-        "scraped"
+$nodes = $xpath->query("//text()[normalize-space()]");
+
+$blocks = [];
+$current = "";
+$capturing = false;
+
+foreach ($nodes as $node) {
+
+    $text = trim(
+        preg_replace('/\s+/', ' ', $node->nodeValue)
     );
+
+    if (strlen($text) < 3) {
+        continue;
+    }
+
+    /* =========================
+       START CONDITION
+    ========================= */
+    if (
+        preg_match('/(Kovalerchuk|B\.)/', $text) ||
+        preg_match('/Tutorial|Proceedings|Springer|IEEE|Book|Conference/i', $text)
+    ) {
+        $capturing = true;
+    }
+
+    if (!$capturing) {
+        continue;
+    }
+
+    /* =========================
+       REMOVE NOISE
+    ========================= */
+    if (
+        preg_match(
+            '/cv|email|phone|fax|department|lab|web page|curriculum/i',
+            $text
+        )
+    ) {
+        continue;
+    }
+
+    $current .= " " . $text;
+
+    /* =========================
+       END CONDITION
+    ========================= */
+    if (
+        preg_match('/\b(19|20)\d{2}\b/', $text) &&
+        strlen($current) > 80
+    ) {
+        $blocks[] = trim($current);
+
+        $current = "";
+        $capturing = false;
+    }
 }
 
-echo "DONE";
+/* =========================
+   STEP 2: FIELD EXTRACTION
+========================= */
+
+$results = [];
+
+foreach ($blocks as $entry) {
+
+    $entry = preg_replace('/\s+/', ' ', $entry);
+
+    /* YEAR */
+    preg_match('/(19|20)\d{2}/', $entry, $year);
+
+    /* AUTHORS */
+    preg_match(
+        '/^([A-Z][^0-9]{5,100}?)(?=Tutorial|Proceedings|Book|Conference|:|Springer|IEEE)/',
+        $entry,
+        $authors
+    );
+
+    /* TITLE */
+    preg_match(
+        '/(Tutorial|Proceedings|Book|Conference|:)\s*(.{10,150}?)(?=Springer|IEEE|,|$)/',
+        $entry,
+        $title
+    );
+
+    $titleText = trim($title[2] ?? "");
+    $authorText = trim($authors[1] ?? "");
+
+    /* FALLBACKS */
+    if ($titleText === "" && strlen($entry) > 40) {
+        $titleText = substr($entry, 0, 90);
+    }
+
+    if ($authorText === "" && strpos($entry, "Kovalerchuk") !== false) {
+        $authorText = "B. Kovalerchuk";
+    }
+
+    /* MEDIUM */
+    $medium = "book";
+
+    if (stripos($entry, "tutorial") !== false) {
+        $medium = "tutorial";
+    }
+
+    if (stripos($entry, "seminar") !== false) {
+        $medium = "seminar";
+    }
+
+    if (stripos($entry, "panel") !== false) {
+        $medium = "panel";
+    }
+
+    /* TOPIC */
+    $topic = "AI / Visualization";
+
+    if (stripos($entry, "machine learning") !== false) {
+        $topic = "Machine Learning";
+    }
+
+    if (stripos($entry, "finance") !== false) {
+        $topic = "Finance";
+    }
+
+    if (stripos($entry, "visual") !== false) {
+        $topic = "Visualization";
+    }
+
+    $results[] = [
+        "title" => $titleText,
+        "author" => $authorText,
+        "date" => $year[0] ?? "",
+        "medium" => $medium,
+        "topic" => $topic
+    ];
+}
+
+/* =========================
+   SUPABASE INSERT DEBUG
+========================= */
+
+$SUPABASE_URL = "https://zdysuvkcmymlwpernryq.supabase.co";
+$SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpkeXN1dmtjbXltbHdwZXJucnlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4ODA4MjMsImV4cCI6MjA5MjQ1NjgyM30.bDlADBNjnNoiTC6L5fjb13pK6YB1uHp5yZqHGIHLOuQ";
+
+foreach ($results as $item) {
+
+    if (empty($item["title"])) {
+        continue;
+    }
+
+    $payload = json_encode([
+        "title" => $item["title"],
+        "author" => $item["author"],
+        "medium" => $item["medium"],
+        "topic" => $item["topic"],
+        "userID" => 1
+    ]);
+
+    echo "<pre>";
+    echo "PAYLOAD:\n";
+    print_r($payload);
+
+    $ch = curl_init(
+        $SUPABASE_URL . "/rest/v1/Listing"
+    );
+
+    curl_setopt_array($ch, [
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_POST => true,
+    CURLOPT_POSTFIELDS => $payload,
+
+    // SSL FIX
+    CURLOPT_SSL_VERIFYPEER => false,
+    CURLOPT_SSL_VERIFYHOST => false,
+
+    CURLOPT_HTTPHEADER => [
+        "Content-Type: application/json",
+        "apikey: $SUPABASE_KEY",
+        "Authorization: Bearer $SUPABASE_KEY",
+        "Prefer: return=representation"
+    ]
+]);
+
+    $response = curl_exec($ch);
+
+    echo "\n\nRESPONSE:\n";
+    print_r($response);
+
+    if (curl_errno($ch)) {
+        echo "\n\nCURL ERROR:\n";
+        echo curl_error($ch);
+    }
+
+    $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+    echo "\n\nHTTP STATUS:\n";
+    echo $status;
+
+    echo "</pre>";
+
+    curl_close($ch);
+}
+
+/* =========================
+   FINAL JSON OUTPUT
+========================= */
+
+echo json_encode([
+    "success" => true,
+    "count" => count($results),
+    "results" => $results
+]);
