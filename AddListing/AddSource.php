@@ -56,6 +56,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 "Content-Type: application/octet-stream"
             ]);
 
+            if (empty($tmpFile) || !file_exists($tmpFile)) {
+                die("Invalid upload file path");
+            }
+
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, file_get_contents($tmpFile));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -70,7 +74,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
 
         // Thumbnail 
-        if (!empty($_FILES['thumbnail']['name'])) {
+        if (!empty($_FILES['file']['tmp_name']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
             $thumbName = time() . "_" . basename($_FILES['thumbnail']['name']);
             $thumbnailPath = uploadToSupabase($_FILES['thumbnail']['tmp_name'], $thumbName);
         }
