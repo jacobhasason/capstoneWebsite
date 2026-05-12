@@ -345,3 +345,34 @@ footer div:last-child {
 main {
     padding-bottom: 60px;
 }
+
+
+
+
+.listing-image {
+    float: right;
+    width: 240px;
+    margin-left: 30px;
+    margin-bottom: 20px;
+}
+
+.listing-img {
+    width: 50%;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+.no-image {
+    width: 100%;
+    height: 250px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 2px dashed #999;
+    background: #f5f5f5;
+    color: #666;
+
+    border-radius: 12px;
+}
