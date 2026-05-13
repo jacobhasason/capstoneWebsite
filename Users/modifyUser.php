@@ -205,10 +205,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             if (newState == "2") {
                 btn.classList.remove("danger");
-                btn.textContent = "Can Manage Whitelist Users";
+                btn.textContent = "Can Manage Sources";
             } else {
                 btn.classList.add("danger");
-                btn.textContent = "Cannot Manage Whitelist Users";
+                btn.textContent = "Cannot Manage Sources";
             }
         });
 
