@@ -1,9 +1,13 @@
-<?php include '../view/header.php'; ?>
-<link rel="stylesheet" href="../styles/main.css">
-
 <?php
+session_start();
+
+include '../view/header.php';
 require "../DBConnect/db.php";
 
+/* PERMISSION CHECK */
+$currentCanModify = (int) ($_SESSION["permisMod"] ?? 1);
+
+/* GET LISTING */
 $id = $_GET['id'] ?? null;
 
 if (!$id) {
@@ -20,10 +24,9 @@ if (!$listing) {
 }
 ?>
 
-<body>
+<link rel="stylesheet" href="../styles/main.css">
 
 <main class="listing-full">
-    
 
     <h1><?= htmlspecialchars($listing['title'] ?? 'Untitled') ?></h1>
 
@@ -40,14 +43,15 @@ if (!$listing) {
     <p class="abstract">
         <?= nl2br(htmlspecialchars($listing['abstract'] ?? 'No abstract available')) ?>
     </p>
-    
+
+    <!--IMAGE-->
     <div class="listing-image">
 
         <?php
         $iconPath = $listing['icon'] ?? '';
 
         if (!empty($iconPath) && file_exists($_SERVER['DOCUMENT_ROOT'] . $iconPath)):
-        ?>
+            ?>
 
             <img src="<?= htmlspecialchars($iconPath) ?>"
                  alt="Listing Icon"
@@ -62,14 +66,14 @@ if (!$listing) {
         <?php endif; ?>
 
     </div>
-    
-    
-    <!-- Actions -->
+
+    <!--ACTIONS -->
     <div class="listing-actions">
 
         <div class="action-buttons">
 
             <button class="btn">View Abstract</button>
+
             <button class="btn">Copy Citation</button>
 
             <a class="btn external"
@@ -77,11 +81,21 @@ if (!$listing) {
                 View Primary Source & Related Resources
             </a>
 
+            <!--EDIT BUTTON (PERMISSION BASED)-->
+            <?php if ($currentCanModify === 2): ?>
+
+                <a class="btn edit"
+                   href="editListing.php?id=<?= $listing['listingID'] ?>">
+                    Edit Source
+                </a>
+
+            <?php endif; ?>
+
         </div>
 
     </div>
 
-    <!-- OPtional links -->
+    <!--OPTIONAL EXTERNAL LINK -->
     <?php if (!empty($listing['links'])): ?>
         <p class="extra-link">
             <a href="<?= htmlspecialchars($listing['links']) ?>" target="_blank">
@@ -90,7 +104,7 @@ if (!$listing) {
         </p>
     <?php endif; ?>
 
-    <!-- File download -->
+    <!--FILE DOWNLOAD-->
     <?php if (!empty($listing['file'])): ?>
         <p class="extra-link">
             <a href="<?= htmlspecialchars($listing['file']) ?>" download>
@@ -99,16 +113,9 @@ if (!$listing) {
         </p>
     <?php endif; ?>
 
-
-    
-    
-    
-    
 </main>
 
-</body>
-
-<a href="../index.php" class="fab"><<</a>
+<a href="../index.php" class="fab">&lt;&lt;</a>
 
 <script src="../scripts/date.js"></script>
 

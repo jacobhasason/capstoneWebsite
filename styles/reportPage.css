@@ -1,17 +1,14 @@
 
-/* =========================
-   PAGE WRAPPER
-========================= */
+/*PAGE WRAPPER*/
 .report-page {
     max-width: 900px;
     margin: 30px auto;
     padding: 0 10px;
 }
 
-/* =========================
+/*
    CAROUSEL CONTAINER
-   (fixed size + proper layout)
-========================= */
+   (fixed size + proper layout)*/
 .carousel {
     position: relative;
 
@@ -37,9 +34,8 @@
     box-sizing: border-box;
 }
 
-/* =========================
-   CONTENT AREA (viewer window)
-========================= */
+/*
+   CONTENT AREA (viewer window)*/
 .carousel-content {
     height: 100%;
     overflow-y: auto;
@@ -63,9 +59,7 @@
     color: #222;
 }
 
-/* =========================
-   ARROWS (PINNED SIDES)
-========================= */
+/*ARROWS (PINNED SIDES)*/
 .arrow {
     position: absolute;
     top: 50%;
@@ -95,9 +89,7 @@
     border-radius: 10px;
 }
 
-/* =========================
-   CONTROL BAR
-========================= */
+/*CONTROL BAR*/
 .report-controls {
     display: flex;
     justify-content: space-between;

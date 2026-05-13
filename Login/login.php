@@ -7,7 +7,6 @@ if (isset($_SESSION["userID"])) {
     header("Location: ../Users/usersPage.php");
     exit();
 }
-
 $error = "";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -25,18 +24,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // verify hashed password
         if ($user && password_verify($password, $user["password"])) {
 
+
             // set session data
             $_SESSION["userID"] = $user["userID"];
             $_SESSION["userName"] = $user["userName"];
             $_SESSION["userType"] = $user["userType"];
+            $_SESSION["canManage"] = $user["canManage"] ?? 1;
+            $_SESSION["permisMod"] = (int) ($user["permisMod"] ?? 1);
 
-             header("Location: ../Users/usersPage.php");
+            header("Location: ../Users/usersPage.php");
             exit();
-
         } else {
             $error = "Invalid username or password";
         }
-
     } else {
         $error = "Please fill in all fields";
     }

@@ -5,9 +5,7 @@
     margin-top: 15px;
 }
 
-/* =========================
-   USER ROW CARD
-========================= */
+/* USER ROW CARD*/
 .user-card {
     display: flex;
     justify-content: space-between;
@@ -29,9 +27,7 @@
     box-shadow: 0 5px 12px rgba(0,0,0,0.12);
 }
 
-/* =========================
-   LEFT SIDE (USER INFO)
-========================= */
+/* LEFT SIDE (USER INFO */
 .user-info {
     display: flex;
     flex-direction: column;
@@ -49,18 +45,14 @@
     color: #12395b;
 }
 
-/* =========================
-   RIGHT SIDE (ACTIONS)
-========================= */
+/* RIGHT SIDE (ACTIONS)*/
 .user-actions {
     display: flex;
     gap: 10px;
     align-items: center;
 }
 
-/* =========================
-   BUTTONS
-========================= */
+/*  BUTTONS*/
 .btn {
     padding: 7px 14px;
 
@@ -93,9 +85,7 @@
     color: #cc0000;
 }
 
-/* =========================
-   PAGE TITLE
-========================= */
+/*PAGE TITLE*/
 .users-list + h2,
 main h2 {
     margin-top: 10px;
@@ -140,7 +130,7 @@ main h2 {
     font-size: 1rem;
 }
 
-/* optional small label feel */
+
 .user-left::before {
     content: "👤";
     margin-right: 6px;

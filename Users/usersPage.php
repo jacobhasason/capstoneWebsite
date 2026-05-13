@@ -2,21 +2,26 @@
 session_start();
 require "../DBConnect/db.php";
 
+/* AUTH CHECK (must be logged in */
 if (!isset($_SESSION["userID"])) {
     header("Location: ../Login/login.php");
     exit();
 }
 
-$currentUserID = $_SESSION["userID"];
-$currentUserType = $_SESSION["userType"];
-$currentUserName = $_SESSION["userName"];
+/* SAFE SESSION READS */
+$currentUserID = (int) ($_SESSION["userID"]);
+$currentUserType = (int) ($_SESSION["userType"] ?? 1);
+$currentUserName = $_SESSION["userName"] ?? "User";
+$currentCanManage = (int) ($_SESSION["canManage"] ?? 1);
 
-/* =========================
-   FETCH USERS ONLY FOR SUPERUSERS
-========================= */
+/* PERMISSION CHECK (ONLY FOR USER LIST) */
+$canViewUsers = ($currentUserType === 2) ||
+        ($currentUserType === 1 && $currentCanManage === 2);
+
+/* FETCH USERS */
 $users = [];
 
-if ($currentUserType == 2) {
+if ($canViewUsers) {
     $stmt = $db->prepare('SELECT * FROM "User" WHERE "userID" != ?');
     $stmt->execute([$currentUserID]);
     $users = $stmt->fetchAll();
@@ -30,14 +35,12 @@ if ($currentUserType == 2) {
 
 <main>
 
-    <!-- USER INFO BAR -->
+    <!--USER INFO BAR (ALWAYS SHOWN) -->
     <div class="user-bar">
 
         <div class="user-left">
             Logged in as:
-            <strong>
-                <?= htmlspecialchars($currentUserName) ?>
-            </strong>
+            <strong><?= htmlspecialchars($currentUserName) ?></strong>
         </div>
 
         <div class="user-right">
@@ -48,17 +51,14 @@ if ($currentUserType == 2) {
 
     </div>
 
-    <!-- PAGE CONTENT -->
     <h2>Users</h2>
 
-    <?php if ($currentUserType == 2): ?>
+    <!--USER LIST (PROTECTED)-->
+    <?php if ($canViewUsers): ?>
 
-        <!-- SUPERUSER VIEW (FULL LIST) -->
-        <div class="users-list">
+        <?php if (!empty($users)): ?>
 
-            <?php if (empty($users)): ?>
-                <p>No other users found.</p>
-            <?php else: ?>
+            <div class="users-list">
 
                 <?php foreach ($users as $user): ?>
 
@@ -72,13 +72,13 @@ if ($currentUserType == 2) {
 
                             <p><strong>Type:</strong>
                                 <?php
-                                    if ($user["userType"] == 1) {
-                                        echo "Whitelist";
-                                    } elseif ($user["userType"] == 2) {
-                                        echo "Superuser";
-                                    } else {
-                                        echo "Standard User";
-                                    }
+                                if ($user["userType"] == 1) {
+                                    echo "Whitelist";
+                                } elseif ($user["userType"] == 2) {
+                                    echo "Superuser";
+                                } else {
+                                    echo "Standard User";
+                                }
                                 ?>
                             </p>
 
@@ -91,7 +91,8 @@ if ($currentUserType == 2) {
                                     Modify
                                 </a>
 
-                                <a href="deleteUser.php?id=<?= $user["userID"] ?>" class="btn danger"
+                                <a href="deleteUser.php?id=<?= $user["userID"] ?>"
+                                   class="btn danger"
                                    onclick="return confirm('Are you sure?')">
                                     Delete
                                 </a>
@@ -103,34 +104,33 @@ if ($currentUserType == 2) {
 
                 <?php endforeach; ?>
 
-            <?php endif; ?>
+            </div>
 
-        </div>
+        <?php else: ?>
+
+            <p>No users found.</p>
+
+        <?php endif; ?>
 
     <?php else: ?>
 
-        <!-- WHITELIST VIEW (LIMITED) -->
+        <!-- NO ACCESS MESSAGE -->
         <div class="user-card">
-
-            <p>You are logged in as a Whitelist user.</p>
-            <p>You do not have access to manage other users.</p>
-
+            <p>You do not have permission to view user management.</p>
         </div>
 
     <?php endif; ?>
 
-    <!-- CREATE USER PANEL -->
+    <!--CREATE USER PANEL -->
     <div class="create-user-panel">
 
         <h3>Create User</h3>
 
-        <?php if ($currentUserType == 2): ?>
+        <?php if ($currentUserType === 2): ?>
 
             <a href="addUser.php?type=1" class="btn">
                 Add User (Whitelist)
             </a>
-
-        
 
         <?php else: ?>
 
@@ -144,6 +144,6 @@ if ($currentUserType == 2) {
 
 </main>
 
-<a href="../index.php" class="fab"><<</a>
+<a href="../index.php" class="fab">&lt;&lt;</a>
 
 <?php include '../view/footer.php'; ?>

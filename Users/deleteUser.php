@@ -13,9 +13,7 @@ if (!$id) {
     die("No user selected");
 }
 
-/* -----------------------------
-   Prevent deleting superusers
------------------------------ */
+/*Prevent deleting superusers */
 $check = $db->prepare('SELECT "userType" FROM "User" WHERE "userID" = ?');
 $check->execute([$id]);
 $user = $check->fetch();
@@ -28,14 +26,10 @@ if ($user["userType"] == 2) {
     die("You cannot delete a superuser");
 }
 
-/* -----------------------------
-   DELETE USER
------------------------------ */
+/*DELETE USER*/
 $stmt = $db->prepare('DELETE FROM "User" WHERE "userID" = ?');
 $stmt->execute([$id]);
 
-/* -----------------------------
-   BACK TO USERS PAGE
------------------------------ */
+/*BACK TO USERS PAGE */
 header("Location: usersPage.php");
 exit();

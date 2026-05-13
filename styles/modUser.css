@@ -4,9 +4,7 @@
     padding: 10px;
 }
 
-/* =========================
-   USER INFO BOX
-========================= */
+/*USER INFO BOX*/
 .user-box {
     padding: 14px 16px;
 
@@ -19,9 +17,7 @@
     box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 }
 
-/* =========================
-   PASSWORD FORM
-========================= */
+/*PASSWORD FORM*/
 .modify-form {
     display: flex;
     flex-direction: column;
@@ -50,18 +46,14 @@
     box-shadow: 0 0 4px rgba(93,147,225,0.4);
 }
 
-/* =========================
-   BUTTON GROUP (STACKED)
-========================= */
+/*BUTTON GROUP*/
 .source-actions {
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
 
-/* =========================
-   BUTTON BASE STYLE
-========================= */
+/* BUTTON BASE STYLE*/
 .btn {
     display: block;
     width: 100%;
@@ -100,10 +92,100 @@
     color: #cc0000;
 }
 
-/* =========================
-   PAGE TITLE
-========================= */
+/*PAGE TITLE*/
 .modify-user-page h2 {
     margin-bottom: 15px;
     color: #12395b;
+}
+
+
+
+
+/* ENABLED = BLUE */
+.btn {
+    background: #2d6cdf;
+    color: white;
+    border: 1px solid #1f4fb2;
+}
+
+/* hover for enabled */
+.btn:hover {
+    background: #1f5fd1;
+    transform: translateY(-2px);
+}
+
+/* DISABLED = RED */
+.btn.danger {
+    background: #fff0f0;
+    color: #8b1a1a;
+    border: 1px solid #cc0000;
+}
+
+.btn.danger:hover {
+    background: #ffdddd;
+    color: #a10000;
+}
+
+/* LOCKED (SUPERUSER) */
+.btn.disabled {
+    background: #e6e6e6;
+    color: #666;
+    border: 1px solid #999;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+
+
+/*CAN MANAGE BUTTON (BLUE = YES)*/
+
+.manage-btn {
+    display: block;
+    width: 36%;
+    box-sizing: border-box;
+
+    margin-top: 25px;
+
+
+    border: 1px solid #1f4fb2;
+    border-radius: 8px;
+
+    background: #2d6cdf;
+    color: white;
+
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.95rem;
+
+    text-align: center;
+
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* hover (blue state) */
+.manage-btn:hover {
+    background: #1f5fd1;
+}
+
+/* CANNOT MANAGE (RED)*/
+
+.manage-btn.danger {
+    background: #fff0f0;
+    color: #8b1a1a;
+    border: 1px solid #cc0000;
+}
+
+.manage-btn.danger:hover {
+    background: #ffdddd;
+}
+
+/*LOCKED STATE */
+
+.manage-btn.disabled {
+    background: #e6e6e6;
+    color: #666;
+    border: 1px solid #999;
+    pointer-events: none;
+    cursor: not-allowed;
 }
