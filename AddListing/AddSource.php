@@ -17,8 +17,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $fieldErrors['author'] = "Author is required";
     }
 
-    if (empty($_POST['datePub'])) {
-        $fieldErrors['datePub'] = "Date is required";
+    if (empty($_POST['year'])) {
+        $fieldErrors['datePub'] = "Year is required";
     }
 
     if (empty($_POST['medium'])) {
@@ -27,6 +27,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if (empty($_FILES['file']['name'])) {
         $fieldErrors['file'] = "Please upload a file";
+    }
+
+    if (!empty($month) && ($month < 1 || $month > 12)) {
+        $fieldErrors['datePub'] = "Month must be 1-12";
+    }
+
+    if (!empty($day) && ($day < 1 || $day > 31)) {
+        $fieldErrors['datePub'] = "Day must be 1-31";
     }
 
     if (empty($fieldErrors)) {
@@ -51,8 +59,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 
             curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                "apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpkeXN1dmtjbXltbHdwZXJucnlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4ODA4MjMsImV4cCI6MjA5MjQ1NjgyM30.bDlADBNjnNoiTC6L5fjb13pK6YB1uHp5yZqHGIHLOuQ",
-                "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpkeXN1dmtjbXltbHdwZXJucnlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4ODA4MjMsImV4cCI6MjA5MjQ1NjgyM30.bDlADBNjnNoiTC6L5fjb13pK6YB1uHp5yZqHGIHLOuQ",
+                "apikey: sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
+                "Authorization: Bearer sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
                 "Content-Type: application/octet-stream"
             ]);
 
@@ -74,9 +82,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
 
         // Thumbnail 
-        if (!empty($_FILES['file']['tmp_name']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
+        if (
+                !empty($_FILES['thumbnail']['tmp_name']) &&
+                $_FILES['thumbnail']['error'] === UPLOAD_ERR_OK
+        ) {
+
             $thumbName = time() . "_" . basename($_FILES['thumbnail']['name']);
-            $thumbnailPath = uploadToSupabase($_FILES['thumbnail']['tmp_name'], $thumbName);
+
+            $thumbnailPath = uploadToSupabase(
+                    $_FILES['thumbnail']['tmp_name'],
+                    $thumbName
+            );
         }
 
         $abstract = $_POST['abs'] ?? '';
@@ -131,14 +147,44 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             echo "</pre>";
         }
 
-
-
         $ch = curl_init("https://zdysuvkcmymlwpernryq.supabase.co/rest/v1/Listing");
+
+        $year = $_POST['year'] ?? null;
+        $month = $_POST['month'] ?? null;
+        $day = $_POST['day'] ?? null;
+
+        if (empty($year)) {
+            $fieldErrors['datePub'] = "Year is required";
+            $datePub = null;
+        } else {
+
+            // Make sure it has 4 digits 
+            $year = str_pad($year, 4, "0", STR_PAD_LEFT);
+
+            // Make sure it has padding
+            if (!empty($month)) {
+                $month = str_pad($month, 2, "0", STR_PAD_LEFT);
+            }
+
+            // Make sure it has padding
+            if (!empty($day)) {
+                $day = str_pad($day, 2, "0", STR_PAD_LEFT);
+            }
+
+            // Building the final string
+            if (!empty($month) && !empty($day)) {
+                $datePub = "$year-$month-$day";
+            } elseif (!empty($month)) {
+                $datePub = "$year-$month";
+            } else {
+                $datePub = "$year";
+            }
+        }
 
         $data = [
             "title" => $_POST['title'],
             "author" => $_POST['author'],
-            "date" => $_POST['datePub'],
+            "date" => $datePub,
             "medium" => $_POST['medium'],
             "icon" => $thumbnailPath,
             "file" => $filePath,
@@ -150,8 +196,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            "apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpkeXN1dmtjbXltbHdwZXJucnlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4ODA4MjMsImV4cCI6MjA5MjQ1NjgyM30.bDlADBNjnNoiTC6L5fjb13pK6YB1uHp5yZqHGIHLOuQ",
-            "Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpkeXN1dmtjbXltbHdwZXJucnlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4ODA4MjMsImV4cCI6MjA5MjQ1NjgyM30.bDlADBNjnNoiTC6L5fjb13pK6YB1uHp5yZqHGIHLOuQ",
+            "apikey: sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
+            "Authorization: sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
             "Content-Type: application/json",
             "Prefer: return=representation"
         ]);
@@ -197,10 +243,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             </div>
 
             <div class="field">
-                <label for="datePub">Date Published:</label>
-                <input type="date" id="datePub" name="datePub"
-                       value="<?= htmlspecialchars($_POST['datePub'] ?? '') ?>">
-                <span class="error-text"><?= $fieldErrors['datePub'] ?? '' ?></span>
+                <label>Date Published:</label>
+
+                <div class="date-row">
+                    <input type="number" name="year" placeholder="Year" min="1000" max="9999">
+                    <input type="number" name="month" placeholder="Month" min="1" max="12">
+                    <input type="number" name="day" placeholder="Day" min="1" max="31">
+                    <span class="error-text"><?= $fieldErrors['datePub'] ?? '' ?></span>
+                </div>
             </div>
 
             <div class="drop-row">

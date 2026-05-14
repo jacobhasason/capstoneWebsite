@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 
@@ -5,7 +6,6 @@ include 'view/header.php';
 include 'view/horizontal_nav_bar.php';
 
 require "DBConnect/db.php";
-
 
 // initial load (before any filters are used)
 $stmt = $db->prepare('SELECT * FROM "Listing" ORDER BY "listingID" DESC');
@@ -15,7 +15,7 @@ $listings = $stmt->fetchAll();
 <link rel="stylesheet" href="styles/main.css">
 <body>
     <main>
-    
+
         <div class="listings-container">
 
             <?php foreach ($listings as $listing): ?>
@@ -25,7 +25,9 @@ $listings = $stmt->fetchAll();
                     <a href="ExpandedListing/ListingInfo.php?id=<?= $listing['listingID'] ?>" class="item-link">
 
                         <div class="thumbnail">
-                            <img src="<?= $listing['icon'] ?? 'default.jpg' ?>">
+                            <img src="<?=
+                !empty($listing['icon']) ? htmlspecialchars($listing['icon']) : 'images/default-img.jpeg'
+                ?>">
                         </div>
 
                         <div class="source-details">
@@ -70,18 +72,21 @@ $listings = $stmt->fetchAll();
                 </div>
             <?php endforeach; ?>
         </div>
-         
-         <?php if (
-            isset($_SESSION['userType']) &&
-            ($_SESSION['userType'] == 1 || $_SESSION['userType'] == 2)
-         ): ?>
+
+        <?php
+        if (
+                isset($_SESSION['userType']) &&
+                ($_SESSION['userType'] == 1 || $_SESSION['userType'] == 2)
+        ):
+            ?>
             <a href="AddListing/AddSource.php" class="fab">+</a>
-        <?php endif; ?>
-        
-          
+<?php endif; ?>
+
+
     </main>
 </body>
 <script src="scripts/date.js"></script>
 <script src="scripts/checkmark.js"></script>
 
 <?php include 'view/footer.php'; ?>
+
