@@ -6,7 +6,8 @@ require "../DBConnect/db.php";
 
 /* PERMISSION CHECK */
 $currentCanModify = (int) ($_SESSION["permisMod"] ?? 1);
-
+$currentUserType = (int)($_SESSION["userType"] ?? 0);
+$currentCanManage = (int)($_SESSION["canManage"] ?? 1);
 /* GET LISTING */
 $id = $_GET['id'] ?? null;
 
@@ -81,7 +82,7 @@ if (!$listing) {
                 View Primary Source & Related Resources
             </a>
 
-            <!--EDIT BUTTON (PERMISSION BASED)-->
+            <!-- EDIT BUTTON -->
             <?php if ($currentCanModify === 2): ?>
 
                 <a class="btn edit"
@@ -91,12 +92,30 @@ if (!$listing) {
 
             <?php endif; ?>
 
+            <!-- DELETE BUTTON -->
+            <?php
+            if (
+                    $currentUserType === 2 ||
+                    ($currentUserType === 1 && $currentCanManage === 2)
+            ):
+                ?>
+
+                <a class="btn delete-source"
+                   href="deleteListing.php?id=<?= $listing['listingID'] ?>"
+                   onclick="return confirm('Delete this source permanently?')">
+
+                    Delete Source
+
+                </a>
+
+<?php endif; ?>
+
         </div>
 
     </div>
 
     <!--OPTIONAL EXTERNAL LINK -->
-    <?php if (!empty($listing['links'])): ?>
+<?php if (!empty($listing['links'])): ?>
         <p class="extra-link">
             <a href="<?= htmlspecialchars($listing['links']) ?>" target="_blank">
                 External Link
@@ -105,13 +124,13 @@ if (!$listing) {
     <?php endif; ?>
 
     <!--FILE DOWNLOAD-->
-    <?php if (!empty($listing['file'])): ?>
+<?php if (!empty($listing['file'])): ?>
         <p class="extra-link">
             <a href="<?= htmlspecialchars($listing['file']) ?>" download>
                 Download File
             </a>
         </p>
-    <?php endif; ?>
+<?php endif; ?>
 
 </main>
 

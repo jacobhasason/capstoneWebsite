@@ -133,7 +133,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                data-state="<?= $user["canManage"] ?>">
 
                 <?=
-                $user["canManage"] == 2 ? "Can Manage Whitelist Users" : "Cannot Manage Whitelist Users"
+                $user["canManage"] == 2 ? "Can Manage Sources" : "Cannot Manage Sources"
                 ?>
 
             </a>
@@ -205,10 +205,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             if (newState == "2") {
                 btn.classList.remove("danger");
-                btn.textContent = "Can Manage Whitelist Users";
+                btn.textContent = "Can Manage Sources";
             } else {
                 btn.classList.add("danger");
-                btn.textContent = "Cannot Manage Whitelist Users";
+                btn.textContent = "Cannot Manage Sources";
             }
         });
 

@@ -48,11 +48,11 @@ if (!empty($where)) {
    DATE SORTING
 ---------------------- */
 if ($date === "Most Recent") {
-    $sql .= ' ORDER BY "listingID" DESC';
+    $sql .= ' ORDER BY "date" DESC';
 } elseif ($date === "Oldest") {
-    $sql .= ' ORDER BY "listingID" ASC';
+    $sql .= ' ORDER BY "date" ASC';
 } else {
-    $sql .= ' ORDER BY "listingID" DESC';
+    $sql .= ' ORDER BY "date" DESC';
 }
 
 /* ----------------------
