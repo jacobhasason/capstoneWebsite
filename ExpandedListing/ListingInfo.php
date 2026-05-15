@@ -9,6 +9,7 @@ $currentCanModify = (int) ($_SESSION["permisMod"] ?? 1);
 $currentUserType = (int)($_SESSION["userType"] ?? 0);
 $currentCanManage = (int)($_SESSION["canManage"] ?? 1);
 /* GET LISTING */
+
 $id = $_GET['id'] ?? null;
 
 if (!$id) {
@@ -78,7 +79,7 @@ if (!$listing) {
             <button class="btn">Copy Citation</button>
 
             <a class="btn external"
-               href="ViewReport.php?id=<?= $listing['listingID'] ?>">
+               href="ViewReport.php?id=<?= htmlspecialchars($listing['listingID']) ?>">
                 View Primary Source & Related Resources
             </a>
 

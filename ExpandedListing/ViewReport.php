@@ -1,16 +1,64 @@
 <?php
 require "../DBConnect/db.php";
 
-// Load listings
-$stmt = $db->query('SELECT * FROM "Listing" ORDER BY "listingID" DESC');
-$listings = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$primaryID = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 
-if (!$listings) {
-    die("No listings found");
+if ($primaryID <= 0) {
+    die("Missing primary listing ID");
 }
 
+// Load primary source
+$stmt = $db->prepare('SELECT * FROM "Listing" WHERE "listingID" = ?');
+$stmt->execute([$primaryID]);
+$primary = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Carousel indexing
+if (!$primary) {
+    die("Primary listing not found");
+}
+
+// Load related sources for this primary listing
+$stmt = $db->prepare('SELECT * FROM "RelatedListing" WHERE "listingID" = ? ORDER BY "relatedListingID" ASC');
+$stmt->execute([$primaryID]);
+$relatedRows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Build carousel items: primary first, related after
+$listings = [];
+
+$listings[] = [
+    "title" => $primary["title"] ?? "Untitled",
+    "author" => $primary["author"] ?? "Unknown",
+    "topic" => $primary["topic"] ?? "Uncategorized",
+    "abstract" => $primary["abstract"] ?? "No description available",
+    "file" => $primary["file"] ?? null,
+    "links" => $primary["links"] ?? null,
+    "type" => "primary"
+];
+
+foreach ($relatedRows as $row) {
+    if (($row["type"] ?? '') === "listing" && !empty($row["links"])) {
+        $relatedListingID = (int) $row["links"];
+
+        $listings[] = [
+            "title" => "Related Listing #" . $relatedListingID,
+            "author" => "Related Source",
+            "topic" => $row["topic"] ?? ($primary["topic"] ?? "Uncategorized"),
+            "abstract" => "Click below to view this related listing.",
+            "file" => null,
+            "links" => "ListingInfo.php?id=" . $relatedListingID,
+            "type" => "listing"
+        ];
+    } else {
+        $listings[] = [
+            "title" => ucfirst($row["type"] ?? "Related Source"),
+            "author" => "Related Source",
+            "topic" => $row["topic"] ?? ($primary["topic"] ?? "Uncategorized"),
+            "abstract" => "Related " . ($row["type"] ?? "source"),
+            "file" => $row["file"] ?? null,
+            "links" => $row["links"] ?? null,
+            "type" => $row["type"] ?? "related"
+        ];
+    }
+}
 
 $index = isset($_GET['i']) ? (int) $_GET['i'] : 0;
 
@@ -23,15 +71,23 @@ if ($index >= count($listings)) {
 
 $current = $listings[$index];
 
-// prev / nexy
-$prevIndex = $index - 1;
-$nextIndex = $index + 1;
+$totalItems = count($listings);
 
-if ($prevIndex < 0) {
-    $prevIndex = count($listings) - 1;
-}
-if ($nextIndex >= count($listings)) {
+// Disable Arrows if there is only a primary source
+if ($totalItems <= 1) {
+    $prevIndex = 0;
     $nextIndex = 0;
+} else {
+    $prevIndex = $index - 1;
+    $nextIndex = $index + 1;
+
+    if ($prevIndex < 0) {
+        $prevIndex = $totalItems - 1;
+    }
+
+    if ($nextIndex >= $totalItems) {
+        $nextIndex = 0;
+    }
 }
 ?>
 
@@ -46,7 +102,11 @@ if ($nextIndex >= count($listings)) {
     <div class="carousel">
 
         <!-- Left arrow -->
-        <a class="arrow" href="?i=<?= $prevIndex ?>">◀</a>
+        <?php if (count($listings) > 1): ?>
+            <a class="arrow" href="?id=<?= $primaryID ?>&i=<?= $prevIndex ?>">◀</a>
+        <?php else: ?>
+            <span class="arrow disabled">◀</span>
+        <?php endif; ?>
 
         <!-- Content -->
         <div class="carousel-content">
@@ -72,7 +132,11 @@ if ($nextIndex >= count($listings)) {
         </div>
 
         <!-- Right arrow -->
-        <a class="arrow" href="?i=<?= $nextIndex ?>">▶</a>
+        <?php if (count($listings) > 1): ?>
+            <a class="arrow" href="?id=<?= $primaryID ?>&i=<?= $nextIndex ?>">▶</a>
+        <?php else: ?>
+            <span class="arrow disabled">▶</span>
+        <?php endif; ?>
 
     </div>
 
@@ -103,9 +167,8 @@ if ($nextIndex >= count($listings)) {
 
             <a class="btn"
                href="<?= htmlspecialchars($current["links"]) ?>"
-               target="_blank"
-               rel="noopener noreferrer">
-                Visit Source
+               <?= ($current["type"] ?? '') === "listing" ? '' : 'target="_blank" rel="noopener noreferrer"' ?>>
+                   <?= ($current["type"] ?? '') === "listing" ? 'View Related Listing' : 'Visit Source' ?>
             </a>
 
         <?php else: ?>

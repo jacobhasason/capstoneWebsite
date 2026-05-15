@@ -47,49 +47,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $fileName = time() . "_" . preg_replace('/[^A-Za-z0-9.\-_]/', '_', $_FILES['file']['name']);
     }
 
-    function uploadToSupabase($tmpFile, $fileName, $bucket = "uploads") {
-
-        $projectUrl = "https://zdysuvkcmymlwpernryq.supabase.co";
-
-        $fileName = rawurlencode($fileName);
-
-        $uploadUrl = "$projectUrl/storage/v1/object/$bucket/$fileName";
-
-        $ch = curl_init($uploadUrl);
-
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            "apikey: sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
-            "Authorization: Bearer sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
-            "Content-Type: application/octet-stream"
-        ]);
-
-        if (empty($tmpFile) || !file_exists($tmpFile)) {
-            die("Invalid upload file path");
-        }
-
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, file_get_contents($tmpFile));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        $response = curl_exec($ch);
-        $insertedRows = json_decode($response, true);
-        $primaryListingID = $insertedRows[0]['id'] ?? null;
-
-        if (!$primaryListingID) {
-            die("Main listing uploaded, but could not retrieve listing ID. Response: " . htmlspecialchars($response));
-        }
-
-        if (curl_errno($ch)) {
-            echo "UPLOAD ERROR: " . curl_error($ch);
-        }
-
-        curl_close($ch);
-        return "$projectUrl/storage/v1/object/public/$bucket/$fileName";
-    }
-
     // Thumbnail 
     if (
             !empty($_FILES['thumbnail']['tmp_name']) &&
@@ -218,8 +175,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
+    
+    $thumbnailPath = null;
+    $filePath = null;
+    
     $response = curl_exec($ch);
+
+    $insertedRows = json_decode($response, true);
+    $primaryListingID = $insertedRows[0]['listingID'] ?? null;
 
     if (curl_errno($ch)) {
         echo "<pre style='color:red'>CURL ERROR: " . curl_error($ch) . "</pre>";
@@ -228,40 +191,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
     curl_close($ch);
 
-    function insertRelatedListing($listingID, $type, $file = null, $link = null, $relatedListingID = null) {
-        $ch = curl_init("https://zdysuvkcmymlwpernryq.supabase.co/rest/v1/RelatedListing");
-
-        $data = [
-            "listingID" => $listingID,
-            "type" => $type,
-            "file" => $file,
-            "links" => $link,
-            "relatedListingID" => $relatedListingID
-        ];
-
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            "apikey: sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
-            "Authorization: Bearer sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
-            "Content-Type: application/json",
-            "Prefer: return=representation"
-        ]);
-
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        $response = curl_exec($ch);
-
-        if (curl_errno($ch)) {
-            echo "<pre style='color:red'>Related insert error: " . curl_error($ch) . "</pre>";
-        }
-
-        curl_close($ch);
-    }
-
+    // INSERT RELATED CONTENT
     // Related file uploads
     if (!empty($_FILES['relatedFiles']['name'])) {
         foreach ($_FILES['relatedFiles']['name'] as $i => $name) {
@@ -273,18 +203,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         $relatedFileName
                 );
 
-                insertRelatedListing($primaryListingID, "file", $relatedFilePath, null, null);
+                insertRelatedListing($primaryListingID, $_POST['topic'] ?? null, "file", $relatedFilePath, null);
             }
         }
     }
 
-// Related hyperlinks
+    // Related hyperlinks
     if (!empty($_POST['relatedLinks'])) {
         foreach ($_POST['relatedLinks'] as $link) {
             $link = trim($link);
 
             if (!empty($link)) {
-                insertRelatedListing($primaryListingID, "link", null, $link, null);
+                insertRelatedListing($primaryListingID, $_POST['topic'] ?? null, "link", null, $link);
             }
         }
     }
@@ -295,14 +225,106 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $relatedID = trim($relatedID);
 
             if (!empty($relatedID)) {
-                insertRelatedListing($primaryListingID, "listing", null, null, $relatedID);
+                insertRelatedListing($primaryListingID, $_POST['topic'] ?? null, "listing", null, $relatedID);
             }
         }
     }
 }
+
+// PHP FUNCTIONS:
+
+function uploadToSupabase($tmpFile, $fileName, $bucket = "uploads") {
+
+    $projectUrl = "https://zdysuvkcmymlwpernryq.supabase.co";
+
+    $fileName = rawurlencode($fileName);
+
+    $uploadUrl = "$projectUrl/storage/v1/object/$bucket/$fileName";
+
+    $ch = curl_init($uploadUrl);
+
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "apikey: sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
+        "Authorization: Bearer sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
+        "Content-Type: application/octet-stream"
+    ]);
+
+    if (empty($tmpFile) || !file_exists($tmpFile)) {
+        die("Invalid upload file path");
+    }
+
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, file_get_contents($tmpFile));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $response = curl_exec($ch);
+    $insertedRows = json_decode($response, true);
+    $primaryListingID = $insertedRows[0]['id'] ?? null;
+
+    if (!$primaryListingID) {
+        die("Main listing uploaded, but could not retrieve listing ID. Response: " . htmlspecialchars($response));
+    }
+
+    if (curl_errno($ch)) {
+        echo "UPLOAD ERROR: " . curl_error($ch);
+    }
+
+    curl_close($ch);
+    return "$projectUrl/storage/v1/object/public/$bucket/$fileName";
+}
+
+function insertRelatedListing($listingID, $topic, $type, $file = null, $link = null) {
+    $ch = curl_init("https://zdysuvkcmymlwpernryq.supabase.co/rest/v1/RelatedListing");
+
+    $data = [
+        "listingID" => (int) $listingID,
+        "topic" => $topic,
+        "type" => $type,
+        "file" => $file,
+        "links" => $link
+    ];
+
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "apikey: sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
+        "Authorization: Bearer sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
+        "Content-Type: application/json",
+        "Prefer: return=representation"
+    ]);
+
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    
+    /*
+     * DEBUG
+    echo "<pre>";
+    echo "RelatedListing HTTP Code: " . $httpCode . "\n";
+    echo "Payload:\n";
+    print_r($data);
+    echo "Response:\n";
+    echo htmlspecialchars($response);
+    echo "</pre>";
+     */
+
+    if (curl_errno($ch)) {
+        echo "<pre style='color:red'>Related insert CURL error: " . curl_error($ch) . "</pre>";
+    }
+
+    curl_close($ch);
+}
 ?>
 <?php include '../view/AddSourceHeader.php'; ?>
 
+<!-- HTML -->
 <link rel="stylesheet" href="../styles/AddSource.css">
 <link rel="stylesheet" href="../styles/main.css">
 
@@ -451,7 +473,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <label>Citations:</label>
                 <input type="text" name="citations">
             </div>
-
+            
+            <br> </br>
+            
             <div id="relatedSources">
                 <h3>Related Sources</h3>
 
@@ -486,7 +510,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 </div>
                 <button type="button" onclick="addRelatedListing()">+</button>
                 <br>
-                
+
             </div>
 
             <!-- Inline script for adding related sources -->
@@ -537,16 +561,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     if (query.length < 2)
                         return;
 
-                    const response = await fetch(`searchListings.php?q=${encodeURIComponent(query)}`);
-                    const listings = await response.json();
+                    const response = await fetch(`SearchListings.php?q=${encodeURIComponent(query)}`);
+                    const data = await response.json();
+                    console.log(data);
 
-                    listings.forEach(listing => {
+                    data.forEach(listing => {
                         const item = document.createElement("div");
                         item.className = "listing-result";
                         item.textContent = `${listing.title} by ${listing.author}`;
                         item.onclick = function () {
                             searchBox.value = listing.title;
-                            hiddenInput.value = listing.id;
+                            hiddenInput.value = listing.listingID;
                             resultsBox.innerHTML = "";
                         };
                         resultsBox.appendChild(item);

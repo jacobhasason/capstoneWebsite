@@ -10,9 +10,9 @@ $projectUrl = "https://zdysuvkcmymlwpernryq.supabase.co";
 $key = "sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o";
 
 $url = $projectUrl . "/rest/v1/Listing"
-    . "?select=id,title,author"
+    . "?select=listingID,title,author"
     . "&title=ilike.*" . rawurlencode($q) . "*"
-    . "&limit=10";
+    . "&limit=3";
 
 $ch = curl_init($url);
 
