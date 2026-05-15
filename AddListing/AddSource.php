@@ -19,7 +19,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if (empty($_POST['year'])) {
         $fieldErrors['datePub'] = "Year is required";
-
     }
 
     if (empty($_POST['medium'])) {
@@ -30,13 +29,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (empty($_FILES['file']['name']) && empty($_POST['externalLink'])) {
         $fieldErrors['file'] = "Please upload a file or provide a link";
 
-    if (!empty($month) && ($month < 1 || $month > 12)) {
-        $fieldErrors['datePub'] = "Month must be 1-12";
-    }
+        if (!empty($month) && ($month < 1 || $month > 12)) {
+            $fieldErrors['datePub'] = "Month must be 1-12";
+        }
 
-    if (!empty($day) && ($day < 1 || $day > 31)) {
-        $fieldErrors['datePub'] = "Day must be 1-31";
-
+        if (!empty($day) && ($day < 1 || $day > 31)) {
+            $fieldErrors['datePub'] = "Day must be 1-31";
+        }
     }
 
     if (empty($fieldErrors)) {
@@ -46,180 +45,181 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         //Upload files to superbase function
         $fileName = time() . "_" . preg_replace('/[^A-Za-z0-9.\-_]/', '_', $_FILES['file']['name']);
+    }
 
-        function uploadToSupabase($tmpFile, $fileName, $bucket = "uploads") {
+    function uploadToSupabase($tmpFile, $fileName, $bucket = "uploads") {
 
-            $projectUrl = "https://zdysuvkcmymlwpernryq.supabase.co";
+        $projectUrl = "https://zdysuvkcmymlwpernryq.supabase.co";
 
-            $fileName = rawurlencode($fileName);
+        $fileName = rawurlencode($fileName);
 
-            $uploadUrl = "$projectUrl/storage/v1/object/$bucket/$fileName";
+        $uploadUrl = "$projectUrl/storage/v1/object/$bucket/$fileName";
 
-            $ch = curl_init($uploadUrl);
+        $ch = curl_init($uploadUrl);
 
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-
-            curl_setopt($ch, CURLOPT_HTTPHEADER, [
-
-                "apikey: sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
-                "Authorization: Bearer sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
-
-                "Content-Type: application/octet-stream"
-            ]);
-
-            if (empty($tmpFile) || !file_exists($tmpFile)) {
-                die("Invalid upload file path");
-            }
-
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, file_get_contents($tmpFile));
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-            $response = curl_exec($ch);
-            if (curl_errno($ch)) {
-                echo "UPLOAD ERROR: " . curl_error($ch);
-            }
-
-            curl_close($ch);
-            return "$projectUrl/storage/v1/object/public/$bucket/$fileName";
-        }
-
-        // Thumbnail 
-
-        if (!empty($_FILES['file']['tmp_name']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
-            $thumbName = time() . "_" . basename($_FILES['thumbnail']['name']);
-            $thumbnailPath = uploadToSupabase($_FILES['thumbnail']['tmp_name'], $thumbName);
-        }
-
-        $abstract = $_POST['abs'] ?? '';
-        $citations = $_POST['citations'] ?? '';
-        $sourceLink = !empty($_POST['externalLink']) ? trim($_POST['externalLink']) : null;
-
-        // Main file attachment
-
-        if (!empty($_FILES['file']['name'])) {
-
-            $fileName = time() . "_" . basename($_FILES['file']['name']);
-
-            $filePath = uploadToSupabase(
-                    $_FILES['file']['tmp_name'],
-                    $fileName
-            );
-
-            // Uploaded temp file
-            $uploadedTmpFile = $_FILES['file']['tmp_name'];
-
-            // Original uploaded filename
-            $originalFileName = $_FILES['file']['name'];
-
-            // Python executable
-            $python = getenv("PYTHON_BIN") ?: (PHP_OS_FAMILY === "Windows" ? "python" : "python3");
-
-            // Python script path
-            $script = realpath(__DIR__ . '/../scripts/scraping/scraper.py');
-
-            // Build command
-            $command = $python . ' ' .
-                    escapeshellarg($script) . ' ' .
-                    escapeshellarg($uploadedTmpFile) . ' ' .
-                    escapeshellarg($originalFileName) .
-                    ' 2>&1';
-
-            // Execute Python
-            $output = shell_exec($command);
-
-            $scrapedData = json_decode($output, true);
-
-            $filePath = null;
-
-
-            if ($scrapedData) {
-                if (empty($abstract) && !empty($scrapedData['abstract'])) {
-                    $abstract = $scrapedData['abstract'];
-                }
-
-                if (empty($citations) && !empty($scrapedData['citations'])) {
-                    $citations = implode("\n\n", $scrapedData['citations']);
-                }
-            }
-
-            echo "<pre>";
-            echo htmlspecialchars($output);
-            echo "</pre>";
-        }
-
-        $ch = curl_init("https://zdysuvkcmymlwpernryq.supabase.co/rest/v1/Listing");
-
-        $year = $_POST['year'] ?? null;
-        $month = $_POST['month'] ?? null;
-        $day = $_POST['day'] ?? null;
-
-        if (empty($year)) {
-            $fieldErrors['datePub'] = "Year is required";
-            $datePub = null;
-        } else {
-
-            // Make sure it has 4 digits 
-            $year = str_pad($year, 4, "0", STR_PAD_LEFT);
-
-            // Make sure it has padding
-            if (!empty($month)) {
-                $month = str_pad($month, 2, "0", STR_PAD_LEFT);
-            }
-
-            // Make sure it has padding
-            if (!empty($day)) {
-                $day = str_pad($day, 2, "0", STR_PAD_LEFT);
-            }
-
-            // Building the final string
-            if (!empty($month) && !empty($day)) {
-                $datePub = "$year-$month-$day";
-            } elseif (!empty($month)) {
-                $datePub = "$year-$month";
-            } else {
-                $datePub = "$year";
-            }
-        }
-
-        $data = [
-            "title" => $_POST['title'],
-            "author" => $_POST['author'],
-            "date" => $datePub,
-            "medium" => $_POST['medium'],
-            "icon" => $thumbnailPath,
-            "file" => $filePath,
-	    "links" => $sourceLink,
-            "abstract" => $abstract,
-            "citations" => $citations,
-            "userID" => $_SESSION['userID'],
-        ];
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
-
             "apikey: sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
-            "Authorization: sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
-
-            "Content-Type: application/json",
-            "Prefer: return=representation"
+            "Authorization: Bearer sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
+            "Content-Type: application/octet-stream"
         ]);
 
+        if (empty($tmpFile) || !file_exists($tmpFile)) {
+            die("Invalid upload file path");
+        }
+
         curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, file_get_contents($tmpFile));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
         $response = curl_exec($ch);
-
         if (curl_errno($ch)) {
-            echo "<pre style='color:red'>CURL ERROR: " . curl_error($ch) . "</pre>";
-        } else {
-            echo "<div style='color:green; font-weight:bold;'>Uploaded Successfully</div>";
+            echo "UPLOAD ERROR: " . curl_error($ch);
         }
+
         curl_close($ch);
+        return "$projectUrl/storage/v1/object/public/$bucket/$fileName";
     }
+
+    // Thumbnail 
+    if (
+            !empty($_FILES['thumbnail']['tmp_name']) &&
+            $_FILES['thumbnail']['error'] === UPLOAD_ERR_OK
+    ) {
+        $thumbName = time() . "_" . basename($_FILES['thumbnail']['name']);
+
+        $thumbnailPath = uploadToSupabase(
+                $_FILES['thumbnail']['tmp_name'],
+                $thumbName
+        );
+    }
+
+    $abstract = $_POST['abs'] ?? '';
+    $citations = $_POST['citations'] ?? '';
+    $sourceLink = !empty($_POST['externalLink']) ? trim($_POST['externalLink']) : null;
+
+    // Main file attachment
+
+    if (!empty($_FILES['file']['name'])) {
+
+        $fileName = time() . "_" . basename($_FILES['file']['name']);
+
+        $filePath = uploadToSupabase(
+                $_FILES['file']['tmp_name'],
+                $fileName
+        );
+
+        // Uploaded temp file
+        $uploadedTmpFile = $_FILES['file']['tmp_name'];
+
+        // Original uploaded filename
+        $originalFileName = $_FILES['file']['name'];
+
+        // Python executable
+        $python = getenv("PYTHON_BIN") ?: (PHP_OS_FAMILY === "Windows" ? "python" : "python3");
+
+        // Python script path
+        $script = realpath(__DIR__ . '/../scripts/scraping/scraper.py');
+
+        // Build command
+        $command = $python . ' ' .
+                escapeshellarg($script) . ' ' .
+                escapeshellarg($uploadedTmpFile) . ' ' .
+                escapeshellarg($originalFileName) .
+                ' 2>&1';
+
+        // Execute Python
+        $output = shell_exec($command);
+
+        $scrapedData = json_decode($output, true);
+
+        $filePath = null;
+
+        if ($scrapedData) {
+            if (empty($abstract) && !empty($scrapedData['abstract'])) {
+                $abstract = $scrapedData['abstract'];
+            }
+
+            if (empty($citations) && !empty($scrapedData['citations'])) {
+                $citations = implode("\n\n", $scrapedData['citations']);
+            }
+        }
+
+        echo "<pre>";
+        echo htmlspecialchars($output);
+        echo "</pre>";
+    }
+
+    $ch = curl_init("https://zdysuvkcmymlwpernryq.supabase.co/rest/v1/Listing");
+
+    $year = $_POST['year'] ?? null;
+    $month = $_POST['month'] ?? null;
+    $day = $_POST['day'] ?? null;
+
+    if (empty($year)) {
+        $fieldErrors['datePub'] = "Year is required";
+        $datePub = null;
+    } else {
+
+        // Make sure it has 4 digits 
+        $year = str_pad($year, 4, "0", STR_PAD_LEFT);
+
+        // Make sure it has padding
+        if (!empty($month)) {
+            $month = str_pad($month, 2, "0", STR_PAD_LEFT);
+        }
+
+        // Make sure it has padding
+        if (!empty($day)) {
+            $day = str_pad($day, 2, "0", STR_PAD_LEFT);
+        }
+
+        // Building the final string
+        if (!empty($month) && !empty($day)) {
+            $datePub = "$year-$month-$day";
+        } elseif (!empty($month)) {
+            $datePub = "$year-$month";
+        } else {
+            $datePub = "$year";
+        }
+    }
+
+    $data = [
+        "title" => $_POST['title'],
+        "author" => $_POST['author'],
+        "date" => $datePub,
+        "medium" => $_POST['medium'],
+        "icon" => $thumbnailPath,
+        "file" => $filePath,
+        "links" => $sourceLink,
+        "abstract" => $abstract,
+        "citations" => $citations,
+        "userID" => $_SESSION['userID'],
+    ];
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "apikey: sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
+        "Authorization: sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
+        "Content-Type: application/json",
+        "Prefer: return=representation"
+    ]);
+
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $response = curl_exec($ch);
+
+    if (curl_errno($ch)) {
+        echo "<pre style='color:red'>CURL ERROR: " . curl_error($ch) . "</pre>";
+    } else {
+        echo "<div style='color:green; font-weight:bold;'>Uploaded Successfully</div>";
+    }
+    curl_close($ch);
 }
 ?>
 <?php include '../view/AddSourceHeader.php'; ?>
@@ -248,7 +248,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             </div>
 
             <div class="field">
-      <label>Date Published:</label>
+                <label>Date Published:</label>
 
                 <div class="date-row">
                     <input type="number" name="year" placeholder="Year" min="1000" max="9999">
