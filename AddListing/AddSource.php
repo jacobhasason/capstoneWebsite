@@ -75,6 +75,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
         $response = curl_exec($ch);
+        $insertedRows = json_decode($response, true);
+        $primaryListingID = $insertedRows[0]['id'] ?? null;
+
+        if (!$primaryListingID) {
+            die("Main listing uploaded, but could not retrieve listing ID. Response: " . htmlspecialchars($response));
+        }
+
         if (curl_errno($ch)) {
             echo "UPLOAD ERROR: " . curl_error($ch);
         }
@@ -135,7 +142,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $scrapedData = json_decode($output, true);
 
-        $filePath = null;
+        //$filePath = null;
 
         if ($scrapedData) {
             if (empty($abstract) && !empty($scrapedData['abstract'])) {
@@ -220,6 +227,78 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         echo "<div style='color:green; font-weight:bold;'>Uploaded Successfully</div>";
     }
     curl_close($ch);
+
+    function insertRelatedListing($listingID, $type, $file = null, $link = null, $relatedListingID = null) {
+        $ch = curl_init("https://zdysuvkcmymlwpernryq.supabase.co/rest/v1/RelatedListing");
+
+        $data = [
+            "listingID" => $listingID,
+            "type" => $type,
+            "file" => $file,
+            "links" => $link,
+            "relatedListingID" => $relatedListingID
+        ];
+
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            "apikey: sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
+            "Authorization: Bearer sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
+            "Content-Type: application/json",
+            "Prefer: return=representation"
+        ]);
+
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $response = curl_exec($ch);
+
+        if (curl_errno($ch)) {
+            echo "<pre style='color:red'>Related insert error: " . curl_error($ch) . "</pre>";
+        }
+
+        curl_close($ch);
+    }
+
+    // Related file uploads
+    if (!empty($_FILES['relatedFiles']['name'])) {
+        foreach ($_FILES['relatedFiles']['name'] as $i => $name) {
+            if (!empty($name) && $_FILES['relatedFiles']['error'][$i] === UPLOAD_ERR_OK) {
+                $relatedFileName = time() . "_" . basename($name);
+
+                $relatedFilePath = uploadToSupabase(
+                        $_FILES['relatedFiles']['tmp_name'][$i],
+                        $relatedFileName
+                );
+
+                insertRelatedListing($primaryListingID, "file", $relatedFilePath, null, null);
+            }
+        }
+    }
+
+// Related hyperlinks
+    if (!empty($_POST['relatedLinks'])) {
+        foreach ($_POST['relatedLinks'] as $link) {
+            $link = trim($link);
+
+            if (!empty($link)) {
+                insertRelatedListing($primaryListingID, "link", null, $link, null);
+            }
+        }
+    }
+
+// Related existing listings
+    if (!empty($_POST['relatedListingIDs'])) {
+        foreach ($_POST['relatedListingIDs'] as $relatedID) {
+            $relatedID = trim($relatedID);
+
+            if (!empty($relatedID)) {
+                insertRelatedListing($primaryListingID, "listing", null, null, $relatedID);
+            }
+        }
+    }
 }
 ?>
 <?php include '../view/AddSourceHeader.php'; ?>
@@ -370,9 +449,112 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             <div class="field">
                 <label>Citations:</label>
-                <input type="text" name="links">
+                <input type="text" name="citations">
             </div>
 
+            <div id="relatedSources">
+                <h3>Related Sources</h3>
+
+                <div class="related-category">
+                    <div id="relatedFileList">
+                        <div class="related-upload">
+                            <label>Related Attachment:</label>
+                            <input type="file" name="relatedFiles[]">
+                        </div>
+                    </div>
+
+                    <button type="button" onclick="addRelatedFile()">+</button>
+                </div>
+                <br> </br>
+
+                <div id="relatedLinkList">
+                    <div class="related-link">
+                        <label>Related Link:</label>
+                        <input type="url" name="relatedLinks[]" placeholder="https://example.com">
+                    </div>
+                </div>
+                <button type="button" onclick="addRelatedLink()">+</button>
+                <br> </br>
+
+                <div id="relatedListingList">
+                    <div class="related-listing">
+                        <label>Related Listing:</label>
+                        <input type="text" class="listing-search" placeholder="Search listing by title">
+                        <input type="hidden" name="relatedListingIDs[]">
+                        <div class="listing-results"></div>
+                    </div>
+                </div>
+                <button type="button" onclick="addRelatedListing()">+</button>
+                <br>
+                
+            </div>
+
+            <!-- Inline script for adding related sources -->
+            <script>
+                function addRelatedFile() {
+                    document.getElementById("relatedFileList").insertAdjacentHTML("beforeend", `
+        <div class="related-upload">
+            <label>Related Attachment:</label>
+            <input type="file" name="relatedFiles[]">
+        </div>
+    `);
+                }
+
+                function addRelatedLink() {
+                    document.getElementById("relatedLinkList").insertAdjacentHTML("beforeend", `
+                     <div class="related-link">
+                         <label>Related Link:</label>
+                         <input type="url" name="relatedLinks[]" placeholder="https://example.com">
+                     </div>
+                             `);
+                }
+
+                function addRelatedListing() {
+                    document.getElementById("relatedListingList").insertAdjacentHTML("beforeend", `
+                     <div class="related-listing">
+                         <label>Related Listing:</label>
+                         <input type="text" class="listing-search" placeholder="Search listing by title">
+                         <input type="hidden" name="relatedListingIDs[]">
+                         <div class="listing-results"></div>
+                     </div>
+                 `);
+                }
+
+
+                document.addEventListener("input", async function (e) {
+                    if (!e.target.classList.contains("listing-search"))
+                        return;
+
+                    const searchBox = e.target;
+                    const query = searchBox.value.trim();
+                    const wrapper = searchBox.closest(".related-listing") || searchBox.parentElement;
+                    const hiddenInput = wrapper.querySelector('input[type="hidden"]');
+                    const resultsBox = wrapper.querySelector(".listing-results");
+
+                    hiddenInput.value = "";
+                    resultsBox.innerHTML = "";
+
+                    if (query.length < 2)
+                        return;
+
+                    const response = await fetch(`searchListings.php?q=${encodeURIComponent(query)}`);
+                    const listings = await response.json();
+
+                    listings.forEach(listing => {
+                        const item = document.createElement("div");
+                        item.className = "listing-result";
+                        item.textContent = `${listing.title} by ${listing.author}`;
+                        item.onclick = function () {
+                            searchBox.value = listing.title;
+                            hiddenInput.value = listing.id;
+                            resultsBox.innerHTML = "";
+                        };
+                        resultsBox.appendChild(item);
+                    });
+                });
+            </script>
+
+            <br>
             <button type="submit">Upload Project</button>
 
         </form>
