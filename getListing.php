@@ -76,9 +76,9 @@ foreach ($listings as $listing): ?>
             </div>
 
             <div class="source-details">
-                <h3><?= htmlspecialchars($listing['title']) ?></h3>
-                <p><?= htmlspecialchars($listing['author']) ?></p>
-                <p><?= htmlspecialchars($listing['date']) ?></p>
+                <h3><?= htmlspecialchars($listing['title'] ?? '') ?></h3>
+                <p><?= htmlspecialchars($listing['author'] ?? '') ?></p>
+                <p><?= htmlspecialchars($listing['date'] ?? '') ?></p>
             </div>
 
             <div class="source-icon">
