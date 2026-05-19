@@ -20,7 +20,7 @@
                         <!-- MACHINE LEARNING -->
                         <li>
                             <a href="#" class="expand-btn">
-                                ▶ Machine Learning with VKD
+                                Machine Learning with VKD
                             </a>
     
                             <ul class="subtopics hidden">
@@ -28,7 +28,7 @@
                                 <!-- CLASSIFICATION -->
                                 <li>
                                     <a href="#" class="expand-btn sub-btn">
-                                        ▶ Classification and Clustering
+                                        Classification and Clustering
                                     </a>
     
                                     <ul class="subtopics hidden">
@@ -60,7 +60,7 @@
                                 <!-- ML ENHANCEMENT -->
                                 <li>
                                     <a href="#" class="expand-btn sub-btn">
-                                        ▶ Machine Learning Enhancement methods
+                                        Machine Learning Enhancement methods
                                     </a>
     
                                     <ul class="subtopics hidden">
@@ -88,7 +88,7 @@
                         <!-- VISUAL KNOWLEDGE -->
                         <li>
                             <a href="#" class="expand-btn">
-                                ▶ Visual Knowledge Discovery Concepts
+                                Visual Knowledge Discovery Concepts
                             </a>
     
                             <ul class="subtopics hidden">
