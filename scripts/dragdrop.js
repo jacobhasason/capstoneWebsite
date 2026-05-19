@@ -66,4 +66,16 @@ document.addEventListener("DOMContentLoaded", () => {
     setupDropZone("drop-zone-thumb");
     setupDropZone("drop-zone-icon");
 
+    document.querySelectorAll('.expand-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        const submenu = btn.nextElementSibling;
+
+        if (submenu && submenu.classList.contains('subtopics')) {
+            submenu.classList.toggle('hidden');
+        }
+    });
+});
+
 });
