@@ -11,108 +11,105 @@
                         <li><a href="#"><span class="checkbox-box"></span>Oldest</a></li>
                     </ul>
                 </li>
+                <!-- TOPIC -->
                 <li class="topic-menu">
                     <a href="#">Topic</a>
-                
+    
                     <ul class="dropdown topic-dropdown">
-                
-                        <!-- MAIN CATEGORY -->
+    
+                        <!-- MACHINE LEARNING -->
                         <li>
-                
-                            <button class="expand-btn">
+                            <a href="#" class="expand-btn">
                                 ▶ Machine Learning with VKD
-                            </button>
-                
+                            </a>
+    
                             <ul class="subtopics hidden">
-                
-                                <!-- SUBCATEGORY -->
+    
+                                <!-- CLASSIFICATION -->
                                 <li>
-                
-                                    <button class="expand-btn sub-btn">
+                                    <a href="#" class="expand-btn sub-btn">
                                         ▶ Classification and Clustering
-                                    </button>
-                
+                                    </a>
+    
                                     <ul class="subtopics hidden">
-                
+    
                                         <li>
                                             <a href="#">
                                                 <span class="checkbox-box"></span>
                                                 Decision Trees & Generalized Decision Trees
                                             </a>
                                         </li>
-                
+    
                                         <li>
                                             <a href="#">
                                                 <span class="checkbox-box"></span>
                                                 Support Vector Machine
                                             </a>
                                         </li>
-                
+    
                                         <li>
                                             <a href="#">
                                                 <span class="checkbox-box"></span>
                                                 k-Nearest Neighbors
                                             </a>
                                         </li>
-                
+    
                                     </ul>
                                 </li>
-                
-                                <!-- SECOND SUBCATEGORY -->
+    
+                                <!-- ML ENHANCEMENT -->
                                 <li>
-                
-                                    <button class="expand-btn sub-btn">
+                                    <a href="#" class="expand-btn sub-btn">
                                         ▶ Machine Learning Enhancement methods
-                                    </button>
-                
+                                    </a>
+    
                                     <ul class="subtopics hidden">
-                
+    
                                         <li>
                                             <a href="#">
                                                 <span class="checkbox-box"></span>
                                                 Generating synthetic data
                                             </a>
                                         </li>
-                
+    
                                         <li>
                                             <a href="#">
                                                 <span class="checkbox-box"></span>
                                                 Model Trustworthiness
                                             </a>
                                         </li>
-                
+    
                                     </ul>
                                 </li>
-                
+    
                             </ul>
                         </li>
-                
-                        <!-- SECOND MAIN CATEGORY -->
+    
+                        <!-- VISUAL KNOWLEDGE -->
                         <li>
-                
-                            <button class="expand-btn">
+                            <a href="#" class="expand-btn">
                                 ▶ Visual Knowledge Discovery Concepts
-                            </button>
-                
+                            </a>
+    
                             <ul class="subtopics hidden">
-                
+    
                                 <li>
                                     <a href="#">
                                         <span class="checkbox-box"></span>
                                         Pareto Front
                                     </a>
                                 </li>
-                
+    
                                 <li>
                                     <a href="#">
                                         <span class="checkbox-box"></span>
                                         Divide & Classify Process
                                     </a>
                                 </li>
-                
+    
                             </ul>
                         </li>
-                
+    
                     </ul>
                 </li>
                 <li>
