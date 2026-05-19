@@ -126,5 +126,30 @@
             </ul>
         </nav>
     </div>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const buttons = document.querySelectorAll(".expand-btn");
+
+    buttons.forEach(btn => {
+        btn.addEventListener("click", (e) => {
+            e.preventDefault();
+
+            const submenu = btn.nextElementSibling;
+
+            if (!submenu || !submenu.classList.contains("subtopics")) return;
+
+            // close only siblings at same level
+            const parentLi = btn.parentElement;
+            const siblingMenus = parentLi.parentElement.querySelectorAll(":scope > li > .subtopics");
+
+            siblingMenus.forEach(ul => {
+                if (ul !== submenu) ul.classList.add("hidden");
+            });
+
+            submenu.classList.toggle("hidden");
+        });
+    });
+});
+</script>
 </body>
 </html>
