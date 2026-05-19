@@ -8,6 +8,8 @@ if (!isset($_SESSION['userID'])) {
 $fieldErrors = [];
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $thumbnailPath = null;
+    $filePath = null;
 
     if (empty($_POST['title'])) {
         $fieldErrors['title'] = "Title is required";
@@ -38,21 +40,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     }
 
-    if (empty($fieldErrors)) {
-
-        $thumbnailPath = null;
-        $filePath = null;
-
-        //Upload files to superbase function
-        $fileName = time() . "_" . preg_replace('/[^A-Za-z0-9.\-_]/', '_', $_FILES['file']['name']);
-    }
 
     // Thumbnail 
     if (
             !empty($_FILES['thumbnail']['tmp_name']) &&
             $_FILES['thumbnail']['error'] === UPLOAD_ERR_OK
     ) {
-        $thumbName = time() . "_" . basename($_FILES['thumbnail']['name']);
+        $originalName = basename($_FILES['thumbnail']['name']);
+        $safeName = preg_replace('/[^A-Za-z0-9.\-_]/', '_', $originalName);
+        $thumbName = time() . "_" . $safeName;
 
         $thumbnailPath = uploadToSupabase(
                 $_FILES['thumbnail']['tmp_name'],
@@ -68,7 +64,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if (!empty($_FILES['file']['name'])) {
 
-        $fileName = time() . "_" . basename($_FILES['file']['name']);
+        $originalName = basename($_FILES['file']['name']);
+        $safeName = preg_replace('/[^A-Za-z0-9.\-_]/', '_', $originalName);
+        $fileName = time() . "_" . $safeName;
 
         $filePath = uploadToSupabase(
                 $_FILES['file']['tmp_name'],
@@ -175,10 +173,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    
-    $thumbnailPath = null;
-    $filePath = null;
-    
+
     $response = curl_exec($ch);
 
     $insertedRows = json_decode($response, true);
@@ -194,44 +189,120 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // INSERT RELATED CONTENT
     // Related file uploads
     if (!empty($_FILES['relatedFiles']['name'])) {
+
         foreach ($_FILES['relatedFiles']['name'] as $i => $name) {
-            if (!empty($name) && $_FILES['relatedFiles']['error'][$i] === UPLOAD_ERR_OK) {
-                $relatedFileName = time() . "_" . basename($name);
+
+            if (
+                    !empty($name) &&
+                    $_FILES['relatedFiles']['error'][$i] === UPLOAD_ERR_OK
+            ) {
+
+                $originalName = basename($name);
+
+                $title = pathinfo($originalName, PATHINFO_FILENAME);
+
+                $safeName = preg_replace(
+                        '/[^A-Za-z0-9.\-_]/',
+                        '_',
+                        $originalName
+                );
+
+                $relatedFileName = time() . "_" . $safeName;
 
                 $relatedFilePath = uploadToSupabase(
                         $_FILES['relatedFiles']['tmp_name'][$i],
                         $relatedFileName
                 );
 
-                insertRelatedListing($primaryListingID, $_POST['topic'] ?? null, "file", $relatedFilePath, null);
-            }
-        }
-    }
-
-    // Related hyperlinks
-    if (!empty($_POST['relatedLinks'])) {
-        foreach ($_POST['relatedLinks'] as $link) {
-            $link = trim($link);
-
-            if (!empty($link)) {
-                insertRelatedListing($primaryListingID, $_POST['topic'] ?? null, "link", null, $link);
-            }
-        }
-    }
-
-// Related existing listings
-    if (!empty($_POST['relatedListingIDs'])) {
-        foreach ($_POST['relatedListingIDs'] as $relatedID) {
-            $relatedID = trim($relatedID);
-
-            if (!empty($relatedID)) {
-                insertRelatedListing($primaryListingID, $_POST['topic'] ?? null, "listing", null, $relatedID);
+                insertRelatedListing(
+                        $primaryListingID,
+                        $_POST['topic'] ?? null,
+                        "file",
+                        $title,
+                        $relatedFilePath,
+                        null
+                );
             }
         }
     }
 }
 
+// Related hyperlinks
+if (!empty($_POST['relatedLinks'])) {
+    foreach ($_POST['relatedLinks'] as $link) {
+        $link = trim($link);
+
+        if (!empty($link)) {
+            $title = getPageTitle($link);
+
+            insertRelatedListing(
+                $primaryListingID,
+                $_POST['topic'] ?? null,
+                "link",
+                $title,
+                null,
+                $link
+            );
+        }
+    }
+}
+
+// Related existing listings
+if (!empty($_POST['relatedListingIDs'])) {
+    foreach ($_POST['relatedListingIDs'] as $relatedID) {
+        $relatedID = trim($relatedID);
+
+        if (!empty($relatedID)) {
+            $title = getListingTitleByID($relatedID);
+
+            insertRelatedListing($primaryListingID, $_POST['topic'] ?? null, $title, "listing", null, $relatedID);
+        }
+    }
+}
+
+
 // PHP FUNCTIONS:
+function getPageTitle($url) {
+    $html = @file_get_contents($url);
+
+    if (!$html) {
+        return $url;
+    }
+
+    if (preg_match('/<title[^>]*>(.*?)<\/title>/is', $html, $matches)) {
+        return trim(html_entity_decode($matches[1]));
+    }
+
+    return $url;
+}
+
+
+function getListingTitleByID($id) {
+    $projectUrl = "https://zdysuvkcmymlwpernryq.supabase.co";
+    $key = "sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o";
+
+    $url = $projectUrl . "/rest/v1/Listing"
+            . "?select=title"
+            . "&listingID=eq." . urlencode($id)
+            . "&limit=1";
+
+    $ch = curl_init($url);
+
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "apikey: $key",
+        "Authorization: Bearer $key",
+        "Content-Type: application/json"
+    ]);
+
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+    $rows = json_decode($response, true);
+
+    return $rows[0]['title'] ?? "Related Listing #" . $id;
+}
 
 function uploadToSupabase($tmpFile, $fileName, $bucket = "uploads") {
 
@@ -261,27 +332,23 @@ function uploadToSupabase($tmpFile, $fileName, $bucket = "uploads") {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
     $response = curl_exec($ch);
-    $insertedRows = json_decode($response, true);
-    $primaryListingID = $insertedRows[0]['id'] ?? null;
-
-    if (!$primaryListingID) {
-        die("Main listing uploaded, but could not retrieve listing ID. Response: " . htmlspecialchars($response));
-    }
 
     if (curl_errno($ch)) {
         echo "UPLOAD ERROR: " . curl_error($ch);
     }
 
     curl_close($ch);
+
     return "$projectUrl/storage/v1/object/public/$bucket/$fileName";
 }
 
-function insertRelatedListing($listingID, $topic, $type, $file = null, $link = null) {
+function insertRelatedListing($listingID, $topic, $title, $type, $file = null, $link = null) {
     $ch = curl_init("https://zdysuvkcmymlwpernryq.supabase.co/rest/v1/RelatedListing");
 
     $data = [
         "listingID" => (int) $listingID,
         "topic" => $topic,
+        "title" => $title,
         "type" => $type,
         "file" => $file,
         "links" => $link
@@ -303,16 +370,16 @@ function insertRelatedListing($listingID, $topic, $type, $file = null, $link = n
 
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    
+
     /*
      * DEBUG
-    echo "<pre>";
-    echo "RelatedListing HTTP Code: " . $httpCode . "\n";
-    echo "Payload:\n";
-    print_r($data);
-    echo "Response:\n";
-    echo htmlspecialchars($response);
-    echo "</pre>";
+      echo "<pre>";
+      echo "RelatedListing HTTP Code: " . $httpCode . "\n";
+      echo "Payload:\n";
+      print_r($data);
+      echo "Response:\n";
+      echo htmlspecialchars($response);
+      echo "</pre>";
      */
 
     if (curl_errno($ch)) {
@@ -473,9 +540,9 @@ function insertRelatedListing($listingID, $topic, $type, $file = null, $link = n
                 <label>Citations:</label>
                 <input type="text" name="citations">
             </div>
-            
+
             <br> </br>
-            
+
             <div id="relatedSources">
                 <h3>Related Sources</h3>
 

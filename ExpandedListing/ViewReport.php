@@ -39,10 +39,10 @@ foreach ($relatedRows as $row) {
         $relatedListingID = (int) $row["links"];
 
         $listings[] = [
-            "title" => "Related Listing #" . $relatedListingID,
-            "author" => "Related Source",
+            "title" => $row["title"] ?? ucfirst($row["type"] ?? "Related Source"),
+            "author" => "Unknown",
             "topic" => $row["topic"] ?? ($primary["topic"] ?? "Uncategorized"),
-            "abstract" => "Click below to view this related listing.",
+            "abstract" => $primary['abstract'] ?? "Click below to view this related listing.",
             "file" => null,
             "links" => "ListingInfo.php?id=" . $relatedListingID,
             "type" => "listing"
@@ -50,9 +50,9 @@ foreach ($relatedRows as $row) {
     } else {
         $listings[] = [
             "title" => ucfirst($row["type"] ?? "Related Source"),
-            "author" => "Related Source",
+            "author" => "Unknown",
             "topic" => $row["topic"] ?? ($primary["topic"] ?? "Uncategorized"),
-            "abstract" => "Related " . ($row["type"] ?? "source"),
+            "abstract" => ($row["type"] ?? "source"),
             "file" => $row["file"] ?? null,
             "links" => $row["links"] ?? null,
             "type" => $row["type"] ?? "related"
