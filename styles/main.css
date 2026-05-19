@@ -376,3 +376,31 @@ main {
 
     border-radius: 12px;
 }
+
+.topic-dropdown {
+    width: 450px;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.expand-btn {
+    background: none;
+    border: none;
+    color: white;
+    width: 100%;
+    text-align: left;
+    padding: 8px;
+    cursor: pointer;
+}
+
+.sub-btn {
+    padding-left: 20px;
+}
+
+.subtopics {
+    padding-left: 15px;
+}
+
+.hidden {
+    display: none;
+}
