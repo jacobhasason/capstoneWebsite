@@ -378,29 +378,68 @@ main {
 }
 
 .topic-dropdown {
-    width: 450px;
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
     max-height: 500px;
     overflow-y: auto;
+
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    background-color: #ffe5e5;
+    border: 1px solid black;
+    z-index: 100;
+}
+
+.topic-dropdown.open {
+    display: block;
 }
 
 .expand-btn {
+    display: block;
+    width: 100%;
+    padding: 10px 15px;
+
     background: none;
     border: none;
-    color: white;
-    width: 100%;
+
     text-align: left;
-    padding: 8px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: black;
+
     cursor: pointer;
 }
 
-.sub-btn {
-    padding-left: 20px;
+.expand-btn:hover {
+    background-color: #ffcccc;
 }
 
 .subtopics {
-    padding-left: 15px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    background-color: #ffe5e5;
+}
+
+.sub-btn {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    text-decoration: none;
+    color: black;
+    font-size: 0.9rem;
+    gap: 10px;
+}
+
+.sub-btn:hover {
+    background-color: #ffcccc;
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
