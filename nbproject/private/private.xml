@@ -3,13 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/wamp64/www/capstoneWebsite/index.php</file>
-            <file>file:/C:/wamp64/www/capstoneWebsite/AddListing/AddSource.php</file>
             <file>file:/C:/wamp64/www/capstoneWebsite/ExpandedListing/ListingInfo.php</file>
-            <file>file:/C:/wamp64/www/capstoneWebsite/Model/Listing.php</file>
-            <file>file:/C:/wamp64/www/capstoneWebsite/DBConnect/db.php</file>
-            <file>file:/C:/wamp64/www/capstoneWebsite/ExpandedListing/ViewReport.php</file>
+            <file>file:/C:/wamp64/www/capstoneWebsite/AddListing/AddSource.php</file>
+            <file>file:/C:/wamp64/www/capstoneWebsite/index.php</file>
             <file>file:/C:/wamp64/www/capstoneWebsite/getListing.php</file>
+            <file>file:/C:/wamp64/www/capstoneWebsite/Model/Listing.php</file>
+            <file>file:/C:/wamp64/www/capstoneWebsite/Scraper/GoogleScholar.php</file>
         </group>
     </open-files>
 </project-private>
