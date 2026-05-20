@@ -32,7 +32,7 @@ if (!$listing) {
 
     <h1><?= htmlspecialchars($listing['title'] ?? 'Untitled') ?></h1>
 
-    <p><strong>Author:</strong> <?= htmlspecialchars($listing['author'] ?? 'Unknown') ?></p>
+    <p><strong>Author:</strong> <?= htmlspecialchars($listing['author(s)'] ?? 'Unknown') ?></p>
 
     <p><strong>Date:</strong> <?= htmlspecialchars($listing['date'] ?? 'N/A') ?></p>
 
