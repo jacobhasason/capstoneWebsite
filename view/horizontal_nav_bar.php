@@ -126,5 +126,6 @@
             </ul>
         </nav>
     </div>
+<script src="checkmark.js"></script>        
 </body>
 </html>
