@@ -26,7 +26,7 @@ $listings = [];
 
 $listings[] = [
     "title" => $primary["title"] ?? "Untitled",
-    "author" => $primary["author"] ?? "Unknown",
+    "author" => $primary["author(s)"] ?? "Unknown",
     "topic" => $primary["topic"] ?? "Uncategorized",
     "abstract" => $primary["abstract"] ?? "No description available",
     "file" => $primary["file"] ?? null,
