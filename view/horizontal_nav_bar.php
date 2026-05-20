@@ -12,102 +12,98 @@
                     </ul>
                 </li>
                 <!-- TOPIC -->
-                <ul class="dropdown topic-tree">
+                <li class="topic-menu">
+                    <a href="#">Topic</a>
                 
-                    <!-- ABOUT SECTION -->
-                    <li class="topic-about">
-                        <a href="#" onclick="toggleAbout(event)">ℹ About VKD / Help</a>
-                        <div class="topic-about-text hidden">
-                            AI/LM integration with visualization is presented in the form of emerging Visual Knowledge Discovery ecosystem that is a set of interconnected algorithms, software projects, and platforms that co-evolve around a VKD shared technological base. Interpretable ML algorithms and lossless visualization of high-dimensional data are the core of VKD for the end users to discover trustworthy models.
-                        </div>
-                    </li>
+                    <ul class="dropdown topic-tree">
                 
-                    <!-- ========================= -->
-                    <!-- UPPER LEVEL CATEGORIES -->
-                    <!-- ========================= -->
+                        <!-- ===================== -->
+                        <!-- MAIN CATEGORY 1 -->
+                        <!-- ===================== -->
+                        <li>
+                            <a href="#">Classification and Clustering</a>
                 
-                    <li>
-                        <a href="#">Machine Learning with Visual Knowledge Discovery methods and visualization in General Line Coordinates</a>
+                            <ul class="hidden">
                 
-                        <ul class="dropdown">
+                                <li><a href="#"><span class="checkbox-box"></span>Decision Trees & Generalized Decision Trees</a></li>
+                                <li><a href="#"><span class="checkbox-box"></span>Additive classifiers (Linear, Quadratic, Generalized)</a></li>
+                                <li><a href="#"><span class="checkbox-box"></span>Support Vector Machine</a></li>
+                                <li><a href="#"><span class="checkbox-box"></span>k-Nearest Neighbors</a></li>
+                                <li><a href="#"><span class="checkbox-box"></span>Convolutional Neural Network</a></li>
+                                <li><a href="#"><span class="checkbox-box"></span>Classification with Hyper-rectangles / Hyperblocks / Boxes</a></li>
+                                <li><a href="#"><span class="checkbox-box"></span>Classification of Categorical & Mixed Data</a></li>
+                                <li><a href="#"><span class="checkbox-box"></span>Boolean and k-valued Logical Rules</a></li>
+                                <li><a href="#"><span class="checkbox-box"></span>Sequential Rule Generation Algorithms</a></li>
                 
-                            <li>
-                                <a href="#">Classification and Clustering</a>
+                            </ul>
+                        </li>
                 
-                                <ul class="dropdown">
+                        <!-- ===================== -->
+                        <!-- MAIN CATEGORY 2 -->
+                        <!-- ===================== -->
+                        <li>
+                            <a href="#">Machine Learning Enhancement methods</a>
                 
-                                    <li><a href="#"><span class="checkbox-box"></span>Decision Trees & Generalized Decision Trees</a></li>
-                                    <li><a href="#"><span class="checkbox-box"></span>Additive classifiers (Linear, Quadratic, Generalized)</a></li>
-                                    <li><a href="#"><span class="checkbox-box"></span>Support Vector Machine</a></li>
-                                    <li><a href="#"><span class="checkbox-box"></span>k-Nearest Neighbors</a></li>
-                                    <li><a href="#"><span class="checkbox-box"></span>Convolutional Neural Network</a></li>
-                                    <li><a href="#"><span class="checkbox-box"></span>Classification with Hyper-rectangles / Hyperblocks / Boxes</a></li>
-                                    <li><a href="#"><span class="checkbox-box"></span>Categorical & Mixed Data Classification</a></li>
-                                    <li><a href="#"><span class="checkbox-box"></span>Boolean and k-valued Logical Rules</a></li>
-                                    <li><a href="#"><span class="checkbox-box"></span>Sequential Rule Generation Algorithms</a></li>
+                            <ul class="hidden">
                 
-                                </ul>
-                            </li>
+                                <li><a href="#"><span class="checkbox-box"></span>Estimates worst-case accuracy</a></li>
+                                <li><a href="#"><span class="checkbox-box"></span>Labeling data</a></li>
+                                <li><a href="#"><span class="checkbox-box"></span>Generating synthetic data</a></li>
+                                <li><a href="#"><span class="checkbox-box"></span>Converting tabular data to images</a></li>
+                                <li><a href="#"><span class="checkbox-box"></span>Learning representation/features</a></li>
+                                <li><a href="#"><span class="checkbox-box"></span>Dimension reduction</a></li>
+                                <li><a href="#"><span class="checkbox-box"></span>Model boosting</a></li>
+                                <li><a href="#"><span class="checkbox-box"></span>Model Trustworthiness / Explainability / Transparency</a></li>
+                                <li><a href="#"><span class="checkbox-box"></span>Concept drift for n-D time series</a></li>
+                                <li><a href="#"><span class="checkbox-box"></span>Class summary view</a></li>
                 
-                            <li>
-                                <a href="#">Machine Learning Enhancement methods</a>
+                            </ul>
+                        </li>
                 
-                                <ul class="dropdown">
+                        <!-- ===================== -->
+                        <!-- MAIN CATEGORY 3 -->
+                        <!-- ===================== -->
+                        <li>
+                            <a href="#">Visual Knowledge Discovery (VKD) Concepts</a>
                 
-                                    <li><a href="#"><span class="checkbox-box"></span>Estimate Worst-case Accuracy</a></li>
-                                    <li><a href="#"><span class="checkbox-box"></span>Labeling Data</a></li>
-                                    <li><a href="#"><span class="checkbox-box"></span>Generating Synthetic Data</a></li>
-                                    <li><a href="#"><span class="checkbox-box"></span>Converting Tabular Data to Images</a></li>
-                                    <li><a href="#"><span class="checkbox-box"></span>Learning Representation / Features</a></li>
-                                    <li><a href="#"><span class="checkbox-box"></span>Dimension Reduction</a></li>
-                                    <li><a href="#"><span class="checkbox-box"></span>Model Boosting</a></li>
-                                    <li><a href="#"><span class="checkbox-box"></span>Model Trustworthiness / Explainability / Transparency</a></li>
-                                    <li><a href="#"><span class="checkbox-box"></span>Concept Drift for n-D Time Series</a></li>
-                                    <li><a href="#"><span class="checkbox-box"></span>Class Summary View</a></li>
+                            <ul class="hidden">
                 
-                                </ul>
-                            </li>
+                                <li><a href="#"><span class="checkbox-box"></span>Full 2-D Machine Learning Paradigm</a></li>
+                                <li><a href="#"><span class="checkbox-box"></span>Computational and Interactive Visual Learning</a></li>
+                                <li><a href="#"><span class="checkbox-box"></span>Monotone Boolean and Ordinal Expert Knowledge Acquisition</a></li>
+                                <li><a href="#"><span class="checkbox-box"></span>Divide & Classify Process</a></li>
+                                <li><a href="#"><span class="checkbox-box"></span>Pareto Front</a></li>
                 
-                        </ul>
-                    </li>
+                            </ul>
+                        </li>
                 
-                    <li>
-                        <a href="#">Visual Knowledge Discovery (VKD) Concepts</a>
+                        <!-- ===================== -->
+                        <!-- MAIN CATEGORY 4 -->
+                        <!-- ===================== -->
+                        <li>
+                            <a href="#">General Line Coordinates Visualization with VKD</a>
                 
-                        <ul class="dropdown">
+                            <ul class="hidden">
                 
-                            <li><a href="#"><span class="checkbox-box"></span>Full 2-D Machine Learning Paradigm</a></li>
-                            <li><a href="#"><span class="checkbox-box"></span>Computational and Interactive Visual Learning</a></li>
-                            <li><a href="#"><span class="checkbox-box"></span>Monotone Boolean and Ordinal Expert Knowledge Acquisition</a></li>
-                            <li><a href="#"><span class="checkbox-box"></span>Divide & Classify Process</a></li>
-                            <li><a href="#"><span class="checkbox-box"></span>Pareto Front</a></li>
+                                <li><a href="#"><span class="checkbox-box"></span>Parallel and Radial Coordinates</a></li>
+                                <li><a href="#"><span class="checkbox-box"></span>General Line Coordinates – Linear</a></li>
+                                <li><a href="#"><span class="checkbox-box"></span>Collocated Paired Coordinates</a></li>
+                                <li><a href="#"><span class="checkbox-box"></span>Shifted Paired Coordinates</a></li>
+                                <li><a href="#"><span class="checkbox-box"></span>Bended Coordinates</a></li>
+                                <li><a href="#"><span class="checkbox-box"></span>Glyphs</a></li>
+                                <li><a href="#"><span class="checkbox-box"></span>Concentric Coordinates</a></li>
+                                <li><a href="#"><span class="checkbox-box"></span>Elliptic Paired Coordinates</a></li>
+                                <li><a href="#"><span class="checkbox-box"></span>Circular Coordinates</a></li>
+                                <li><a href="#"><span class="checkbox-box"></span>Dynamic Scaffolding Coordinates</a></li>
+                                <li><a href="#"><span class="checkbox-box"></span>In-line Coordinates</a></li>
+                                <li><a href="#"><span class="checkbox-box"></span>Combined General Line Coordinates</a></li>
+                                <li><a href="#"><span class="checkbox-box"></span>Visualization of Missing Data</a></li>
                 
-                        </ul>
-                    </li>
+                            </ul>
+                        </li>
                 
-                    <li>
-                        <a href="#">General Line Coordinates Visualization with VKD</a>
-                
-                        <ul class="dropdown">
-                
-                            <li><a href="#"><span class="checkbox-box"></span>Parallel and Radial Coordinates</a></li>
-                            <li><a href="#"><span class="checkbox-box"></span>General Line Coordinates – Linear</a></li>
-                            <li><a href="#"><span class="checkbox-box"></span>Collocated Paired Coordinates</a></li>
-                            <li><a href="#"><span class="checkbox-box"></span>Shifted Paired Coordinates</a></li>
-                            <li><a href="#"><span class="checkbox-box"></span>Bended Coordinates</a></li>
-                            <li><a href="#"><span class="checkbox-box"></span>Glyphs</a></li>
-                            <li><a href="#"><span class="checkbox-box"></span>Concentric Coordinates</a></li>
-                            <li><a href="#"><span class="checkbox-box"></span>Elliptic Paired Coordinates</a></li>
-                            <li><a href="#"><span class="checkbox-box"></span>Circular Coordinates</a></li>
-                            <li><a href="#"><span class="checkbox-box"></span>Dynamic Scaffolding Coordinates</a></li>
-                            <li><a href="#"><span class="checkbox-box"></span>In line Coordinates</a></li>
-                            <li><a href="#"><span class="checkbox-box"></span>Combined General Line Coordinates</a></li>
-                            <li><a href="#"><span class="checkbox-box"></span>Visualization of Missing Data</a></li>
-                
-                        </ul>
-                    </li>
-                
-                </ul>
+                    </ul>
+                </li>
                 <li>
                     <a href="#">Medium</a>
                     <ul class="dropdown">
