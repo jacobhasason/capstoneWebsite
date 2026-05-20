@@ -27,7 +27,7 @@ if (!$listing) {
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $title = $_POST["title"] ?? "";
-    $author = $_POST["author"] ?? "";
+    $author = $_POST["author(s)"] ?? "";
     $date = $_POST["date"] ?? "";
     $medium = $_POST["medium"] ?? "";
     $topic = $_POST["topic"] ?? "";
@@ -37,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $update = $db->prepare('
         UPDATE "Listing"
         SET "title" = ?,
-            "author" = ?,
+            "author(s)" = ?,
             "date" = ?,
             "medium" = ?,
             "topic" = ?,
@@ -78,7 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         <label>Author</label>
         <input type="text" name="author"
-               value="<?= htmlspecialchars($listing["author"]) ?>">
+               value="<?= htmlspecialchars($listing["author(s)"]) ?>">
 
         <label>Date</label>
         <input type="text" name="date"
