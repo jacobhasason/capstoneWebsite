@@ -65,30 +65,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
     setupDropZone("drop-zone-thumb");
     setupDropZone("drop-zone-icon");
-
-    document.addEventListener("DOMContentLoaded", () => {
-
-    document.querySelectorAll(".tree-toggle").forEach(button => {
-
-        button.addEventListener("click", (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-
-            // find the parent <li>
-            const parentLi = button.closest("li");
-
-            if (!parentLi) return;
-
-            // find the submenu inside that <li>
-            const submenu = parentLi.querySelector("ul");
-
-            if (!submenu) return;
-
-            submenu.classList.toggle("hidden");
-        });
-
-    });
-
-});
-
 });
