@@ -231,9 +231,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 if (!empty($_POST['relatedLinks'])) {
     foreach ($_POST['relatedLinks'] as $link) {
         $link = trim($link);
-        $title = $link;
+
         if (!empty($link)) {
-            insertRelatedListing($primaryListingID, $_POST['topic'] ?? null, $title, "link", null, $link);
+            $title = getPageTitle($link);
+
+            insertRelatedListing(
+                $primaryListingID,
+                $_POST['topic'] ?? null,
+                "link",
+                $title,
+                null,
+                $link
+            );
         }
     }
 }

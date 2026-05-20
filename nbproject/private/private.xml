@@ -15,10 +15,10 @@
             <file>file:/C:/xampp/htdocs/capstoneWebsite/getListing.php</file>
             <file>file:/C:/xampp/htdocs/capstoneWebsite/DBConnect/db.php</file>
             <file>file:/C:/xampp/htdocs/capstoneWebsite/Model/Listing.php</file>
-            <file>file:/C:/xampp/htdocs/capstoneWebsite/AddListing/SearchListings.php</file>
             <file>file:/C:/xampp/htdocs/capstoneWebsite/styles/AddSource.css</file>
             <file>file:/C:/xampp/htdocs/capstoneWebsite/view/horizontal_nav_bar.php</file>
             <file>file:/C:/xampp/htdocs/capstoneWebsite/styles/main.css</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/Scraper/GoogleScholar.php</file>
         </group>
     </open-files>
 </project-private>
