@@ -377,69 +377,23 @@ main {
     border-radius: 12px;
 }
 
-.topic-dropdown {
+.topic-tree ul {
+    margin-left: 20px;
+    padding-left: 10px;
+    border-left: 1px solid #ddd;
+}
+
+.topic-tree .hidden {
     display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    max-height: 500px;
-    overflow-y: auto;
-
-    list-style: none;
-    padding: 0;
-    margin: 0;
-
-    background-color: #ffe5e5;
-    border: 1px solid black;
-    z-index: 100;
 }
 
-.topic-dropdown.open {
+.topic-tree a {
     display: block;
-}
-
-.expand-btn {
-    display: block;
-    width: 100%;
-    padding: 10px 15px;
-
-    background: none;
-    border: none;
-
-    text-align: left;
-    font-size: 0.9rem;
-    font-weight: bold;
-    color: black;
-
-    cursor: pointer;
-}
-
-.expand-btn:hover {
-    background-color: #ffcccc;
-}
-
-.subtopics {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    background-color: #ffe5e5;
-}
-
-.sub-btn {
-    display: flex;
-    align-items: center;
-    padding: 10px 15px;
+    padding: 6px 10px;
     text-decoration: none;
     color: black;
-    font-size: 0.9rem;
-    gap: 10px;
 }
 
-.sub-btn:hover {
+.topic-tree a:hover {
     background-color: #ffcccc;
-}
-
-.hidden {
-    display: none !important;
 }
