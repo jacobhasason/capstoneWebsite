@@ -1,0 +1,499 @@
+* {
+    font-family: sans-serif;
+    box-sizing: border-box;
+}
+
+html {
+    background-image: url("../images/wildcat.png");
+}
+
+h1, h2, h3, p {
+    margin: 0;
+    padding: 0;
+}
+html,
+body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+
+    width: 100%;
+    min-height: 100vh;
+
+    margin: 0;
+    border: 2px solid black;
+
+    background-color: white;
+    box-shadow: 0 10px 5px red;
+}
+
+a {
+    font-weight: bold;
+}
+
+a:link {
+    color: black;
+}
+
+a:visited {
+    color: #8b0000; /* dark red */
+}
+
+a:hover,
+a:focus {
+    color: lightcoral;
+}
+
+header {
+    border-bottom: 2px solid black;
+    background: linear-gradient(45deg, white 0%, crimson 75%, black 100%);
+    padding: 15px 15px 35px 15px;
+    display: flex;
+    align-items: center;
+}
+
+header img {
+    padding-right: 55px;
+    float: left;
+    width: 85px;
+}
+
+header h2 {
+    font-size: 2em;
+}
+
+header h3 {
+    font-size: 1.25em;
+    text-indent: 25px;
+}
+
+/* --- Centering the whole layout --- */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* --- Navigation Bar --- */
+.main-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    background-color: lightcoral;
+    border-top: 2px solid black;
+    border-bottom: 2px solid black;
+}
+
+.main-nav > li {
+    flex: 1;
+    position: relative;
+}
+
+.main-nav > li > a {
+    display: block;
+    padding: 15px 0;
+    text-align: center;
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+}
+
+/* --- Dropdown Styling --- */
+.dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background-color: #ffe5e5; /* light red */
+    border: 1px solid black;
+    z-index: 100;
+}
+
+.main-nav li:hover .dropdown {
+    display: block;
+}
+
+.dropdown li a {
+    display: flex;
+    align-items: center; 
+    padding: 10px 15px;
+    text-decoration: none;
+    color: black;
+    font-size: 0.9rem;
+    gap: 10px;
+}
+
+.dropdown li a:hover {
+    background-color: #ffcccc;
+}
+
+/* Checkbox */
+.checkbox-box {
+    width: 14px;
+    height: 14px;
+    border: 1px solid black;
+    background-color: white;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.checkbox-box.checked::after {
+    content: "✓"; 
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 12px;
+    color: #cc0000; /* red check */
+    font-weight: bold;
+}
+
+section {
+    float: right;
+    width: 580px;
+    padding: 20px 25px 0 25px;
+}
+
+section h1 {
+    font-size: 1.5em;
+    margin-bottom: 0.5em;
+}
+
+section h1::first-letter {
+    font-size: 2em;
+}
+
+section h2 {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    font-size: 1.25em;
+}
+
+section h3 {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    font-size: 1.1em;
+}
+
+section img {
+    display: block;
+    margin-bottom: 0.5em;
+}
+
+section p {
+    margin-bottom: 0.5em;
+}
+
+/* Theme variables */
+:root {
+  --bg-light: #f0d6d6; /* light red */
+  --accent-red: #e15d5d;
+  --border-color: #333;
+}
+
+
+.source-item {
+    width: 100%;
+    margin: 0;
+
+    background-color: var(--bg-light);
+    border-bottom: 2px solid var(--border-color);
+
+    box-sizing: border-box;
+    transition: background-color 0.3s;
+}
+.item-link {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    gap: 20px;
+    text-decoration: none;
+    color: inherit;
+    width: 100%;
+    height: 150px;
+}
+
+.source-item:hover {
+    background-color: #ffcccc;
+}
+
+.thumbnail {
+    width: 80px;
+    height: 80px;
+    overflow: hidden;
+    flex-shrink: 0;
+    flex: 0 0 80px;
+}
+
+.thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.source-details {
+    flex-grow: 1;
+    text-align: left;
+}
+
+.source-icon {
+    width: 60px;
+    height: 60px;
+    border: 1px solid #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 4px;
+}
+
+.fab {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #cc0000;
+  color: white;
+  font-size: 30px;
+  text-align: center;
+  line-height: 60px;
+  text-decoration: none;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+  z-index: 1000;
+}
+
+.fab:hover {
+  background-color: #990000;
+  transform: scale(1.1);
+}
+
+ul {
+    line-height: 1.5;
+}
+
+footer {
+    min-height: 120px;
+    font-size: 0.9em;
+    clear: both;
+    border-top: 2px solid black;
+
+    padding: 35px 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 120px;
+
+    background: linear-gradient(45deg, black 0%, crimson 25%, white 100%);
+}
+
+footer div:first-child {
+    display: inline;
+    padding-left: 20em;
+}
+
+footer div:last-child {
+    display: inline;
+    padding-left: 16em;
+}
+
+.listing-actions {
+    margin-top: 20px;
+}
+
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.btn {
+    width: 180px;
+    padding: 10px;
+    background-color: #e15d5d;
+    color: white;
+    border: none;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.btn.external {
+    background-color: #a83232;
+}
+
+.user-icon-btn {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    text-decoration: none;
+    border: 1px solid black;
+    border-radius: 50%;
+    background: white;
+    font-size: 18px;
+    transition: 0.2s ease;
+}
+
+.user-icon-btn:hover {
+    background: #ffcccc;
+    transform: scale(1.05);
+    cursor: pointer;
+}
+
+main {
+    padding-bottom: 60px;
+}
+
+
+
+
+.listing-image {
+    float: right;
+    width: 240px;
+    margin-left: 30px;
+    margin-bottom: 20px;
+}
+
+.listing-img {
+    width: 50%;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+.no-image {
+    width: 100%;
+    height: 250px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 2px dashed #999;
+    background: #f5f5f5;
+    color: #666;
+
+    border-radius: 12px;
+}
+
+.show-more-container {
+    text-align: center;
+    margin: 30px 0;
+}
+
+.show-more-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #333;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.show-more-btn:hover {
+    background-color: #555;
+}
+
+.site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+
+    padding: 25px 20px;
+    min-height: 140px;
+}
+
+/* left + right stay normal */
+.header-left,
+.header-right {
+    z-index: 2;
+}
+
+/* center becomes a vertical stack */
+.header-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    top: 5px;
+}
+
+/* title above image */
+.header-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* logo styling */
+.header-logo {
+    height: 60px;
+    width: auto;
+    margin-top: 5px;
+}
+
+.about-btn {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #b22222;
+    color: white;
+
+    text-decoration: none;
+    font-size: 1.4rem;
+    font-weight: bold;
+
+    transition: 0.2s;
+}
+
+.about-btn:hover {
+    transform: scale(1.08);
+    opacity: 0.9;
+}
+
+.about-page {
+    display: flex;
+    justify-content: center;
+    padding: 50px 20px;
+}
+
+.about-container {
+    max-width: 900px;
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+
+    line-height: 1.8;
+    font-size: 1.05rem;
+}
+
+.about-container h1 {
+    margin-bottom: 20px;
+    text-align: center;
+}
