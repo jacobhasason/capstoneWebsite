@@ -11,8 +11,14 @@
             <file>file:/C:/xampp/htdocs/capstoneWebsite/view/reportHeader.php</file>
             <file>file:/C:/xampp/htdocs/capstoneWebsite/AddListing/AddSource.php</file>
             <file>file:/C:/xampp/htdocs/capstoneWebsite/scripts/scraping/scraper.py</file>
-            <file>file:/C:/xampp/htdocs/capstoneWebsite/requirements.txt</file>
             <file>file:/C:/xampp/htdocs/capstoneWebsite/Dockerfile</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/getListing.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/DBConnect/db.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/Model/Listing.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/AddListing/SearchListings.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/styles/AddSource.css</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/view/horizontal_nav_bar.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/styles/main.css</file>
         </group>
     </open-files>
 </project-private>

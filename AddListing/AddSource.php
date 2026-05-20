@@ -231,18 +231,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 if (!empty($_POST['relatedLinks'])) {
     foreach ($_POST['relatedLinks'] as $link) {
         $link = trim($link);
-
+        $title = $link;
         if (!empty($link)) {
-            $title = getPageTitle($link);
-
-            insertRelatedListing(
-                $primaryListingID,
-                $_POST['topic'] ?? null,
-                "link",
-                $title,
-                null,
-                $link
-            );
+            insertRelatedListing($primaryListingID, $_POST['topic'] ?? null, $title, "link", null, $link);
         }
     }
 }
@@ -260,7 +251,6 @@ if (!empty($_POST['relatedListingIDs'])) {
     }
 }
 
-
 // PHP FUNCTIONS:
 function getPageTitle($url) {
     $html = @file_get_contents($url);
@@ -275,7 +265,6 @@ function getPageTitle($url) {
 
     return $url;
 }
-
 
 function getListingTitleByID($id) {
     $projectUrl = "https://zdysuvkcmymlwpernryq.supabase.co";
@@ -570,9 +559,12 @@ function insertRelatedListing($listingID, $topic, $title, $type, $file = null, $
                 <div id="relatedListingList">
                     <div class="related-listing">
                         <label>Related Listing:</label>
-                        <input type="text" class="listing-search" placeholder="Search listing by title">
-                        <input type="hidden" name="relatedListingIDs[]">
-                        <div class="listing-results"></div>
+
+                        <div class="listing-search-wrap">
+                            <input type="text" class="listing-search" placeholder="Search listing by title">
+                            <input type="hidden" name="relatedListingIDs[]">
+                            <div class="listing-results"></div>
+                        </div>
                     </div>
                 </div>
                 <button type="button" onclick="addRelatedListing()">+</button>
@@ -601,14 +593,24 @@ function insertRelatedListing($listingID, $topic, $title, $type, $file = null, $
                 }
 
                 function addRelatedListing() {
-                    document.getElementById("relatedListingList").insertAdjacentHTML("beforeend", `
-                     <div class="related-listing">
-                         <label>Related Listing:</label>
-                         <input type="text" class="listing-search" placeholder="Search listing by title">
-                         <input type="hidden" name="relatedListingIDs[]">
-                         <div class="listing-results"></div>
-                     </div>
-                 `);
+                alert("addRelatedListing clicked");    
+                document.getElementById("relatedListingList").insertAdjacentHTML("beforeend", `
+        <div class="related-listing">
+            <label>Related Listing:</label>
+
+            <div class="listing-search-wrap">
+                <input
+                    type="text"
+                    class="listing-search"
+                    placeholder="Search listing by title"
+                >
+
+                <input type="hidden" name="relatedListingIDs[]">
+
+                <div class="listing-results"></div>
+            </div>
+        </div>
+    `);
                 }
 
 
@@ -618,7 +620,7 @@ function insertRelatedListing($listingID, $topic, $title, $type, $file = null, $
 
                     const searchBox = e.target;
                     const query = searchBox.value.trim();
-                    const wrapper = searchBox.closest(".related-listing") || searchBox.parentElement;
+                    const wrapper = searchBox.closest(".listing-search-wrap") || searchBox.parentElement;
                     const hiddenInput = wrapper.querySelector('input[type="hidden"]');
                     const resultsBox = wrapper.querySelector(".listing-results");
 
