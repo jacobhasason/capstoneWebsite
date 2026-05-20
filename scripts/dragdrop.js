@@ -66,16 +66,23 @@ document.addEventListener("DOMContentLoaded", () => {
     setupDropZone("drop-zone-thumb");
     setupDropZone("drop-zone-icon");
 
-    document.querySelectorAll('.expand-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-        e.preventDefault();
+    document.addEventListener("DOMContentLoaded", () => {
 
-        const submenu = btn.nextElementSibling;
+        document.querySelectorAll(".topic-tree > li > a").forEach(link => {
+            link.addEventListener("click", (e) => {
+                e.preventDefault();
+    
+                const sub = link.nextElementSibling;
+                if (!sub) return;
+    
+                if (sub.classList.contains("hidden")) {
+                    sub.classList.remove("hidden");
+                } else {
+                    sub.classList.add("hidden");
+                }
+            });
+        });
 
-        if (submenu && submenu.classList.contains('subtopics')) {
-            submenu.classList.toggle('hidden');
-        }
     });
-});
 
 });
