@@ -407,7 +407,7 @@ function insertRelatedListing($listingID, $topic, $title, $type, $file = null, $
             </div>
 
             <div class="field">
-                <label for="author">Author Name(s):</label>
+                <label for="author">Author(s):</label>
                 <input type="text" id="author" name="author"
                        value="<?= htmlspecialchars($_POST['author'] ?? '') ?>">
                 <span class="error-text"><?= $fieldErrors['author'] ?? '' ?></span>
