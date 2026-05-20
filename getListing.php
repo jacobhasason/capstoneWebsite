@@ -17,10 +17,10 @@ $params = [];
    TOPIC FILTER (FIXED)
    case-insensitive match
 ---------------------- */
-if (!empty($topic)) {
+if (!empty($topics)) {
     $topicConditions = [];
 
-    foreach ($topic as $t) {
+    foreach ($topics as $t) {
         $topicConditions[] = 'LOWER(topic) = LOWER(?)';
         $params[] = $t;
     }
