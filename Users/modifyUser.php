@@ -90,31 +90,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     </form>
 
-    <!-- PERMISSION TOGGLE -->
-    <div class="source-actions">
-
-        <?php if ($user["userType"] == 2): ?>
-
-            <div class="btn disabled">
-                Modify Always Enabled (Superuser)
-            </div>
-
-        <?php else: ?>
-
-            <a href="#"
-               class="btn toggle-mod"
-               data-id="<?= $user["userID"] ?>"
-               data-state="<?= $user["permisMod"] ?>">
-
-                <?=
-                $user["permisMod"] == 2 ? "Modify Enabled" : "Modify Disabled"
-                ?>
-
-            </a>
-
-        <?php endif; ?>
-
-    </div>
 
 
     <!-- CAN MANAGE WHITELIST TOGGLE -->
