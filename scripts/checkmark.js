@@ -4,63 +4,40 @@ const filters = {
     medium: []
 };
 
-document.querySelectorAll('.dropdown li a').forEach(item => {
+// ONLY real selectable items
+document.querySelectorAll(".checkbox-box").forEach(box => {
 
-    item.addEventListener('click', function (e) {
+    const item = box.closest("a");
+    if (!item) return;
+
+    item.addEventListener("click", function (e) {
         e.preventDefault();
 
-        const checkbox = this.querySelector('.checkbox-box');
-        const parentList = this.closest('.dropdown');
+        const value = this.textContent.trim().toLowerCase();
 
         const parentCategory = this.closest('.main-nav > li')
             ?.querySelector(':scope > a')
             ?.innerText.trim();
 
-        // -----------------------------------
-        // CASE 1: CLICKED CATEGORY HEADER
-        // (no checkbox → expand/collapse only)
-        // -----------------------------------
-        if (!checkbox) {
-            // expand/collapse only
-            this.nextElementSibling?.classList.toggle("hidden");
-            return;
-        }
-
-        // -----------------------------------
-        // SAFE VALUE
-        // -----------------------------------
-        let value = this.textContent.trim().toLowerCase();
-
         // ----------------------------
-        // NORMALIZE MEDIUM VALUES
-        // ----------------------------
-        if (parentCategory === "Medium") {
-            if (value === "presentations") value = "presentation";
-            if (value === "videos") value = "video";
-            if (value === "podcasts") value = "podcast";
-            if (value === "tutorials") value = "tutorial";
-            if (value === "papers") value = "paper";
-        }
-
-        // ----------------------------
-        // DATE (single selection)
+        // DATE (single select)
         // ----------------------------
         if (parentCategory === "Date") {
 
-            parentList.querySelectorAll('.checkbox-box')
-                .forEach(box => box.classList.remove('checked'));
+            document.querySelectorAll(".checkbox-box")
+                .forEach(b => b.classList.remove("checked"));
 
-            checkbox.classList.add('checked');
+            box.classList.add("checked");
 
             filters.date = this.textContent.trim();
         }
 
         // ----------------------------
-        // TOPIC + MEDIUM (multi selection)
+        // TOPIC / MEDIUM (multi select)
         // ----------------------------
         else {
 
-            checkbox.classList.toggle('checked');
+            box.classList.toggle("checked");
 
             const arr = parentCategory === "Topic"
                 ? filters.topic
@@ -80,23 +57,16 @@ document.querySelectorAll('.dropdown li a').forEach(item => {
     });
 });
 
-// ----------------------------
-// AJAX FETCH
-// ----------------------------
 function fetchListings() {
     fetch("getListing.php", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(filters)
     })
     .then(res => res.text())
     .then(html => {
         const container = document.querySelector(".listings-container");
-        if (container) {
-            container.innerHTML = html;
-        }
+        if (container) container.innerHTML = html;
     })
-    .catch(err => console.error(err));
+    .catch(console.error);
 }
