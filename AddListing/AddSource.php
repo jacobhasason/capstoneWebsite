@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $fieldErrors['title'] = "Title is required";
     }
 
-    if (empty($_POST['author'])) {
+    if (empty($_POST['author(s)'])) {
         $fieldErrors['author'] = "Author is required";
     }
 
