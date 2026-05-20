@@ -5,17 +5,34 @@ const filters = {
 };
 
 document.querySelectorAll('.dropdown li a').forEach(item => {
-    item.addEventListener('click', function(e) {
+
+    item.addEventListener('click', function (e) {
         e.preventDefault();
 
         const checkbox = this.querySelector('.checkbox-box');
         const parentList = this.closest('.dropdown');
 
         const parentCategory = this.closest('.main-nav > li')
-            .querySelector('a')
-            .innerText.trim();
+            ?.querySelector(':scope > a')
+            ?.innerText.trim();
 
-        // clean value from clicked item
+        // -----------------------------------
+        // CASE 1: CLICKED CATEGORY HEADER
+        // (no checkbox → expand/collapse only)
+        // -----------------------------------
+        if (!checkbox) {
+            const sub = this.nextElementSibling;
+            if (sub && sub.classList.contains("hidden")) {
+                sub.classList.remove("hidden");
+            } else if (sub) {
+                sub.classList.add("hidden");
+            }
+            return;
+        }
+
+        // -----------------------------------
+        // SAFE VALUE
+        // -----------------------------------
         let value = this.textContent.trim().toLowerCase();
 
         // ----------------------------
@@ -39,7 +56,7 @@ document.querySelectorAll('.dropdown li a').forEach(item => {
 
             checkbox.classList.add('checked');
 
-            filters.date = this.textContent.trim(); // keep original label for display logic
+            filters.date = this.textContent.trim();
         }
 
         // ----------------------------
@@ -63,7 +80,6 @@ document.querySelectorAll('.dropdown li a').forEach(item => {
         }
 
         console.log(filters);
-
         fetchListings();
     });
 });
@@ -81,7 +97,10 @@ function fetchListings() {
     })
     .then(res => res.text())
     .then(html => {
-        document.querySelector(".listings-container").innerHTML = html;
+        const container = document.querySelector(".listings-container");
+        if (container) {
+            container.innerHTML = html;
+        }
     })
     .catch(err => console.error(err));
 }
