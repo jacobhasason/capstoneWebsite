@@ -68,21 +68,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.addEventListener("DOMContentLoaded", () => {
 
-        document.querySelectorAll(".topic-tree > li > a").forEach(link => {
-            link.addEventListener("click", (e) => {
+        document.querySelectorAll(".tree-toggle").forEach(button => {
+            button.addEventListener("click", (e) => {
                 e.preventDefault();
     
-                const sub = link.nextElementSibling;
-                if (!sub) return;
+                const submenu = button.nextElementSibling;
     
-                if (sub.classList.contains("hidden")) {
-                    sub.classList.remove("hidden");
-                } else {
-                    sub.classList.add("hidden");
-                }
+                if (!submenu || !submenu.classList.contains("hidden")) return;
+    
+                submenu.classList.toggle("hidden");
             });
         });
-
+    
     });
 
 });
