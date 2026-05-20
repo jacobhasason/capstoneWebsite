@@ -397,3 +397,25 @@ main {
 .topic-tree a:hover {
     background-color: #ffcccc;
 }
+
+/* Make tree buttons look like dropdown links */
+.topic-tree .tree-toggle {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 10px 15px;
+    background: none;
+    border: none;
+    text-align: left;
+    font-size: 0.9rem;
+    font-weight: bold;
+    font-family: inherit;
+    color: black;
+    cursor: pointer;
+    gap: 10px;
+}
+
+/* hover effect to match dropdown links */
+.topic-tree .tree-toggle:hover {
+    background-color: #ffcccc;
+}
