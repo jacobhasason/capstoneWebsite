@@ -1,4 +1,4 @@
-const filters = {
+let filters = {
     date: null,
     topic: [],
     medium: []
