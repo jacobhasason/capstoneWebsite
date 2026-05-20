@@ -21,12 +21,8 @@ document.querySelectorAll('.dropdown li a').forEach(item => {
         // (no checkbox → expand/collapse only)
         // -----------------------------------
         if (!checkbox) {
-            const sub = this.nextElementSibling;
-            if (sub && sub.classList.contains("hidden")) {
-                sub.classList.remove("hidden");
-            } else if (sub) {
-                sub.classList.add("hidden");
-            }
+            // expand/collapse only
+            this.nextElementSibling?.classList.toggle("hidden");
             return;
         }
 
