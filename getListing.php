@@ -72,7 +72,7 @@ foreach ($listings as $listing): ?>
         <a href="ExpandedListing/ListingInfo.php?id=<?= $listing['listingID'] ?>" class="item-link">
 
             <div class="thumbnail">
-                <img src="<?= $listing['icon'] ?? 'default.jpg' ?>" alt="">
+                <img src="<?= $listing['icon'] ?? 'cocoNut.jpg' ?>" alt="">
             </div>
 
             <div class="source-details">
