@@ -400,14 +400,14 @@ function insertRelatedListing($listingID, $topic, $title, $type, $file = null, $
         <form action="AddSource.php" method="post" class="input-group" enctype="multipart/form-data">
 
             <div class="field">
-                <label for="title">Project Title:</label>
+                <label for="title">Title:</label>
                 <input type="text" id="title" name="title"
                        value="<?= htmlspecialchars($_POST['title'] ?? '') ?>">
                 <span class="error-text"><?= $fieldErrors['title'] ?? '' ?></span>
             </div>
 
             <div class="field">
-                <label for="author">Author Name:</label>
+                <label for="author">Author Name(s):</label>
                 <input type="text" id="author" name="author"
                        value="<?= htmlspecialchars($_POST['author'] ?? '') ?>">
                 <span class="error-text"><?= $fieldErrors['author'] ?? '' ?></span>
