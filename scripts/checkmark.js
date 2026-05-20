@@ -52,7 +52,7 @@ document.querySelectorAll(".checkbox-box").forEach(box => {
             }
         }
 
-        console.log(filters);
+        //console.log(filters);
         fetchListings();
     });
 });
