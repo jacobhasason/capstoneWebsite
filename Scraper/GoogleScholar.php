@@ -67,27 +67,13 @@ for ($start = 0; $start < 1000; $start += 20) {
         } else {
             $citations = null;
         }
-        
-        // Topics
-        if (
-            str_contains($text, 'visual') ||
-            str_contains($text, 'visualization') ||
-            str_contains($text, 'knowledge discovery') ||
-            str_contains($text, 'graph') ||
-            str_contains($text, 'visual analytics')
-        ) {
-            $topic = "Visual Knowledge";
-        } else {
-            $topic = "AI/Machine Learning";
-        }
-        
+
         $allData[] = [
             "title" => $title,
             "links" => $link,
             "author" => $authors,
             "date" => $year,
             "citations" => $citations,
-            "topic" => $topic
         ];
     }
 
