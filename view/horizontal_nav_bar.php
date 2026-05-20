@@ -126,7 +126,6 @@
             </ul>
         </nav>
     </div>
-<script src="scripts/checkmark.js"></script>
 <script src="scripts/dragdrop.js"></script>
 <script src="scripts/tree.js"></script>
 </body>
