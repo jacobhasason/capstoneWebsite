@@ -45,7 +45,7 @@
                         <!-- ===================== -->
                         <li>
                             <button class="tree-toggle">
-                                Classification and Clustering
+                                Machine Learning Enhancement methods
                             </button>
                 
                             <ul class="hidden">
@@ -69,7 +69,7 @@
                         <!-- ===================== -->
                         <li>
                             <button class="tree-toggle">
-                                Classification and Clustering
+                                Visual Knowledge Discovery (VKD) Concepts
                             </button>
                 
                             <ul class="hidden">
@@ -88,7 +88,7 @@
                         <!-- ===================== -->
                         <li>
                             <button class="tree-toggle">
-                                Classification and Clustering
+                                General Line Coordinates Visualization with VKD
                             </button>
                 
                             <ul class="hidden">
