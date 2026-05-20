@@ -4,23 +4,18 @@ const filters = {
     medium: []
 };
 
-// ONLY attach filter behavior to items that actually contain checkboxes
 document.querySelectorAll('.dropdown li a').forEach(item => {
-
-    const checkbox = item.querySelector('.checkbox-box');
-
-    // 🚨 skip non-filter items (Topic expand buttons, etc.)
-    if (!checkbox && item.closest('.topic-dropdown')) return;
-
-    item.addEventListener('click', function (e) {
+    item.addEventListener('click', function(e) {
         e.preventDefault();
 
+        const checkbox = this.querySelector('.checkbox-box');
         const parentList = this.closest('.dropdown');
 
         const parentCategory = this.closest('.main-nav > li')
-            ?.querySelector(':scope > a')
-            ?.innerText.trim();
+            .querySelector('a')
+            .innerText.trim();
 
+        // clean value from clicked item
         let value = this.textContent.trim().toLowerCase();
 
         // ----------------------------
@@ -42,11 +37,9 @@ document.querySelectorAll('.dropdown li a').forEach(item => {
             parentList.querySelectorAll('.checkbox-box')
                 .forEach(box => box.classList.remove('checked'));
 
-            if (checkbox) {
-                checkbox.classList.add('checked');
-            }
+            checkbox.classList.add('checked');
 
-            filters.date = this.textContent.trim();
+            filters.date = this.textContent.trim(); // keep original label for display logic
         }
 
         // ----------------------------
@@ -54,9 +47,7 @@ document.querySelectorAll('.dropdown li a').forEach(item => {
         // ----------------------------
         else {
 
-            if (checkbox) {
-                checkbox.classList.toggle('checked');
-            }
+            checkbox.classList.toggle('checked');
 
             const arr = parentCategory === "Topic"
                 ? filters.topic
@@ -72,6 +63,7 @@ document.querySelectorAll('.dropdown li a').forEach(item => {
         }
 
         console.log(filters);
+
         fetchListings();
     });
 });
@@ -89,10 +81,7 @@ function fetchListings() {
     })
     .then(res => res.text())
     .then(html => {
-        const container = document.querySelector(".listings-container");
-        if (container) {
-            container.innerHTML = html;
-        }
+        document.querySelector(".listings-container").innerHTML = html;
     })
     .catch(err => console.error(err));
 }
