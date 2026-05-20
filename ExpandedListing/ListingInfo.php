@@ -6,9 +6,10 @@ require "../DBConnect/db.php";
 
 /* PERMISSION CHECK */
 $currentCanModify = (int) ($_SESSION["permisMod"] ?? 1);
-$currentUserType = (int)($_SESSION["userType"] ?? 0);
-$currentCanManage = (int)($_SESSION["canManage"] ?? 1);
+$currentUserType = (int) ($_SESSION["userType"] ?? 0);
+$currentCanManage = (int) ($_SESSION["canManage"] ?? 1);
 /* GET LISTING */
+
 $id = $_GET['id'] ?? null;
 
 if (!$id) {
@@ -46,12 +47,13 @@ if (!$listing) {
     </p>
 
     <!--IMAGE-->
+    <!--IMAGE-->
     <div class="listing-image">
 
         <?php
         $iconPath = $listing['icon'] ?? '';
 
-        if (!empty($iconPath) && file_exists($_SERVER['DOCUMENT_ROOT'] . $iconPath)):
+        if (!empty($iconPath)):
             ?>
 
             <img src="<?= htmlspecialchars($iconPath) ?>"
@@ -78,7 +80,7 @@ if (!$listing) {
             <button class="btn">Copy Citation</button>
 
             <a class="btn external"
-               href="ViewReport.php?id=<?= $listing['listingID'] ?>">
+               href="ViewReport.php?id=<?= htmlspecialchars($listing['listingID']) ?>">
                 View Primary Source & Related Resources
             </a>
 
@@ -108,14 +110,14 @@ if (!$listing) {
 
                 </a>
 
-<?php endif; ?>
+            <?php endif; ?>
 
         </div>
 
     </div>
 
     <!--OPTIONAL EXTERNAL LINK -->
-<?php if (!empty($listing['links'])): ?>
+    <?php if (!empty($listing['links'])): ?>
         <p class="extra-link">
             <a href="<?= htmlspecialchars($listing['links']) ?>" target="_blank">
                 External Link
@@ -124,13 +126,13 @@ if (!$listing) {
     <?php endif; ?>
 
     <!--FILE DOWNLOAD-->
-<?php if (!empty($listing['file'])): ?>
+    <?php if (!empty($listing['file'])): ?>
         <p class="extra-link">
             <a href="<?= htmlspecialchars($listing['file']) ?>" download>
                 Download File
             </a>
         </p>
-<?php endif; ?>
+    <?php endif; ?>
 
 </main>
 

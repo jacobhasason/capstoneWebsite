@@ -89,6 +89,12 @@
     border-radius: 10px;
 }
 
+.arrow.disabled {
+    opacity: 0.3;
+    pointer-events: none;
+    cursor: default;
+}
+
 /*CONTROL BAR*/
 .report-controls {
     display: flex;
@@ -144,3 +150,4 @@ select {
     background: #e6f2ff;
     transform: translateY(-2px);
 }
+

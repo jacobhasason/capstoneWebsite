@@ -8,6 +8,8 @@ if (!isset($_SESSION['userID'])) {
 $fieldErrors = [];
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $thumbnailPath = null;
+    $filePath = null;
 
     if (empty($_POST['title'])) {
         $fieldErrors['title'] = "Title is required";
@@ -38,57 +40,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     }
 
-    if (empty($fieldErrors)) {
-
-        $thumbnailPath = null;
-        $filePath = null;
-
-        //Upload files to superbase function
-        $fileName = time() . "_" . preg_replace('/[^A-Za-z0-9.\-_]/', '_', $_FILES['file']['name']);
-    }
-
-    function uploadToSupabase($tmpFile, $fileName, $bucket = "uploads") {
-
-        $projectUrl = "https://zdysuvkcmymlwpernryq.supabase.co";
-
-        $fileName = rawurlencode($fileName);
-
-        $uploadUrl = "$projectUrl/storage/v1/object/$bucket/$fileName";
-
-        $ch = curl_init($uploadUrl);
-
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            "apikey: sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
-            "Authorization: Bearer sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
-            "Content-Type: application/octet-stream"
-        ]);
-
-        if (empty($tmpFile) || !file_exists($tmpFile)) {
-            die("Invalid upload file path");
-        }
-
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, file_get_contents($tmpFile));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        $response = curl_exec($ch);
-        if (curl_errno($ch)) {
-            echo "UPLOAD ERROR: " . curl_error($ch);
-        }
-
-        curl_close($ch);
-        return "$projectUrl/storage/v1/object/public/$bucket/$fileName";
-    }
 
     // Thumbnail 
     if (
             !empty($_FILES['thumbnail']['tmp_name']) &&
             $_FILES['thumbnail']['error'] === UPLOAD_ERR_OK
     ) {
-        $thumbName = time() . "_" . basename($_FILES['thumbnail']['name']);
+        $originalName = basename($_FILES['thumbnail']['name']);
+        $safeName = preg_replace('/[^A-Za-z0-9.\-_]/', '_', $originalName);
+        $thumbName = time() . "_" . $safeName;
 
         $thumbnailPath = uploadToSupabase(
                 $_FILES['thumbnail']['tmp_name'],
@@ -104,7 +64,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if (!empty($_FILES['file']['name'])) {
 
-        $fileName = time() . "_" . basename($_FILES['file']['name']);
+        $originalName = basename($_FILES['file']['name']);
+        $safeName = preg_replace('/[^A-Za-z0-9.\-_]/', '_', $originalName);
+        $fileName = time() . "_" . $safeName;
 
         $filePath = uploadToSupabase(
                 $_FILES['file']['tmp_name'],
@@ -135,7 +97,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $scrapedData = json_decode($output, true);
 
-        $filePath = null;
+        //$filePath = null;
 
         if ($scrapedData) {
             if (empty($abstract) && !empty($scrapedData['abstract'])) {
@@ -214,16 +176,211 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $response = curl_exec($ch);
 
+    $insertedRows = json_decode($response, true);
+    $primaryListingID = $insertedRows[0]['listingID'] ?? null;
+
     if (curl_errno($ch)) {
         echo "<pre style='color:red'>CURL ERROR: " . curl_error($ch) . "</pre>";
     } else {
         echo "<div style='color:green; font-weight:bold;'>Uploaded Successfully</div>";
     }
     curl_close($ch);
+
+    // INSERT RELATED CONTENT
+    // Related file uploads
+    if (!empty($_FILES['relatedFiles']['name'])) {
+
+        foreach ($_FILES['relatedFiles']['name'] as $i => $name) {
+
+            if (
+                    !empty($name) &&
+                    $_FILES['relatedFiles']['error'][$i] === UPLOAD_ERR_OK
+            ) {
+
+                $originalName = basename($name);
+
+                $title = pathinfo($originalName, PATHINFO_FILENAME);
+
+                $safeName = preg_replace(
+                        '/[^A-Za-z0-9.\-_]/',
+                        '_',
+                        $originalName
+                );
+
+                $relatedFileName = time() . "_" . $safeName;
+
+                $relatedFilePath = uploadToSupabase(
+                        $_FILES['relatedFiles']['tmp_name'][$i],
+                        $relatedFileName
+                );
+
+                insertRelatedListing(
+                        $primaryListingID,
+                        $_POST['topic'] ?? null,
+                        "file",
+                        $title,
+                        $relatedFilePath,
+                        null
+                );
+            }
+        }
+    }
+}
+
+// Related hyperlinks
+if (!empty($_POST['relatedLinks'])) {
+    foreach ($_POST['relatedLinks'] as $link) {
+        $link = trim($link);
+        $title = $link;
+        if (!empty($link)) {
+            insertRelatedListing($primaryListingID, $_POST['topic'] ?? null, $title, "link", null, $link);
+        }
+    }
+}
+
+// Related existing listings
+if (!empty($_POST['relatedListingIDs'])) {
+    foreach ($_POST['relatedListingIDs'] as $relatedID) {
+        $relatedID = trim($relatedID);
+
+        if (!empty($relatedID)) {
+            $title = getListingTitleByID($relatedID);
+
+            insertRelatedListing($primaryListingID, $_POST['topic'] ?? null, $title, "listing", null, $relatedID);
+        }
+    }
+}
+
+// PHP FUNCTIONS:
+function getPageTitle($url) {
+    $html = @file_get_contents($url);
+
+    if (!$html) {
+        return $url;
+    }
+
+    if (preg_match('/<title[^>]*>(.*?)<\/title>/is', $html, $matches)) {
+        return trim(html_entity_decode($matches[1]));
+    }
+
+    return $url;
+}
+
+function getListingTitleByID($id) {
+    $projectUrl = "https://zdysuvkcmymlwpernryq.supabase.co";
+    $key = "sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o";
+
+    $url = $projectUrl . "/rest/v1/Listing"
+            . "?select=title"
+            . "&listingID=eq." . urlencode($id)
+            . "&limit=1";
+
+    $ch = curl_init($url);
+
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "apikey: $key",
+        "Authorization: Bearer $key",
+        "Content-Type: application/json"
+    ]);
+
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+    $rows = json_decode($response, true);
+
+    return $rows[0]['title'] ?? "Related Listing #" . $id;
+}
+
+function uploadToSupabase($tmpFile, $fileName, $bucket = "uploads") {
+
+    $projectUrl = "https://zdysuvkcmymlwpernryq.supabase.co";
+
+    $fileName = rawurlencode($fileName);
+
+    $uploadUrl = "$projectUrl/storage/v1/object/$bucket/$fileName";
+
+    $ch = curl_init($uploadUrl);
+
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "apikey: sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
+        "Authorization: Bearer sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
+        "Content-Type: application/octet-stream"
+    ]);
+
+    if (empty($tmpFile) || !file_exists($tmpFile)) {
+        die("Invalid upload file path");
+    }
+
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, file_get_contents($tmpFile));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $response = curl_exec($ch);
+
+    if (curl_errno($ch)) {
+        echo "UPLOAD ERROR: " . curl_error($ch);
+    }
+
+    curl_close($ch);
+
+    return "$projectUrl/storage/v1/object/public/$bucket/$fileName";
+}
+
+function insertRelatedListing($listingID, $topic, $title, $type, $file = null, $link = null) {
+    $ch = curl_init("https://zdysuvkcmymlwpernryq.supabase.co/rest/v1/RelatedListing");
+
+    $data = [
+        "listingID" => (int) $listingID,
+        "topic" => $topic,
+        "title" => $title,
+        "type" => $type,
+        "file" => $file,
+        "links" => $link
+    ];
+
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "apikey: sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
+        "Authorization: Bearer sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
+        "Content-Type: application/json",
+        "Prefer: return=representation"
+    ]);
+
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+    /*
+     * DEBUG
+      echo "<pre>";
+      echo "RelatedListing HTTP Code: " . $httpCode . "\n";
+      echo "Payload:\n";
+      print_r($data);
+      echo "Response:\n";
+      echo htmlspecialchars($response);
+      echo "</pre>";
+     */
+
+    if (curl_errno($ch)) {
+        echo "<pre style='color:red'>Related insert CURL error: " . curl_error($ch) . "</pre>";
+    }
+
+    curl_close($ch);
 }
 ?>
 <?php include '../view/AddSourceHeader.php'; ?>
 
+<!-- HTML -->
 <link rel="stylesheet" href="../styles/AddSource.css">
 <link rel="stylesheet" href="../styles/main.css">
 
@@ -370,9 +527,128 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             <div class="field">
                 <label>Citations:</label>
-                <input type="text" name="links">
+                <input type="text" name="citations">
             </div>
 
+            <br> </br>
+
+            <div id="relatedSources">
+                <h3>Related Sources</h3>
+
+                <div class="related-category">
+                    <div id="relatedFileList">
+                        <div class="related-upload">
+                            <label>Related Attachment:</label>
+                            <input type="file" name="relatedFiles[]">
+                        </div>
+                    </div>
+
+                    <button type="button" onclick="addRelatedFile()">+</button>
+                </div>
+                <br> </br>
+
+                <div id="relatedLinkList">
+                    <div class="related-link">
+                        <label>Related Link:</label>
+                        <input type="url" name="relatedLinks[]" placeholder="https://example.com">
+                    </div>
+                </div>
+                <button type="button" onclick="addRelatedLink()">+</button>
+                <br> </br>
+
+                <div id="relatedListingList">
+                    <div class="related-listing">
+                        <label>Related Listing:</label>
+
+                        <div class="listing-search-wrap">
+                            <input type="text" class="listing-search" placeholder="Search listing by title">
+                            <input type="hidden" name="relatedListingIDs[]">
+                            <div class="listing-results"></div>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" onclick="addRelatedListing()">+</button>
+                <br>
+
+            </div>
+
+            <!-- Inline script for adding related sources -->
+            <script>
+                function addRelatedFile() {
+                    document.getElementById("relatedFileList").insertAdjacentHTML("beforeend", `
+        <div class="related-upload">
+            <label>Related Attachment:</label>
+            <input type="file" name="relatedFiles[]">
+        </div>
+    `);
+                }
+
+                function addRelatedLink() {
+                    document.getElementById("relatedLinkList").insertAdjacentHTML("beforeend", `
+                     <div class="related-link">
+                         <label>Related Link:</label>
+                         <input type="url" name="relatedLinks[]" placeholder="https://example.com">
+                     </div>
+                             `);
+                }
+
+                function addRelatedListing() {
+                alert("addRelatedListing clicked");    
+                document.getElementById("relatedListingList").insertAdjacentHTML("beforeend", `
+        <div class="related-listing">
+            <label>Related Listing:</label>
+
+            <div class="listing-search-wrap">
+                <input
+                    type="text"
+                    class="listing-search"
+                    placeholder="Search listing by title"
+                >
+
+                <input type="hidden" name="relatedListingIDs[]">
+
+                <div class="listing-results"></div>
+            </div>
+        </div>
+    `);
+                }
+
+
+                document.addEventListener("input", async function (e) {
+                    if (!e.target.classList.contains("listing-search"))
+                        return;
+
+                    const searchBox = e.target;
+                    const query = searchBox.value.trim();
+                    const wrapper = searchBox.closest(".listing-search-wrap") || searchBox.parentElement;
+                    const hiddenInput = wrapper.querySelector('input[type="hidden"]');
+                    const resultsBox = wrapper.querySelector(".listing-results");
+
+                    hiddenInput.value = "";
+                    resultsBox.innerHTML = "";
+
+                    if (query.length < 2)
+                        return;
+
+                    const response = await fetch(`SearchListings.php?q=${encodeURIComponent(query)}`);
+                    const data = await response.json();
+                    console.log(data);
+
+                    data.forEach(listing => {
+                        const item = document.createElement("div");
+                        item.className = "listing-result";
+                        item.textContent = `${listing.title} by ${listing.author}`;
+                        item.onclick = function () {
+                            searchBox.value = listing.title;
+                            hiddenInput.value = listing.listingID;
+                            resultsBox.innerHTML = "";
+                        };
+                        resultsBox.appendChild(item);
+                    });
+                });
+            </script>
+
+            <br>
             <button type="submit">Upload Project</button>
 
         </form>
