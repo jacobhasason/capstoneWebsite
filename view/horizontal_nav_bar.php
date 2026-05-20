@@ -21,7 +21,9 @@
                         <!-- MAIN CATEGORY 1 -->
                         <!-- ===================== -->
                         <li>
-                            <a href="#">Classification and Clustering</a>
+                            <button class="tree-toggle">
+                                Classification and Clustering
+                            </button>
                 
                             <ul class="hidden">
                 
@@ -42,7 +44,9 @@
                         <!-- MAIN CATEGORY 2 -->
                         <!-- ===================== -->
                         <li>
-                            <a href="#">Machine Learning Enhancement methods</a>
+                            <button class="tree-toggle">
+                                Classification and Clustering
+                            </button>
                 
                             <ul class="hidden">
                 
@@ -64,7 +68,9 @@
                         <!-- MAIN CATEGORY 3 -->
                         <!-- ===================== -->
                         <li>
-                            <a href="#">Visual Knowledge Discovery (VKD) Concepts</a>
+                            <button class="tree-toggle">
+                                Classification and Clustering
+                            </button>
                 
                             <ul class="hidden">
                 
@@ -81,7 +87,9 @@
                         <!-- MAIN CATEGORY 4 -->
                         <!-- ===================== -->
                         <li>
-                            <a href="#">General Line Coordinates Visualization with VKD</a>
+                            <button class="tree-toggle">
+                                Classification and Clustering
+                            </button>
                 
                             <ul class="hidden">
                 
