@@ -18,7 +18,7 @@
         </p>
 
         <h2 class="table-title">
-            VKD and GLC Concepts and Abbreviations
+            Visual Knowledge Discovery and General Line Coordinates Concepts and Abbreviations
         </h2>
 
         <table class="abbreviation-table">
