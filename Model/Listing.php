@@ -1,8 +1,5 @@
-
-
-
 <?php
-require "../DBConnect/db.php";
+
 
 
 function addListing($title, $author, $date, $icon, $medium, $abstract, $links, $file, $userID, $topic, $citation) {
@@ -39,4 +36,3 @@ function addListing($title, $author, $date, $icon, $medium, $abstract, $links, $
 
     return $response;
 }
-

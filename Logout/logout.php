@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 
 // clear all session data
 $_SESSION = [];
@@ -8,5 +8,5 @@ $_SESSION = [];
 session_destroy();
 
 // send user back to home page
-header("Location: ../index.php");
+header("Location: controller.php?page=index");
 exit();

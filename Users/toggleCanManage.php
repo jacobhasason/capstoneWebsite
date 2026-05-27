@@ -1,6 +1,4 @@
 <?php
-session_start();
-require "../DBConnect/db.php";
 
 /*AUTH CHECK */
 if (!isset($_SESSION["userType"])) {

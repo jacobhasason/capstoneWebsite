@@ -8,8 +8,9 @@
             
             <h2>Users Page</h2>
           
-            
-<!--            <link rel="stylesheet" href="styles/main.css"> -->
-        </header>
+                <link rel="stylesheet" href="styles/main.css">
+                <link rel="stylesheet" href="styles/userpage.css">
+     
+            </header>
     </body>
 </html>

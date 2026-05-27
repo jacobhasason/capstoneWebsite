@@ -1,6 +1,5 @@
 <?php
-session_start();
-require "../DBConnect/db.php";
+require "DBConnect/db.php";
 
 $currentUserType = (int) ($_SESSION["userType"] ?? 1);
 $currentCanManage = (int) ($_SESSION["canManage"] ?? 1);
@@ -49,16 +48,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $update->execute([$hashed, $id]);
 
-        header("Location: usersPage.php");
+        header("Location: controller.php?page=usersPage");
         exit();
     }
 }
 ?>
 
-<?php include '../view/modifyUserHeader.php'; ?>
 
-<link rel="stylesheet" href="../styles/modUser.css">
-<link rel="stylesheet" href="../styles/main.css">
+
 
 <main class="modify-user-page">
 
@@ -90,7 +87,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     </form>
 
-
+  
 
     <!-- CAN MANAGE WHITELIST TOGGLE -->
     <div class="source-actions">
@@ -113,7 +110,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             </a>
 
-<?php endif; ?>
+        <?php endif; ?>
 
     </div> 
 
@@ -126,7 +123,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 
 
-<a href="usersPage.php" class="fab">←</a>
+<a href="controller.php?page=usersPage" class="fab">←</a>
 
 <script>
     document.querySelectorAll(".toggle-mod").forEach((btn) => {
@@ -137,7 +134,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             const id = btn.dataset.id;
 
             try {
-                const res = await fetch(`toggleModifyPermission.php?id=${id}`);
+                const res = await fetch(`controller.php?page=toggleModifyPermission&id=${id}`);
                 const text = await res.text();
 
                 console.log("SERVER RESPONSE:", text);
@@ -173,12 +170,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             const id = btn.dataset.id;
 
-            const res = await fetch(`toggleCanManage.php?id=${id}`);
+            const res = await fetch(`controller.php?page=toggleCanManage&id=${id}`);
             const newState = (await res.text()).trim();
 
             btn.dataset.state = newState;
 
-            if (newState == "2") {
+            if (newState === "2") {
                 btn.classList.remove("danger");
                 btn.textContent = "Can Manage Sources";
             } else {
@@ -191,5 +188,3 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 
 </script>
-
-<?php include '../view/footer.php'; ?>

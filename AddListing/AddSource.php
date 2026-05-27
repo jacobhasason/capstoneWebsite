@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 
 // Validation for user input
 if (!isset($_SESSION['userID'])) {
@@ -11,9 +11,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $thumbnailPath = null;
     $filePath = null;
 
+
     if (empty($_POST['title'])) {
         $fieldErrors['title'] = "Title is required";
     }
+
 
     if (empty($_POST['author(s)'])) {
         $fieldErrors['author'] = "Author is required";
@@ -26,6 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (empty($_POST['medium'])) {
         $fieldErrors['medium'] = "Please select a medium";
     }
+
 
 
     if (empty($_FILES['file']['name']) && empty($_POST['externalLink'])) {
@@ -394,6 +397,7 @@ function insertRelatedListing($listingID, $topic, $title, $type, $file = null, $
 <link rel="stylesheet" href="../styles/main.css">
 
 
+
 <main>
     <body>
 
@@ -401,19 +405,23 @@ function insertRelatedListing($listingID, $topic, $title, $type, $file = null, $
 
             <div class="field">
                 <label for="title">Title:</label>
+
                 <input type="text" id="title" name="title"
                        value="<?= htmlspecialchars($_POST['title'] ?? '') ?>">
                 <span class="error-text"><?= $fieldErrors['title'] ?? '' ?></span>
             </div>
 
             <div class="field">
+
                 <label for="author">Author(s):</label>
+
                 <input type="text" id="author" name="author"
                        value="<?= htmlspecialchars($_POST['author'] ?? '') ?>">
                 <span class="error-text"><?= $fieldErrors['author'] ?? '' ?></span>
             </div>
 
             <div class="field">
+
                 <label>Date Published:</label>
 
                 <div class="date-row">
@@ -423,9 +431,11 @@ function insertRelatedListing($listingID, $topic, $title, $type, $file = null, $
                     <span class="error-text"><?= $fieldErrors['datePub'] ?? '' ?></span>
                 </div>
 
+
             </div>
 
             <div class="drop-row">
+
 
                 <!-- ICON COLUMN -->
                 <div class="drop-group">
@@ -501,9 +511,11 @@ function insertRelatedListing($listingID, $topic, $title, $type, $file = null, $
 
                     </div>
 
+
                 </div>
 
             </div>
+
 
             <div class="field">
                 <label>Medium:</label>
@@ -519,6 +531,7 @@ function insertRelatedListing($listingID, $topic, $title, $type, $file = null, $
             </div>
 
             <div class="field">
+
                 <label>Topic:</label>
                 <select name="topic">
                     <option value="">Select</option>
@@ -530,12 +543,14 @@ function insertRelatedListing($listingID, $topic, $title, $type, $file = null, $
 
             <div class="field">
 
+
                 <label>Abstract:</label>
                 <input type="text" name="abs">
             </div>
 
             <div class="field">
                 <label>Citations:</label>
+
                 <input type="text" name="citations">
             </div>
 
@@ -658,6 +673,7 @@ function insertRelatedListing($listingID, $topic, $title, $type, $file = null, $
             </script>
 
             <br>
+
             <button type="submit">Upload Project</button>
 
         </form>
@@ -665,6 +681,8 @@ function insertRelatedListing($listingID, $topic, $title, $type, $file = null, $
     </body>
 </main>
 
-<a href="../index.php" class="fab"><<</a>
-<script src="../scripts/dragdrop.js"></script>
-<?php include '../view/footer.php'; ?>
+
+<a href="controller.php?page=index" class="fab"><<</a>
+<script src="scripts/dragdrop.js"></script>
+
+

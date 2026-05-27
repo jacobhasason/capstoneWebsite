@@ -2,6 +2,7 @@
 session_start();
 require "../DBConnect/db.php";
 
+
 /* PERMISSION CHECK */
 if (!isset($_SESSION["permisMod"]) || (int) $_SESSION["permisMod"] !== 2) {
     die("Not allowed");
@@ -57,7 +58,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $id
     ]);
 
-    header("Location: ListingInfo.php?id=" . $id);
+
+    header("Location: controller.php?page=listingInfo&id=" . $id);
+
     exit();
 }
 ?>
@@ -65,6 +68,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <?php include '../view/header.php'; ?>
 <link rel="stylesheet" href="../styles/main.css">
 <link rel="stylesheet" href="../styles/editListing.css">
+
 
 <main class="edit-listing">
 
@@ -78,7 +82,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         <label>Author</label>
         <input type="text" name="author"
+
                value="<?= htmlspecialchars($listing["author(s)"]) ?>">
+
 
         <label>Date</label>
         <input type="text" name="date"
@@ -105,8 +111,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     </form>
 
+<a href="controller.php?page=listingInfo&id=<?= $id ?>" class="fab">←</a>
 </main>
 
-<a href="ListingInfo.php?id=<?= $id ?>" class="fab">←</a>
 
-<?php include '../view/footer.php'; ?>
+
+

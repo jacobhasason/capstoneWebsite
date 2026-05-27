@@ -1,10 +1,10 @@
 <?php
-session_start();
-require "../DBConnect/db.php";
+
+require "DBConnect/db.php";
 
 // If already logged in, redirect to users page
 if (isset($_SESSION["userID"])) {
-    header("Location: ../Users/usersPage.php");
+    header("Location: ../controller.php?page=usersPage");
     exit();
 }
 $error = "";
@@ -32,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $_SESSION["canManage"] = $user["canManage"] ?? 1;
             $_SESSION["permisMod"] = (int) ($user["permisMod"] ?? 1);
 
-            header("Location: ../Users/usersPage.php");
+            header("Location: controller.php?page=usersPage");
             exit();
         } else {
             $error = "Invalid username or password";
@@ -43,9 +43,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 }
 ?>
 
-<?php include '../view/LoginHeader.php'; ?>
-
-<link rel="stylesheet" href="../styles/main.css">
 
 <main>
 
@@ -73,6 +70,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 </main>
 
-<a href="../index.php" class="fab"><<</a>
+<a href="controller.php?page=index" class="fab"><<</a>
 
-<?php include '../view/footer.php'; ?>
+

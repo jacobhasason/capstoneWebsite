@@ -1,15 +1,13 @@
 <?php
-session_start();
 
-include '../view/header.php';
-require "../DBConnect/db.php";
+
+require "DBConnect/db.php";
 
 /* PERMISSION CHECK */
 $currentCanModify = (int) ($_SESSION["permisMod"] ?? 1);
-$currentUserType = (int) ($_SESSION["userType"] ?? 0);
-$currentCanManage = (int) ($_SESSION["canManage"] ?? 1);
+$currentUserType = (int)($_SESSION["userType"] ?? 0);
+$currentCanManage = (int)($_SESSION["canManage"] ?? 1);
 /* GET LISTING */
-
 $id = $_GET['id'] ?? null;
 
 if (!$id) {
@@ -26,13 +24,17 @@ if (!$listing) {
 }
 ?>
 
+
 <link rel="stylesheet" href="../styles/main.css">
+
 
 <main class="listing-full">
 
     <h1><?= htmlspecialchars($listing['title'] ?? 'Untitled') ?></h1>
 
+
     <p><strong>Author(s):</strong> <?= htmlspecialchars($listing['author'] ?? 'Unknown') ?></p>
+
 
     <p><strong>Date:</strong> <?= htmlspecialchars($listing['date'] ?? 'N/A') ?></p>
 
@@ -47,14 +49,12 @@ if (!$listing) {
     </p>
 
     <!--IMAGE-->
-    <!--IMAGE-->
+
     <div class="listing-image">
 
-        <?php
-        $iconPath = $listing['icon'] ?? '';
+        <?php $iconPath = $listing['icon'] ?? ''; ?>
 
-        if (!empty($iconPath)):
-            ?>
+        <?php if (!empty($iconPath)): ?>
 
             <img src="<?= htmlspecialchars($iconPath) ?>"
                  alt="Listing Icon"
@@ -70,17 +70,22 @@ if (!$listing) {
 
     </div>
 
+
+</div>
+
     <!--ACTIONS -->
     <div class="listing-actions">
 
         <div class="action-buttons">
 
-            <button class="btn">View Abstract</button>
+
+            
 
             <button class="btn">Copy Citation</button>
 
             <a class="btn external"
-               href="ViewReport.php?id=<?= htmlspecialchars($listing['listingID']) ?>">
+
+               href="controller.php?page=ViewReport&id=<?= $listing['listingID'] ?>">
                 View Primary Source & Related Resources
             </a>
 
@@ -88,7 +93,9 @@ if (!$listing) {
             <?php if ($currentCanModify === 2): ?>
 
                 <a class="btn edit"
-                   href="editListing.php?id=<?= $listing['listingID'] ?>">
+
+                   href="controller.php?page=editListing&id=<?= $listing['listingID'] ?>">
+
                     Edit Source
                 </a>
 
@@ -112,12 +119,15 @@ if (!$listing) {
 
             <?php endif; ?>
 
+
         </div>
 
     </div>
 
     <!--OPTIONAL EXTERNAL LINK -->
+
     <?php if (!empty($listing['links'])): ?>
+
         <p class="extra-link">
             <a href="<?= htmlspecialchars($listing['links']) ?>" target="_blank">
                 External Link
@@ -127,17 +137,19 @@ if (!$listing) {
 
     <!--FILE DOWNLOAD-->
     <?php if (!empty($listing['file'])): ?>
+
         <p class="extra-link">
             <a href="<?= htmlspecialchars($listing['file']) ?>" download>
                 Download File
             </a>
         </p>
-    <?php endif; ?>
+
+<?php endif; ?>
 
 </main>
 
-<a href="../index.php" class="fab">&lt;&lt;</a>
+<a href="controller.php?page=index" class="fab">&lt;&lt;</a>
 
 <script src="../scripts/date.js"></script>
 
-<?php include '../view/footer.php'; ?>
+

@@ -1,6 +1,6 @@
 <?php
-session_start();
-require "../DBConnect/db.php";
+
+require "DBConnect/db.php";
 
 // must be logged in
 if (!isset($_SESSION["userID"])) {
@@ -46,7 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             $stmt->execute([$username, $hashed, $type]);
 
-            header("Location: usersPage.php");
+            header("Location: controller.php?page=usersPage");
             exit();
         }
 
@@ -56,9 +56,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 }
 ?>
 
-<?php include '../view/header.php'; ?>
 
-<link rel="stylesheet" href="../styles/main.css">
 
 <main class="add-user-page">
 
@@ -89,6 +87,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 </main>
 
-<a href="usersPage.php" class="fab"><<</a>
+<a href="controller.php?page=usersPage" class="fab"><<</a>
 
-<?php include '../view/footer.php'; ?>
+

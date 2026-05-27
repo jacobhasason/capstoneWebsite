@@ -1,10 +1,9 @@
 <?php
-session_start();
-require "../DBConnect/db.php";
+require "DBConnect/db.php";
 
 /* AUTH CHECK (must be logged in */
 if (!isset($_SESSION["userID"])) {
-    header("Location: ../Login/login.php");
+    header("Location: controller.php?page=login");
     exit();
 }
 
@@ -28,10 +27,7 @@ if ($canViewUsers) {
 }
 ?>
 
-<?php include '../view/userPageHeader.php'; ?>
 
-<link rel="stylesheet" href="../styles/main.css">
-<link rel="stylesheet" href="../styles/userpage.css">
 
 <main>
 
@@ -44,7 +40,7 @@ if ($canViewUsers) {
         </div>
 
         <div class="user-right">
-            <a href="../Logout/logout.php" class="logout-btn">
+            <a href="controller.php?page=logout" class="logout-btn">
                 Log out
             </a>
         </div>
@@ -87,14 +83,14 @@ if ($canViewUsers) {
                         <?php if ($user["userType"] == 1): ?>
                             <div class="user-actions">
 
-                                <a href="modifyUser.php?id=<?= $user["userID"] ?>" class="btn">
+                                <a href="controller.php?page=modifyUser&id=<?= $user["userID"] ?>" class="btn">
                                     Modify
                                 </a>
 
-                                <a href="deleteUser.php?id=<?= $user["userID"] ?>"
-                                   class="btn danger"
-                                   onclick="return confirm('Are you sure?')">
-                                    Delete
+                                <a href="controller.php?page=deleteUser&id=<?= $user["userID"] ?>"
+                                    class="btn danger"
+                                    onclick="return confirm('Are you sure?')">
+                                     Delete
                                 </a>
 
                             </div>
@@ -128,7 +124,7 @@ if ($canViewUsers) {
 
         <?php if ($currentUserType === 2): ?>
 
-            <a href="addUser.php?type=1" class="btn">
+            <a href="controller.php?page=addUser&type=1" class="btn">
                 Add User (Whitelist)
             </a>
 
@@ -144,6 +140,5 @@ if ($canViewUsers) {
 
 </main>
 
-<a href="../index.php" class="fab">&lt;&lt;</a>
+<a href="controller.php?page=index" class="fab">&lt;&lt;</a>
 
-<?php include '../view/footer.php'; ?>

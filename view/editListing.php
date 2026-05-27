@@ -4,12 +4,12 @@
     <title>Add User</title>
     <body>
         <header>
-           
+            <link rel="stylesheet" href="styles/main.css">
+            <link rel="stylesheet" href="styles/editListing.css">
             
-            <h2>Add User</h2>
+            <h2>Edit Listing</h2>
           
-
-            <link rel="stylesheet" href="styles/main.css">          
+         
         </header>
     </body>
 </html>

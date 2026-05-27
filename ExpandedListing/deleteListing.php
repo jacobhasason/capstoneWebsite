@@ -1,6 +1,5 @@
 <?php
-session_start();
-require "../DBConnect/db.php";
+
 
 /* PERMISSION CHECK*/
 $currentUserType = (int)($_SESSION["userType"] ?? 0);
@@ -25,7 +24,6 @@ $stmt = $db->prepare('DELETE FROM "Listing" WHERE "listingID" = ?');
 $stmt->execute([$id]);
 
 /*REDIRECT*/
-header("Location: ../index.php");
+header("Location: controller.php?page=home");
 exit();
 ?>
-C:\xampp\htdocs\capstoneWebsite-Holden-Testing\ExpandedListing\deleteListing.php

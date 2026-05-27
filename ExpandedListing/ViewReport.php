@@ -1,4 +1,5 @@
 <?php
+
 require "../DBConnect/db.php";
 
 $primaryID = isset($_GET['id']) ? (int) $_GET['id'] : 0;
@@ -60,6 +61,7 @@ foreach ($relatedRows as $row) {
     }
 }
 
+
 $index = isset($_GET['i']) ? (int) $_GET['i'] : 0;
 
 if ($index < 0) {
@@ -70,6 +72,7 @@ if ($index >= count($listings)) {
 }
 
 $current = $listings[$index];
+
 
 $totalItems = count($listings);
 
@@ -96,17 +99,20 @@ if ($totalItems <= 1) {
 <link rel="stylesheet" href="../styles/main.css">
 <link rel="stylesheet" href="../styles/reportPage.css">
 
+
 <main class="report-page">
 
     <!-- Carousel -->
     <div class="carousel">
 
         <!-- Left arrow -->
+
         <?php if (count($listings) > 1): ?>
             <a class="arrow" href="?id=<?= $primaryID ?>&i=<?= $prevIndex ?>">◀</a>
         <?php else: ?>
             <span class="arrow disabled">◀</span>
         <?php endif; ?>
+
 
         <!-- Content -->
         <div class="carousel-content">
@@ -132,11 +138,13 @@ if ($totalItems <= 1) {
         </div>
 
         <!-- Right arrow -->
+
         <?php if (count($listings) > 1): ?>
             <a class="arrow" href="?id=<?= $primaryID ?>&i=<?= $nextIndex ?>">▶</a>
         <?php else: ?>
             <span class="arrow disabled">▶</span>
         <?php endif; ?>
+
 
     </div>
 
@@ -155,6 +163,8 @@ if ($totalItems <= 1) {
             <?= htmlspecialchars($current["title"] ?? 'Untitled') ?>
         </div>
 
+
+        <!-- Download button -->
         <?php if (!empty($current["file"])): ?>
 
             <a class="btn"
@@ -162,6 +172,7 @@ if ($totalItems <= 1) {
                download>
                 Download
             </a>
+
 
         <?php elseif (!empty($current["links"])): ?>
 
@@ -175,6 +186,7 @@ if ($totalItems <= 1) {
 
             <button class="btn" disabled>No attachment</button>
 
+
         <?php endif; ?>
 
     </div>
@@ -184,8 +196,10 @@ if ($totalItems <= 1) {
         <?= $index + 1 ?> / <?= count($listings) ?>
     </p>
 
-    <a href="../index.php" class="fab"><<</a>
+
+    <a href="controller.php?page=index" class="fab"><<</a>
 
 </main>
 
-<?php include '../view/footer.php'; ?>
+
+

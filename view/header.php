@@ -1,37 +1,43 @@
-<?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Capstone Website</title>
-    <link rel="stylesheet" href="styles/main.css">
-</head>
-
-<body>
-
 <header class="site-header">
 
+    <link rel="stylesheet" href="styles/main.css">
+
+    <!-- LEFT SIDE -->
     <div class="header-left">
-      
-        <h2>Artificial Intelligence and Visual Knowledge Discovery (AI-VKD)</h2>
+
+    <a href="controller.php?page=about"
+       class="about-btn"
+       title="About">
+        ?
+    </a>
+
+</div>
+
+    <!-- CENTER -->
+    <div class="header-center">
+        <h1 class="header-title">CWU Research Hub</h1>
+        <img src="images/cwu.jpg" alt="CWU Logo" class="header-logo">
     </div>
 
-    
+    <!-- RIGHT SIDE -->
     <div class="header-right">
 
         <?php if (isset($_SESSION["userID"])): ?>
-            <a href="Users/usersPage.php" class="user-icon-btn" title="My Account">
+
+            <a href="controller.php?page=usersPage"
+               class="user-icon-btn"
+               title="My Account">
                 👤
             </a>
+
         <?php else: ?>
-            <a href="Login/login.php" class="user-icon-btn" title="Login">
+
+            <a href="controller.php?page=login"
+               class="user-icon-btn"
+               title="Login">
                 👤
             </a>
+
         <?php endif; ?>
 
     </div>

@@ -3,23 +3,31 @@
     box-sizing: border-box;
 }
 
-html {
-    background-image: url("../images/wildcat.png");
-}
+
 
 h1, h2, h3, p {
     margin: 0;
     padding: 0;
 }
 
+html,
+body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
 body {
     font-family: Verdana, Arial, Helvetica, sans-serif;
-    width: 800px;
-    margin: 20px auto;
+
+    width: 100%;
+    min-height: 100vh;
+
+    margin: 0;
     border: 2px solid black;
+
     background-color: white;
     box-shadow: 0 10px 5px red;
-    background-repeat: repeat;
+
 }
 
 a {
@@ -64,8 +72,8 @@ header h3 {
 
 /* --- Centering the whole layout --- */
 .container {
-    max-width: 800px; 
-    margin: 0 auto;   
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 /* --- Navigation Bar --- */
@@ -190,19 +198,17 @@ section p {
   --border-color: #333;
 }
 
-body {
-  font-family: sans-serif;
-  padding: 20px;
-}
+
 
 .source-item {
     width: 100%;
-    max-width: 1000px;
-    margin: 0 auto;
+    margin: 0;
+
     background-color: var(--bg-light);
     border-bottom: 2px solid var(--border-color);
+
     box-sizing: border-box;
-    transition: background-color 0.3s; 
+    transition: background-color 0.3s;
 }
 
 .item-link {
@@ -278,10 +284,19 @@ ul {
 }
 
 footer {
+
+    min-height: 120px;
     font-size: 0.9em;
     clear: both;
     border-top: 2px solid black;
-    padding: 15px;
+
+    padding: 35px 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 120px;
+
     background: linear-gradient(45deg, black 0%, crimson 25%, white 100%);
 }
 
@@ -377,6 +392,7 @@ main {
     border-radius: 12px;
 }
 
+
 .topic-tree ul {
     margin-left: 20px;
     padding-left: 10px;
@@ -419,3 +435,113 @@ main {
 .topic-tree .tree-toggle:hover {
     background-color: #ffcccc;
 }
+
+.show-more-container {
+    text-align: center;
+    margin: 30px 0;
+}
+
+.show-more-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #333;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.show-more-btn:hover {
+    background-color: #555;
+}
+
+.site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+
+    padding: 25px 20px;
+    min-height: 140px;
+}
+
+/* left + right stay normal */
+.header-left,
+.header-right {
+    z-index: 2;
+}
+
+/* center becomes a vertical stack */
+.header-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    top: 5px;
+}
+
+/* title above image */
+.header-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* logo styling */
+.header-logo {
+    height: 60px;
+    width: auto;
+    margin-top: 5px;
+}
+
+.about-btn {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #b22222;
+    color: white;
+
+    text-decoration: none;
+    font-size: 1.4rem;
+    font-weight: bold;
+
+    transition: 0.2s;
+}
+
+.about-btn:hover {
+    transform: scale(1.08);
+    opacity: 0.9;
+}
+
+.about-page {
+    display: flex;
+    justify-content: center;
+    padding: 50px 20px;
+}
+
+.about-container {
+    max-width: 900px;
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+
+    line-height: 1.8;
+    font-size: 1.05rem;
+}
+
+.about-container h1 {
+    margin-bottom: 20px;
+    text-align: center;
+}
+

@@ -1,91 +1,119 @@
 <?php
-session_start();
-
-include 'view/header.php';
-include 'view/horizontal_nav_bar.php';
-
 require "DBConnect/db.php";
+$limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 20;
 
-// initial load (before any filters are used)
-$stmt = $db->prepare('SELECT * FROM "Listing" ORDER BY "listingID" DESC');
+// Get listings
+$stmt = $db->prepare('
+    SELECT * 
+    FROM "Listing" 
+    ORDER BY "listingID" DESC 
+    LIMIT :limit
+');
+
+$stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
 $stmt->execute();
+
 $listings = $stmt->fetchAll();
+
+// Count total listings
+$totalStmt = $db->prepare('SELECT COUNT(*) FROM "Listing"');
+$totalStmt->execute();
+
+$totalListings = $totalStmt->fetchColumn();
 ?>
-<link rel="stylesheet" href="styles/main.css">
+
+
+
 <body>
-    <main>
 
-        <div class="listings-container">
+<main>
 
-            <?php foreach ($listings as $listing): ?>
+    <div class="listings-container">
 
-                <div class="source-item">
+        <?php foreach ($listings as $listing): ?>
 
-                    <a href="ExpandedListing/ListingInfo.php?id=<?= $listing['listingID'] ?>" class="item-link">
+            <div class="source-item">
 
-                        <div class="thumbnail">
-                            <img src="<?=
-                !empty($listing['icon']) ? htmlspecialchars($listing['icon']) : 'images/default-img.jpeg'
-                ?>">
-                        </div>
+                <a href="controller.php?page=listingInfo&id=<?= $listing['listingID'] ?>" class="item-link">
 
-                        <div class="source-details">
-                            <h3><?= htmlspecialchars($listing['title']) ?></h3>
-                            <p><?= htmlspecialchars($listing['author']) ?></p>
-                            <p><?= htmlspecialchars($listing['date']  ?? '') ?></p>
-                        </div>
+                    <div class="thumbnail">
+                        <img src="<?= $listing['icon'] ?? 'default.jpg' ?>">
+                    </div>
 
-                        <div class="source-icon">
-                            <span class="icon">
-                                <?php
-                                switch ($listing['medium']) {
-                                    case "video":
-                                        echo "🎥";
-                                        break;
+                    <div class="source-details">
+                        <h3><?= htmlspecialchars($listing['title']) ?></h3>
+                        <p><?= htmlspecialchars($listing['author']) ?></p>
+                        <p><?= htmlspecialchars($listing['date']) ?></p>
+                    </div>
 
-                                    case "podcast":
-                                        echo "🎧";
-                                        break;
+                    <div class="source-icon">
+                        <span class="icon">
 
-                                    case "paper":
-                                        echo "📄";
-                                        break;
+                            <?php
+                            switch ($listing['medium']) {
 
-                                    case "tutorial":
-                                        echo "📘";
-                                        break;
+                                case "video":
+                                    echo "🎥";
+                                    break;
 
-                                    case "presentation":
-                                        echo "📊";
-                                        break;
+                                case "podcast":
+                                    echo "🎧";
+                                    break;
 
-                                    default:
-                                        echo "📚";
-                                        break;
-                                }
-                                ?>
-                            </span>
-                        </div>
-                    </a>
+                                case "paper":
+                                    echo "📄";
+                                    break;
 
-                </div>
-            <?php endforeach; ?>
+                                case "tutorial":
+                                    echo "📘";
+                                    break;
+
+                                case "presentation":
+                                    echo "📊";
+                                    break;
+
+                                default:
+                                    echo "📚";
+                                    break;
+                            }
+                            ?>
+
+                        </span>
+                    </div>
+
+                </a>
+
+            </div>
+
+        <?php endforeach; ?>
+
+    </div>
+
+    <?php if ($limit < $totalListings): ?>
+
+        <div class="show-more-container">
+
+            <a href="?limit=<?= $limit + 20 ?>" class="show-more-btn">
+                Show More
+            </a>
+
         </div>
 
-        <?php
-        if (
-                isset($_SESSION['userType']) &&
-                ($_SESSION['userType'] == 1 || $_SESSION['userType'] == 2)
-        ):
-            ?>
-            <a href="AddListing/AddSource.php" class="fab">+</a>
-<?php endif; ?>
+    <?php endif; ?>
 
+    <?php if (
+        isset($_SESSION['userType']) &&
+        ($_SESSION['userType'] == 1 || $_SESSION['userType'] == 2)
+    ): ?>
 
-    </main>
+        <a href="controller.php?page=AddSource" class="fab">+</a>
+
+    <?php endif; ?>
+
+</main>
+
 </body>
+
 <script src="scripts/date.js"></script>
 <script src="scripts/checkmark.js"></script>
-
-<?php include 'view/footer.php'; ?>
 

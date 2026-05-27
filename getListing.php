@@ -53,6 +53,7 @@ if ($date === "Most Recent") {
     $sql .= ' ORDER BY "date" ASC';
 } else {
     $sql .= ' ORDER BY "date" DESC';
+
 }
 
 /* ----------------------
@@ -69,7 +70,9 @@ foreach ($listings as $listing): ?>
 
     <div class="source-item">
 
-        <a href="ExpandedListing/ListingInfo.php?id=<?= $listing['listingID'] ?>" class="item-link">
+
+        <a href="controller.php?page=listingInfo&id=<?= $listing['listingID'] ?>" class="item-link">
+
 
             <div class="thumbnail">
                 <img src="<?= $listing['icon'] ?? 'cocoNut.jpg' ?>" alt="">
@@ -79,6 +82,7 @@ foreach ($listings as $listing): ?>
                 <h3><?= htmlspecialchars($listing['title']) ?></h3>
                 <p><?= htmlspecialchars($listing['author']) ?></p>
                 <p><?= htmlspecialchars($listing['date'] ?? '') ?></p>
+
             </div>
 
             <div class="source-icon">
@@ -101,3 +105,4 @@ foreach ($listings as $listing): ?>
     </div>
 
 <?php endforeach; ?>
+
