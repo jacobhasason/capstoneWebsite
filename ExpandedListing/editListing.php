@@ -1,6 +1,5 @@
 <?php
-session_start();
-require "../DBConnect/db.php";
+
 
 
 /* PERMISSION CHECK */
@@ -28,7 +27,7 @@ if (!$listing) {
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $title = $_POST["title"] ?? "";
-    $author = $_POST["author(s)"] ?? "";
+    $author = $_POST["author"] ?? "";
     $date = $_POST["date"] ?? "";
     $medium = $_POST["medium"] ?? "";
     $topic = $_POST["topic"] ?? "";
@@ -38,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $update = $db->prepare('
         UPDATE "Listing"
         SET "title" = ?,
-            "author(s)" = ?,
+            "author" = ?,
             "date" = ?,
             "medium" = ?,
             "topic" = ?,
@@ -65,9 +64,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 }
 ?>
 
-<?php include '../view/header.php'; ?>
-<link rel="stylesheet" href="../styles/main.css">
-<link rel="stylesheet" href="../styles/editListing.css">
 
 
 <main class="edit-listing">
@@ -80,10 +76,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <input type="text" name="title"
                value="<?= htmlspecialchars($listing["title"]) ?>">
 
-        <label>Author</label>
+        <label>Author(s)</label>
         <input type="text" name="author"
 
-               value="<?= htmlspecialchars($listing["author(s)"]) ?>">
+               value="<?= htmlspecialchars($listing["author"]) ?>">
 
 
         <label>Date</label>

@@ -1,6 +1,5 @@
 <?php
-
-require "../DBConnect/db.php";
+require "DBConnect/db.php";
 
 $primaryID = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 
@@ -73,7 +72,6 @@ if ($index >= count($listings)) {
 
 $current = $listings[$index];
 
-
 $totalItems = count($listings);
 
 // Disable Arrows if there is only a primary source
@@ -94,10 +92,6 @@ if ($totalItems <= 1) {
 }
 ?>
 
-<?php include '../view/reportHeader.php'; ?>
-
-<link rel="stylesheet" href="../styles/main.css">
-<link rel="stylesheet" href="../styles/reportPage.css">
 
 
 <main class="report-page">
@@ -108,9 +102,16 @@ if ($totalItems <= 1) {
         <!-- Left arrow -->
 
         <?php if (count($listings) > 1): ?>
-            <a class="arrow" href="?id=<?= $primaryID ?>&i=<?= $prevIndex ?>">◀</a>
+
+            <a class="arrow"
+               href="controller.php?page=ViewReport&id=<?= $primaryID ?>&i=<?= $prevIndex ?>">
+                ◀
+            </a>
+
         <?php else: ?>
+
             <span class="arrow disabled">◀</span>
+
         <?php endif; ?>
 
 
@@ -140,9 +141,16 @@ if ($totalItems <= 1) {
         <!-- Right arrow -->
 
         <?php if (count($listings) > 1): ?>
-            <a class="arrow" href="?id=<?= $primaryID ?>&i=<?= $nextIndex ?>">▶</a>
+
+            <a class="arrow"
+               href="controller.php?page=ViewReport&id=<?= $primaryID ?>&i=<?= $nextIndex ?>">
+                ▶
+            </a>
+
         <?php else: ?>
+
             <span class="arrow disabled">▶</span>
+
         <?php endif; ?>
 
 
