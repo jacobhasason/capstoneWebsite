@@ -110,7 +110,7 @@ if (!$listing) {
                 ?>
 
                 <a class="btn delete-source"
-                   href="controller.php?page=deleteListing?id=<?= $listing['listingID'] ?>"
+                   href="controller.php?page=deleteListing&id=<?= $listing['listingID'] ?>"
                    onclick="return confirm('Delete this source permanently?')">
 
                     Delete Source

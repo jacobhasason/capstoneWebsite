@@ -43,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 ?>
 
 
-<main>
+<main class="login-page">
 
     <div class="login-container">
 

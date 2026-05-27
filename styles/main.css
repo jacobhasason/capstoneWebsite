@@ -367,9 +367,6 @@ main {
     padding-bottom: 60px;
 }
 
-
-
-
 .listing-image {
     float: right;
     width: 240px;
@@ -381,6 +378,10 @@ main {
     width: 50%;
     border-radius: 12px;
     box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+.listing-full {
+    min-height: calc(100vh - 200px); 
+    display: block;
 }
 
 .no-image {
@@ -502,7 +503,10 @@ main {
     height: 60px;
     width: auto;
     margin-top: 5px;
+    position: relative;
+    left: 28px; 
 }
+
 
 .about-btn {
     width: 42px;
@@ -530,24 +534,64 @@ main {
 }
 
 .about-page {
+    min-height: calc(100vh - 260px);
     display: flex;
     justify-content: center;
+    align-items: flex-start;
     padding: 50px 20px;
 }
-
 .about-container {
-    max-width: 900px;
+    max-width: 1100px;
+    width: 100%;
     background: white;
     padding: 40px;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-
     line-height: 1.8;
-    font-size: 1.05rem;
 }
 
-.about-container h1 {
+.table-title {
+    margin-top: 40px;
     margin-bottom: 20px;
-    text-align: center;
 }
 
+.abbreviation-table {
+    width: 100%;
+    border-collapse: collapse;
+    overflow: hidden;
+
+    border-radius: 10px;
+}
+
+.abbreviation-table th,
+.abbreviation-table td {
+    padding: 14px 16px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+.abbreviation-table th {
+    background-color: #b22222;
+    color: white;
+    font-size: 1rem;
+}
+
+.abbreviation-table tr:nth-child(even) {
+    background-color: #f8e6e6;
+}
+
+.abbreviation-table tr:hover {
+    background-color: #ffd6d6;
+}
+
+.login-page {
+    min-height: calc(100vh - 200px); /* adjusts for header + footer */
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.report-page {
+    min-height: calc(100vh - 200px);
+}
