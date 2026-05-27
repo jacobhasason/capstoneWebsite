@@ -3,7 +3,7 @@
 
 // If already logged in, redirect to users page
 if (isset($_SESSION["userID"])) {
-    header("Location: controller.php?page=usersPage");
+    header("Location: ../controller.php?page=usersPage");
     exit();
 }
 $error = "";
@@ -31,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $_SESSION["canManage"] = $user["canManage"] ?? 1;
             $_SESSION["permisMod"] = (int) ($user["permisMod"] ?? 1);
 
-            header("Location: controller.php?page=usersPage");
+            header("Location: ../controller.php?page=usersPage");
             exit();
         } else {
             $error = "Invalid username or password";
@@ -69,6 +69,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 </main>
 
-<a href="controller.php?page=index" class="fab"><<</a>
+<a href="../controller.php?page=index" class="fab"><<</a>
 
 
