@@ -121,6 +121,7 @@
                         <li><a href="#"><span class="checkbox-box"></span>Presentations</a></li>
                         <li><a href="#"><span class="checkbox-box"></span>Videos</a></li>
                         <li><a href="#"><span class="checkbox-box"></span>Podcasts</a></li>
+                        <li><a href="#"><span class="checkbox-box"></span>Software</a></li>
                     </ul>
                 </li>
             </ul>
