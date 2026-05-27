@@ -361,9 +361,6 @@ main {
     padding-bottom: 60px;
 }
 
-
-
-
 .listing-image {
     float: right;
     width: 240px;
@@ -375,6 +372,10 @@ main {
     width: 50%;
     border-radius: 12px;
     box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+.listing-full {
+    min-height: calc(100vh - 200px); 
+    display: block;
 }
 
 .no-image {
@@ -496,7 +497,10 @@ main {
     height: 60px;
     width: auto;
     margin-top: 5px;
+    position: relative;
+    left: 28px; 
 }
+
 
 .about-btn {
     width: 42px;
@@ -572,4 +576,16 @@ main {
 
 .abbreviation-table tr:hover {
     background-color: #ffd6d6;
+}
+
+.login-page {
+    min-height: calc(100vh - 200px); /* adjusts for header + footer */
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.report-page {
+    min-height: calc(100vh - 200px);
 }
