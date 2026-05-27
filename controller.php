@@ -1,4 +1,5 @@
 <?php
+
 session_start();
 require "DBConnect/db.php";
 
@@ -9,7 +10,7 @@ switch ($page) {
     case 'index':
         include 'view/header.php';
         include 'view/horizontal_nav_bar.php';
-        include 'index.php';
+        include 'view/home.php';
         break;
 
     case 'listingInfo':
@@ -79,7 +80,8 @@ switch ($page) {
 
     default:
         include 'view/header.php';
-        include 'index.php';
+        include 'view/horizontal_nav_bar.php';
+        include 'view/home.php';
         break;
 }
 

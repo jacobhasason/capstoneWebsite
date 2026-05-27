@@ -1,4 +1,4 @@
 <?php
-header("Location: controller.php?page=home");
+header("Location: controller.php?page=index");
 exit;
 ?>
