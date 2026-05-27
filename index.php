@@ -1,7 +1,6 @@
 
 <?php
-include_once('view/header.php');
-include_once('view/horizontal_nav_bar.php');
+require_once "controller.php";
 require "DBConnect/db.php";
 
 $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 20;
