@@ -1,7 +1,7 @@
 <!DOCTYPE html> 
 <html lang="en">
     <body>
-    <div class="container">
+    <div>
         <nav aria-label="Main Navigation">
             <ul class="main-nav">
                 <li>
