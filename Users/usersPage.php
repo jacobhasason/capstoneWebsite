@@ -1,37 +1,24 @@
 <?php
 require "DBConnect/db.php";
 
-/* AUTH CHECK (must be logged in */
+/* AUTH CHECK */
 if (!isset($_SESSION["userID"])) {
     header("Location: controller.php?page=login");
     exit();
 }
 
-/* SAFE SESSION READS */
-$currentUserID = (int) ($_SESSION["userID"]);
+/* SESSION DATA */
+$currentUserID = (int) $_SESSION["userID"];
 $currentUserType = (int) ($_SESSION["userType"] ?? 1);
 $currentUserName = $_SESSION["userName"] ?? "User";
-$currentCanManage = (int) ($_SESSION["canManage"] ?? 1);
 
-/* PERMISSION CHECK (ONLY FOR USER LIST) */
-$canViewUsers = ($currentUserType === 2) ||
-        ($currentUserType === 1 && $currentCanManage === 2);
-
-/* FETCH USERS */
-$users = [];
-
-if ($canViewUsers) {
-    $stmt = $db->prepare('SELECT * FROM "User" WHERE "userID" != ?');
-    $stmt->execute([$currentUserID]);
-    $users = $stmt->fetchAll();
-}
+/* ROLE CHECK */
+$isSuperUser = ($currentUserType === 2);
 ?>
-
-
 
 <main>
 
-    <!--USER INFO BAR (ALWAYS SHOWN) -->
+    <!-- USER BAR (ALWAYS SHOWN) -->
     <div class="user-bar">
 
         <div class="user-left">
@@ -47,10 +34,24 @@ if ($canViewUsers) {
 
     </div>
 
-    <h2>Users</h2>
+    <!-- NON-SUPERUSER VIEW -->
+    <?php if (!$isSuperUser): ?>
 
-    <!--USER LIST (PROTECTED)-->
-    <?php if ($canViewUsers): ?>
+        <div class="user-card">
+            <p>You cannot manage other users.</p>
+        </div>
+
+    <?php else: ?>
+
+        <!-- SUPERUSER VIEW -->
+
+        <h2>Users</h2>
+
+        <?php
+            $stmt = $db->prepare('SELECT * FROM "User" WHERE "userID" != ?');
+            $stmt->execute([$currentUserID]);
+            $users = $stmt->fetchAll();
+        ?>
 
         <?php if (!empty($users)): ?>
 
@@ -68,29 +69,30 @@ if ($canViewUsers) {
 
                             <p><strong>Type:</strong>
                                 <?php
-                                if ($user["userType"] == 1) {
-                                    echo "Whitelist";
-                                } elseif ($user["userType"] == 2) {
-                                    echo "Superuser";
-                                } else {
-                                    echo "Standard User";
-                                }
+                                    if ($user["userType"] == 2) {
+                                        echo "Superuser";
+                                    } elseif ($user["userType"] == 1) {
+                                        echo "Whitelist";
+                                    } else {
+                                        echo "Standard User";
+                                    }
                                 ?>
                             </p>
 
                         </div>
 
-                        <?php if ($user["userType"] == 1): ?>
+                        <?php if ($user["userType"] != 2): ?>
                             <div class="user-actions">
 
-                                <a href="controller.php?page=modifyUser&id=<?= $user["userID"] ?>" class="btn">
+                                <a href="controller.php?page=modifyUser&id=<?= $user["userID"] ?>"
+                                   class="btn">
                                     Modify
                                 </a>
 
                                 <a href="controller.php?page=deleteUser&id=<?= $user["userID"] ?>"
-                                    class="btn danger"
-                                    onclick="return confirm('Are you sure?')">
-                                     Delete
+                                   class="btn danger"
+                                   onclick="return confirm('Are you sure?')">
+                                    Delete
                                 </a>
 
                             </div>
@@ -108,37 +110,8 @@ if ($canViewUsers) {
 
         <?php endif; ?>
 
-    <?php else: ?>
-
-        <!-- NO ACCESS MESSAGE -->
-        <div class="user-card">
-            <p>You do not have permission to view user management.</p>
-        </div>
-
     <?php endif; ?>
-
-    <!--CREATE USER PANEL -->
-    <div class="create-user-panel">
-
-        <h3>Create User</h3>
-
-        <?php if ($currentUserType === 2): ?>
-
-            <a href="controller.php?page=addUser&type=1" class="btn">
-                Add User (Whitelist)
-            </a>
-
-        <?php else: ?>
-
-            <p class="muted">
-                You do not have permission to create users.
-            </p>
-
-        <?php endif; ?>
-
-    </div>
 
 </main>
 
 <a href="controller.php?page=index" class="fab">&lt;&lt;</a>
-
