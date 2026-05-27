@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
 
-    if (empty($_POST['author(s)'])) {
+    if (empty($_POST['author'])) {
         $fieldErrors['author'] = "Author is required";
     }
 
@@ -390,7 +390,6 @@ function insertRelatedListing($listingID, $topic, $title, $type, $file = null, $
     curl_close($ch);
 }
 ?>
-<?php include '../view/AddSourceHeader.php'; ?>
 
 <!-- HTML -->
 <link rel="stylesheet" href="../styles/AddSource.css">
@@ -401,7 +400,7 @@ function insertRelatedListing($listingID, $topic, $title, $type, $file = null, $
 <main>
     <body>
 
-        <form action="AddSource.php" method="post" class="input-group" enctype="multipart/form-data">
+        <form action="controller.php?page=AddSource" method="post" class="input-group" enctype="multipart/form-data">
 
             <div class="field">
                 <label for="title">Title:</label>
@@ -526,6 +525,7 @@ function insertRelatedListing($listingID, $topic, $title, $type, $file = null, $
                     <option value="presentation">Presentation</option>
                     <option value="video">Video</option>
                     <option value="podcast">Podcast</option>
+                    <option value="software">Software</option>
                 </select>
                 <span class="error-text"><?= $fieldErrors['medium'] ?? '' ?></span>
             </div>
@@ -654,7 +654,7 @@ function insertRelatedListing($listingID, $topic, $title, $type, $file = null, $
                     if (query.length < 2)
                         return;
 
-                    const response = await fetch(`SearchListings.php?q=${encodeURIComponent(query)}`);
+                    const response = await fetch(`AddListing/SearchListings.php?q=${encodeURIComponent(query)}`);
                     const data = await response.json();
                     console.log(data);
 

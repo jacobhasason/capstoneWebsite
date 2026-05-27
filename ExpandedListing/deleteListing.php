@@ -1,6 +1,5 @@
 <?php
 
-
 /* PERMISSION CHECK*/
 $currentUserType = (int)($_SESSION["userType"] ?? 0);
 $currentCanManage = (int)($_SESSION["canManage"] ?? 1);
@@ -20,8 +19,19 @@ if (!$id) {
 }
 
 /*DELETE LISTING*/
+echo "ID received: " . htmlspecialchars($id) . "<br>";
+
+// Delete related rows first
+//$stmt = $db->prepare('DELETE FROM "RelatedListing" WHERE "listingID" = ?');
+//$stmt->execute([$id]);
+//echo "Related rows deleted: " . $stmt->rowCount() . "<br>";
+
+
+// Then delete main listing
 $stmt = $db->prepare('DELETE FROM "Listing" WHERE "listingID" = ?');
 $stmt->execute([$id]);
+echo "Listing rows deleted: " . $stmt->rowCount() . "<br>";
+
 
 /*REDIRECT*/
 header("Location: controller.php?page=home");
