@@ -3,7 +3,7 @@
 
 // If already logged in, redirect to users page
 if (isset($_SESSION["userID"])) {
-    header("Location: ../controller.php?page=usersPage");
+    header("Location: controller.php?page=usersPage");
     exit();
 }
 $error = "";
