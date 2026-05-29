@@ -3,12 +3,28 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/wamp64/www/capstoneWebsite/styles/main.css</file>
-            <file>file:/C:/wamp64/www/capstoneWebsite/Login/login.php</file>
-            <file>file:/C:/wamp64/www/capstoneWebsite/ExpandedListing/deleteListing.php</file>
-            <file>file:/C:/wamp64/www/capstoneWebsite/controller.php</file>
-            <file>file:/C:/wamp64/www/capstoneWebsite/ExpandedListing/ViewReport.php</file>
-            <file>file:/C:/wamp64/www/capstoneWebsite/ExpandedListing/ListingInfo.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/test.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/index.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/ExpandedListing/ListingInfo.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/AddListing/AddSource.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/getListing.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/styles/main.css</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/ExpandedListing/deleteListing.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/view/LoginHeader.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/view/header.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/Users/toggleModifyPermission.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/controller.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/view/horizontal_nav_bar.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/cocoNut.jpg</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/view/reportHeader.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/view/header2.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/view/footer.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/view/addUserHeader.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/indexControllerLoad.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/view/modifyUserHeader.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/view/userPageHeader.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/view/AddSourceHeader.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/view/editListing.php</file>
         </group>
     </open-files>
 </project-private>

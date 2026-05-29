@@ -1,12 +1,10 @@
 <?php
-
-
 require "DBConnect/db.php";
 
 /* PERMISSION CHECK */
 $currentCanModify = (int) ($_SESSION["permisMod"] ?? 1);
-$currentUserType = (int)($_SESSION["userType"] ?? 0);
-$currentCanManage = (int)($_SESSION["canManage"] ?? 1);
+$currentUserType = (int) ($_SESSION["userType"] ?? 0);
+$currentCanManage = (int) ($_SESSION["canManage"] ?? 1);
 /* GET LISTING */
 $id = $_GET['id'] ?? null;
 
@@ -62,9 +60,9 @@ if (!$listing) {
 
         <?php else: ?>
 
-            <div class="no-image">
-                Icon Not Found
-            </div>
+            <img src="<?= htmlspecialchars('cocoNut.jpg') ?>"
+                 alt="Listing Icon"
+                 class="listing-img">
 
         <?php endif; ?>
 
@@ -73,83 +71,115 @@ if (!$listing) {
 
 </div>
 
-    <!--ACTIONS -->
-    <div class="listing-actions">
+<!--ACTIONS -->
+<div class="listing-actions">
 
-        <div class="action-buttons">
+    <div class="action-buttons">
 
 
-            
+        
+        <a class="btn" id="copyCitation" data-citation="<?= htmlspecialchars($listing['citations'] ?? '') ?>">
+                Copy Citation
+        </a>
+        
 
-            <button class="btn">Copy Citation</button>
+        <a class="btn external"
 
-            <a class="btn external"
+           href="controller.php?page=ViewReport&id=<?= $listing['listingID'] ?>">
+            View Primary Source & Related Resources
+        </a>
 
-               href="controller.php?page=ViewReport&id=<?= $listing['listingID'] ?>">
-                View Primary Source & Related Resources
+        <!-- EDIT BUTTON -->
+        <?php if ($currentCanModify === 2): ?>
+
+            <a class="btn edit"
+
+               href="controller.php?page=editListing&id=<?= $listing['listingID'] ?>">
+
+                Edit Source
             </a>
 
-            <!-- EDIT BUTTON -->
-            <?php if ($currentCanModify === 2): ?>
+        <?php endif; ?>
 
-                <a class="btn edit"
+        <!-- DELETE BUTTON -->
+        <?php
+        if (
+                $currentUserType === 2 ||
+                ($currentUserType === 1 && $currentCanManage === 2)
+        ):
+            ?>
 
-                   href="controller.php?page=editListing&id=<?= $listing['listingID'] ?>">
+            <a class="btn delete-source"
+               href="controller.php?page=deleteListing&id=<?= $listing['listingID'] ?>"
+               onclick="return confirm('Delete this source permanently?')">
 
-                    Edit Source
-                </a>
+                Delete Source
 
-            <?php endif; ?>
+            </a>
 
-            <!-- DELETE BUTTON -->
-            <?php
-            if (
-                    $currentUserType === 2 ||
-                    ($currentUserType === 1 && $currentCanManage === 2)
-            ):
-                ?>
+        <?php endif; ?>
 
-                <a class="btn delete-source"
-                   href="controller.php?page=deleteListing&id=<?= $listing['listingID'] ?>"
-                   onclick="return confirm('Delete this source permanently?')">
-
-                    Delete Source
-
-                </a>
-
-            <?php endif; ?>
-
-
-        </div>
 
     </div>
 
-    <!--OPTIONAL EXTERNAL LINK -->
+</div>
 
-    <?php if (!empty($listing['links'])): ?>
+<!--OPTIONAL EXTERNAL LINK -->
 
-        <p class="extra-link">
-            <a href="<?= htmlspecialchars($listing['links']) ?>" target="_blank">
-                External Link
-            </a>
-        </p>
-    <?php endif; ?>
+<?php if (!empty($listing['links'])): ?>
 
-    <!--FILE DOWNLOAD-->
-    <?php if (!empty($listing['file'])): ?>
+    <p class="extra-link">
+        <a href="<?= htmlspecialchars($listing['links']) ?>" target="_blank">
+            External Link
+        </a>
+    </p>
+<?php endif; ?>
 
-        <p class="extra-link">
-            <a href="<?= htmlspecialchars($listing['file']) ?>" download>
-                Download File
-            </a>
-        </p>
+<!--FILE DOWNLOAD-->
+<?php if (!empty($listing['file'])): ?>
+
+    <p class="extra-link">
+        <a href="<?= htmlspecialchars($listing['file']) ?>" download>
+            Download File
+        </a>
+    </p>
 
 <?php endif; ?>
+
 
 </main>
 
 <a href="controller.php?page=index" class="fab">&lt;&lt;</a>
 
 <script src="../scripts/date.js"></script>
+
+
+<!-- JAVASCRIPT FOR COPY CITATIONS -->
+<script>
+                   document.getElementById("copyCitation").addEventListener("click", async function () {
+
+                       const citation = this.dataset.citation;
+
+                       if (!citation || citation.trim() === "") {
+                           alert("No citation available.");
+                           return;
+                       }
+
+                       try {
+                           await navigator.clipboard.writeText(citation);
+                           // Button changes to 'Copied!' for 2 seconds
+                           const originalText = this.textContent;
+                           this.textContent = "Copied!";
+
+                           setTimeout(() => {
+                               this.textContent = originalText;
+                           }, 2000);
+
+                       } catch (err) {
+                           console.error(err);
+                           alert("Failed to copy citation.");
+                       }
+                   });
+</script>
 
 

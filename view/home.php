@@ -2,7 +2,6 @@
 <?php
 //require_once "controller.php";
 require "DBConnect/db.php";
-
 ?>
 <link rel="stylesheet" href="styles/main.css">
 
@@ -45,7 +44,7 @@ $totalListings = $totalStmt->fetchColumn();
                     <a href="controller.php?page=listingInfo&id=<?= $listing['listingID'] ?>" class="item-link">
 
                         <div class="thumbnail">
-                            <img src="<?= $listing['icon'] ?? 'default.jpg' ?>">
+                          <img src="<?= !empty($listing['icon']) ? htmlspecialchars($listing['icon']) : 'cocoNut.jpg' ?>">                         
                         </div>
 
                         <div class="source-details">

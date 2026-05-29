@@ -26,7 +26,7 @@ $listings = [];
 
 $listings[] = [
     "title" => $primary["title"] ?? "Untitled",
-    "author" => $primary["author(s)"] ?? "Unknown",
+    "author" => $primary["author"] ?? "Unknown",
     "topic" => $primary["topic"] ?? "Uncategorized",
     "abstract" => $primary["abstract"] ?? "No description available",
     "file" => $primary["file"] ?? null,
@@ -58,6 +58,43 @@ foreach ($relatedRows as $row) {
             "type" => $row["type"] ?? "related"
         ];
     }
+}
+
+// Get the selected topic from the URL.
+// Default to "all" if none is selected.
+$selectedTopic = $_GET['topic'] ?? 'all';
+
+// Build a list of unique topics from the carousel items.
+$topics = array_unique(
+    array_filter(
+        array_column($listings, 'topic'),
+        function ($topic) {
+            return !empty($topic)
+                // Exclude empty topics and "Uncategorized".
+                && strtolower(trim($topic)) !== 'uncategorized';
+        }
+    )
+);
+
+
+// Sort topics alphabetically for cleaner display.
+sort($topics);
+
+// If a specific topic was selected,
+// only keep listings that match that topic.
+if ($selectedTopic !== 'all') {
+
+    $listings = array_values(
+            array_filter($listings, function ($item) use ($selectedTopic) {
+
+                return ($item['topic'] ?? 'Uncategorized') === $selectedTopic;
+            })
+    );
+}
+
+// Prevent carousel errors if no results match.
+if (empty($listings)) {
+    die("No sources found for this topic.");
 }
 
 
@@ -103,13 +140,13 @@ if ($totalItems <= 1) {
 
         <?php if (count($listings) > 1): ?>
 
+            <!-- Previous carousel item -->
             <a class="arrow"
-               href="controller.php?page=ViewReport&id=<?= $primaryID ?>&i=<?= $prevIndex ?>">
+                href="controller.php?page=ViewReport&id=<?= $primaryID ?>&topic=<?= urlencode($selectedTopic) ?>&i=<?= $prevIndex ?>">
                 ◀
             </a>
-
         <?php else: ?>
-
+            
             <span class="arrow disabled">◀</span>
 
         <?php endif; ?>
@@ -142,8 +179,9 @@ if ($totalItems <= 1) {
 
         <?php if (count($listings) > 1): ?>
 
+            <!-- Next carousel item -->
             <a class="arrow"
-               href="controller.php?page=ViewReport&id=<?= $primaryID ?>&i=<?= $nextIndex ?>">
+               href="controller.php?page=ViewReport&id=<?= $primaryID ?>&topic=<?= urlencode($selectedTopic) ?>&i=<?= $nextIndex ?>">
                 ▶
             </a>
 
@@ -159,11 +197,28 @@ if ($totalItems <= 1) {
     <!-- Control bar -->
     <div class="report-controls">
 
-        <!-- Topic drop down -->
-        <select>
-            <option selected>
-                <?= htmlspecialchars($current["topic"] ?? 'Uncategorized') ?>
+        <!-- Topic Filter Dropdown -->
+        <select onchange="window.location.href = this.value">
+
+            <!-- Show all topics -->
+            <option
+                value="controller.php?page=ViewReport&id=<?= $primaryID ?>&topic=all&i=0"
+                <?= $selectedTopic === 'all' ? 'selected' : '' ?>>
+                All Topics
             </option>
+
+            <!-- Create one option per topic -->
+            <?php foreach ($topics as $topic): ?>
+
+                <option
+                    value="controller.php?page=ViewReport&id=<?= $primaryID ?>&topic=<?= urlencode($topic) ?>&i=0"
+                    <?= $selectedTopic === $topic ? 'selected' : '' ?>
+                    >
+                        <?= htmlspecialchars($topic) ?>
+                </option>
+
+            <?php endforeach; ?>
+
         </select>
 
         <!-- Title -->
