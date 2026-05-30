@@ -1,0 +1,317 @@
+.fab {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #007bff;
+  color: white;
+  font-size: 30px;
+  text-align: center;
+  line-height: 60px;   /* centers the + vertically */
+  text-decoration: none;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+  z-index: 1000;
+}
+
+.fab:hover {
+  background-color: #0056b3;
+  transform: scale(1.1);
+}
+
+/* The horizontal container */
+.drop-row {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between; 
+    align-items: flex-end; 
+    width: 100%;
+    margin: 20px 0;
+    clear: both;
+}
+
+
+/* The actual square */
+.drop-area {
+    width: 150px; 
+    height: 150px;
+    border: 2px dashed #5d93e1; 
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
+    padding: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.drop-area:hover {
+    background-color: #eef5ff;
+}
+/* Each box + label wrapper */
+.drop-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    margin: 20px 0;
+}
+
+.drop-group {
+    display: flex;
+    flex-direction: column;
+    width: 150px;
+}
+
+.file-column {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    width: 220px;
+}
+
+.link-field {
+    width: 100%;
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.link-field label {
+    width: 100%;
+    text-align: left;
+    margin-bottom: 5px;
+}
+
+.link-field input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
+/* Make the labels for the boxes bold to like other labels */
+.drop-group label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+}
+
+.drop-message {
+    color: #666;
+    font-size: 0.75rem; 
+    pointer-events: none; 
+}
+
+
+#preview-container img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+
+
+.field select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    width: 200px; 
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+
+.field select:focus {
+    border-color: var(--accent-blue);
+    outline: none;
+    box-shadow: 0 0 5px rgba(93, 147, 225, 0.5);
+}
+
+
+.submit-btn {
+    align-self: flex-end;    /* The magic line that moves it to the right */
+    padding: 12px 25px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px;        /* Spacing from the dropdown above it */
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.submit-btn:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px); /* Slight lift effect */
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+}
+
+.field {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.field-inline {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.error-text {
+    color: red;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.remove-file {
+    position: absolute;
+    top: 5px;
+    right: 8px;
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    display: none;
+}
+
+.drop-area {
+    position: relative;
+}
+
+.listing-search-wrap {
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.listing-search-wrap {
+    position: relative;
+    display: inline-block;
+    width: 260px; /* match input */
+    vertical-align: top;
+}
+
+.listing-search {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.listing-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+
+    width: 100%;
+
+    background: white;
+    border: 1px solid #888;
+
+    max-height: 160px;
+    overflow-y: auto;
+
+    z-index: 1000;
+    box-sizing: border-box;
+}
+
+.listing-result:hover {
+    background: #ddd;
+}
+
+.no-result {
+    cursor: default;
+}
+
+.topic-tree {
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 12px;
+    max-height: 320px;
+    overflow-y: auto;
+    background: #fafafa;
+    font-family: Arial, sans-serif;
+}
+
+/* reset list styling */
+.topic-tree ul {
+    list-style: none;
+    padding-left: 18px;
+    margin: 6px 0;
+}
+
+/* each row */
+.topic-tree li {
+    margin: 4px 0;
+    position: relative;
+}
+
+/* category label row */
+.topic-tree label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+/* hover effect */
+.topic-tree label:hover {
+    background: #e9f2ff;
+}
+
+/* checkbox styling */
+.topic-tree input[type="checkbox"] {
+    transform: scale(1.1);
+    accent-color: #2b6fff;
+}
+
+/* collapse button */
+.tree-toggle {
+    border: none;
+    background: transparent;
+    font-size: 14px;
+    cursor: pointer;
+    margin-right: 4px;
+    color: #555;
+    transition: transform 0.15s ease;
+}
+
+.tree-toggle:hover {
+    color: #2b6fff;
+}
+
+/* nested subtopics indentation line effect */
+.topic-tree ul ul {
+    border-left: 2px solid #e0e0e0;
+    margin-left: 10px;
+    padding-left: 14px;
+}
+
+/* smoother hide/show */
+.hidden {
+    display: none;
+}
+
+/* selected highlight */
+.topic-tree input[type="checkbox"]:checked + span,
+.topic-tree input[type="checkbox"]:checked {
+    font-weight: 500;
+}

@@ -1,0 +1,733 @@
+<?php
+require "DBConnect/db.php";
+
+/* AUTH */
+if (!isset($_SESSION['userID'])) {
+    die("Not logged in");
+}
+
+$fieldErrors = [];
+
+/* 🐒 FETCH TOPICS */
+$catStmt = $db->query("
+    SELECT category_id, category_name
+    FROM topic_category
+    ORDER BY category_name
+");
+
+$categories = $catStmt->fetchAll();
+
+$topicStmt = $db->query("
+    SELECT topic_id, category_id, topic_name
+    FROM topic
+    ORDER BY topic_name
+");
+
+$topics = $topicStmt->fetchAll();
+
+$topicArray = json_decode($_POST['topic'] ?? '[]', true);
+
+if (!is_array($topicArray)) {
+    $topicArray = [];
+}
+
+/* POST */
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
+    $thumbnailPath = null;
+    $filePath = null;
+
+    if (empty($_POST['title'])) {
+        $fieldErrors['title'] = "Title is required";
+    }
+
+    if (empty($_POST['author'])) {
+        $fieldErrors['author'] = "Author is required";
+    }
+
+    if (empty($_POST['year'])) {
+        $fieldErrors['datePub'] = "Year is required";
+    }
+
+    if (empty($_POST['medium'])) {
+        $fieldErrors['medium'] = "Please select a medium";
+    }
+
+    if (empty($_FILES['file']['name']) && empty($_POST['externalLink'])) {
+        $fieldErrors['file'] = "Please upload a file or provide a link";
+    }
+
+    /* Thumbnail */
+    if (
+            !empty($_FILES['thumbnail']['tmp_name']) &&
+            $_FILES['thumbnail']['error'] === UPLOAD_ERR_OK
+    ) {
+        $originalName = basename($_FILES['thumbnail']['name']);
+        $safeName = preg_replace('/[^A-Za-z0-9.\-_]/', '_', $originalName);
+        $thumbName = time() . "_" . $safeName;
+
+        $thumbnailPath = uploadToSupabase(
+                $_FILES['thumbnail']['tmp_name'],
+                $thumbName
+        );
+    }
+
+    $abstract = $_POST['abs'] ?? '';
+    $citations = $_POST['citations'] ?? '';
+    $sourceLink = !empty($_POST['externalLink']) ? trim($_POST['externalLink']) : null;
+
+    /* FILE UPLOAD */
+    if (!empty($_FILES['file']['name'])) {
+
+        $originalName = basename($_FILES['file']['name']);
+        $safeName = preg_replace('/[^A-Za-z0-9.\-_]/', '_', $originalName);
+        $fileName = time() . "_" . $safeName;
+
+        $filePath = uploadToSupabase(
+                $_FILES['file']['tmp_name'],
+                $fileName
+        );
+    }
+
+    /* DATE BUILD */
+    $year = $_POST['year'] ?? null;
+    $month = $_POST['month'] ?? null;
+    $day = $_POST['day'] ?? null;
+
+    if ($year) {
+        $year = str_pad($year, 4, "0", STR_PAD_LEFT);
+        if ($month)
+            $month = str_pad($month, 2, "0", STR_PAD_LEFT);
+        if ($day)
+            $day = str_pad($day, 2, "0", STR_PAD_LEFT);
+
+        $datePub = ($month && $day) ? "$year-$month-$day" : ($month ? "$year-$month" : "$year");
+    } else {
+        $datePub = null;
+    }
+
+    /* INSERT LISTING */
+    $ch = curl_init("https://zdysuvkcmymlwpernryq.supabase.co/rest/v1/Listing");
+
+    $data = [
+        "title" => $_POST['title'],
+        "author" => $_POST['author'],
+        "date" => $datePub,
+        "medium" => $_POST['medium'],
+        "icon" => $thumbnailPath,
+        "file" => $filePath,
+        "links" => $sourceLink,
+        "abstract" => $abstract,
+        "citations" => $citations,
+        "userID" => $_SESSION['userID'],
+    ];
+
+    curl_setopt_array($ch, [
+        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_SSL_VERIFYHOST => false,
+        CURLOPT_HTTPHEADER => [
+            "apikey: sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
+            "Authorization: sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
+            "Content-Type: application/json",
+            "Prefer: return=representation"
+        ],
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => json_encode($data),
+        CURLOPT_RETURNTRANSFER => true
+    ]);
+
+    $response = curl_exec($ch);
+    $insertedRows = json_decode($response, true);
+    $primaryListingID = $insertedRows[0]['listingID'] ?? null;
+
+    curl_close($ch);
+
+    /* TOPICS INSERT */
+    if ($primaryListingID && !empty($topicArray)) {
+
+        $stmt = $db->prepare("
+            INSERT INTO \"ListingTopic\" (\"listingID\", topic_id)
+            VALUES (?, ?)
+        ");
+
+        foreach ($topicArray as $topicId) {
+
+            if (!is_numeric($topicId)) {
+                continue;
+            }
+
+            $stmt->execute([
+                $primaryListingID,
+                (int) $topicId
+            ]);
+        }
+    }
+
+    /* RELATED FILES */
+    if (!empty($_FILES['relatedFiles']['name'])) {
+
+        foreach ($_FILES['relatedFiles']['name'] as $i => $name) {
+
+            if (!empty($name) && $_FILES['relatedFiles']['error'][$i] === UPLOAD_ERR_OK) {
+
+                $originalName = basename($name);
+                $title = pathinfo($originalName, PATHINFO_FILENAME);
+
+                $safeName = preg_replace('/[^A-Za-z0-9.\-_]/', '_', $originalName);
+
+                $relatedFileName = time() . "_" . $safeName;
+
+                $relatedFilePath = uploadToSupabase(
+                        $_FILES['relatedFiles']['tmp_name'][$i],
+                        $relatedFileName
+                );
+
+                insertRelatedListing(
+                        $primaryListingID,
+                        $_POST['topic'] ?? null,
+                        "file",
+                        $title,
+                        $relatedFilePath,
+                        null
+                );
+            }
+        }
+    }
+}
+
+/* Related links */
+if (!empty($_POST['relatedLinks'])) {
+    foreach ($_POST['relatedLinks'] as $link) {
+        $link = trim($link);
+
+        if (!empty($link)) {
+            $title = getPageTitle($link);
+
+            insertRelatedListing(
+                    $primaryListingID,
+                    $_POST['topic'] ?? null,
+                    "link",
+                    $title,
+                    null,
+                    $link
+            );
+        }
+    }
+}
+
+/* Related listings */
+if (!empty($_POST['relatedListingIDs'])) {
+    foreach ($_POST['relatedListingIDs'] as $relatedID) {
+        $relatedID = trim($relatedID);
+
+        if (!empty($relatedID)) {
+            $title = getListingTitleByID($relatedID);
+
+            insertRelatedListing(
+                    $primaryListingID,
+                    $_POST['topic'] ?? null,
+                    $title,
+                    "listing",
+                    null,
+                    $relatedID
+            );
+        }
+    }
+}
+
+/* FUNCTIONS */
+
+function getPageTitle($url) {
+    $html = @file_get_contents($url);
+    if (!$html)
+        return $url;
+
+    if (preg_match('/<title[^>]*>(.*?)<\/title>/is', $html, $matches)) {
+        return trim(html_entity_decode($matches[1]));
+    }
+
+    return $url;
+}
+
+function getListingTitleByID($id) {
+    $projectUrl = "https://zdysuvkcmymlwpernryq.supabase.co";
+    $key = "sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o";
+
+    $url = $projectUrl . "/rest/v1/Listing"
+            . "?select=title"
+            . "&listingID=eq." . urlencode($id)
+            . "&limit=1";
+
+    $ch = curl_init($url);
+
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "apikey: $key",
+        "Authorization: Bearer $key",
+        "Content-Type: application/json"
+    ]);
+
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+    $rows = json_decode($response, true);
+
+    return $rows[0]['title'] ?? "Related Listing #" . $id;
+}
+
+function uploadToSupabase($tmpFile, $fileName, $bucket = "uploads") {
+
+    $projectUrl = "https://zdysuvkcmymlwpernryq.supabase.co";
+
+    $fileName = rawurlencode($fileName);
+
+    $uploadUrl = "$projectUrl/storage/v1/object/$bucket/$fileName";
+
+    $ch = curl_init($uploadUrl);
+
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "apikey: sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
+        "Authorization: Bearer sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
+        "Content-Type: application/octet-stream"
+    ]);
+
+    if (empty($tmpFile) || !file_exists($tmpFile)) {
+        die("Invalid upload file path");
+    }
+
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, file_get_contents($tmpFile));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    curl_exec($ch);
+    curl_close($ch);
+
+    return "$projectUrl/storage/v1/object/public/$bucket/$fileName";
+}
+
+function insertRelatedListing($listingID, $topic, $title, $type, $file = null, $link = null) {
+    $ch = curl_init("https://zdysuvkcmymlwpernryq.supabase.co/rest/v1/RelatedListing");
+
+    $data = [
+        "listingID" => (int) $listingID,
+        "topic" => $topic,
+        "title" => $title,
+        "type" => $type,
+        "file" => $file,
+        "links" => $link
+    ];
+
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "apikey: sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
+        "Authorization: Bearer sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
+        "Content-Type: application/json",
+        "Prefer: return=representation"
+    ]);
+
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    curl_exec($ch);
+    curl_close($ch);
+}
+?>
+
+
+<main>
+    <body>
+
+        <form action="controller.php?page=AddSource" method="post" class="input-group" enctype="multipart/form-data">
+
+            <div class="field">
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title"
+                       value="<?= htmlspecialchars($_POST['title'] ?? '') ?>">
+                <span class="error-text"><?= $fieldErrors['title'] ?? '' ?></span>
+            </div>
+
+            <div class="field">
+                <label for="author">Author(s):</label>
+                <input type="text" id="author" name="author"
+                       value="<?= htmlspecialchars($_POST['author'] ?? '') ?>">
+                <span class="error-text"><?= $fieldErrors['author'] ?? '' ?></span>
+            </div>
+
+            <div class="field">
+                <label>Date Published:</label>
+                <div class="date-row">
+                    <input type="number" name="year" placeholder="Year" min="1000" max="9999">
+                    <input type="number" name="month" placeholder="Month" min="1" max="12">
+                    <input type="number" name="day" placeholder="Day" min="1" max="31">
+                    <span class="error-text"><?= $fieldErrors['datePub'] ?? '' ?></span>
+                </div>
+            </div>
+
+            <!-- ICON + FILE SECTION -->
+            <div class="drop-row">
+                <div class="drop-group">
+                    <label>Icon:</label>
+                    <div id="drop-zone-thumb" class="drop-area">
+                        <span class="drop-message">Drag & Drop (jpeg/png)<br>Icon</span>
+                        <button type="button" class="remove-file">✕</button>
+                        <input type="file" name="thumbnail" accept="image/*" hidden>
+                    </div>
+                </div>
+
+                <div class="file-column">
+                    <label>File:</label>
+                    <div id="drop-zone-icon" class="drop-area">
+                        <span class="drop-message">Drag & Drop (pdf/docx/mp3/mp4/wav)<br>File</span>
+                        <button type="button" class="remove-file">✕</button>
+                        <input type="file" name="file" accept=".pdf,.docx,.mp3,.mp4,.wav" hidden>
+                    </div>
+
+                    <div class="link-field">
+                        <label for="externalLink">OR External Link:</label>
+                        <input type="url" id="externalLink" name="externalLink"
+                               value="<?= htmlspecialchars($_POST['externalLink'] ?? '') ?>">
+                    </div>
+                </div>
+            </div>
+
+            <div class="field">
+                <label>Medium:</label>
+                <select name="medium">
+                    <option value="">Select</option>
+                    <option value="paper">Paper</option>
+                    <option value="tutorial">Tutorial</option>
+                    <option value="presentation">Presentation</option>
+                    <option value="video">Video</option>
+                    <option value="podcast">Podcast</option>
+                    <option value="software">Software</option>
+                </select>
+                <span class="error-text"><?= $fieldErrors['medium'] ?? '' ?></span>
+            </div>
+
+            <!-- UPDATED TOPIC SECTION -->
+            <div class="field">
+                <label>Topics:</label>
+
+
+                <input type="hidden" name="topic" id="topicHidden">
+
+                <div class="topic-tree">
+                    <ul>
+                        <?php foreach ($categories as $category): ?>
+                            <li>
+                                <button type="button" class="tree-toggle">▶</button>
+
+                                <label>
+                                    <input type="checkbox"
+                                           class="topic-box"
+                                           value="<?= htmlspecialchars($category['category_name']) ?>">
+                                           <?= htmlspecialchars($category['category_name']) ?>
+                                </label>
+
+                                <ul class="hidden">
+                                    <?php foreach ($topics as $topic): ?>
+                                        <?php if ($topic['category_id'] == $category['category_id']): ?>
+                                            <li>
+                                                <label>
+                                                    <input type="checkbox"
+                                                           class="topic-box real-topic"
+                                                           value="<?= htmlspecialchars($topic['topic_id']) ?>">
+                                                           <?= htmlspecialchars($topic['topic_name']) ?>
+                                                </label>
+                                            </li>
+                                        <?php endif; ?>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="field">
+                <label>Abstract:</label>
+                <input type="text" name="abs">
+            </div>
+
+            <div class="field">
+                <label>Citations:</label>
+                <input type="text" name="citations">
+            </div>
+
+
+            <div id="relatedSources">
+                <h3>Related Sources</h3>
+
+                <div class="related-category">
+                    <div id="relatedFileList">
+                        <div class="related-upload">
+                            <label>Related Attachment:</label>
+                            <input type="file" name="relatedFiles[]">
+                        </div>
+                    </div>
+
+                    <button type="button" onclick="addRelatedFile()">+</button>
+                </div>
+                <br> </br>
+
+                <div id="relatedLinkList">
+                    <div class="related-link">
+                        <label>Related Link:</label>
+                        <input type="url" name="relatedLinks[]" placeholder="https://example.com">
+                    </div>
+                </div>
+                <button type="button" onclick="addRelatedLink()">+</button>
+                <br> </br>
+
+                <div id="relatedListingList">
+                    <div class="related-listing">
+                        <label>Related Listing:</label>
+
+                        <div class="listing-search-wrap">
+                            <input type="text" class="listing-search" placeholder="Search listing by title">
+                            <input type="hidden" name="relatedListingIDs[]">
+                            <div class="listing-results"></div>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" onclick="addRelatedListing()">+</button>
+                <br>
+
+            </div>
+
+            <button type="submit">Upload Project</button>
+        </form>
+        <a href="controller.php?page=index" class="fab">&lt;&lt;</a>
+        <script src="scripts/dragdrop.js"></script>
+
+        <script>
+                    /* toggle collapse */
+                    document.querySelectorAll(".tree-toggle").forEach(btn => {
+                        btn.addEventListener("click", () => {
+                            const ul = btn.parentElement.querySelector("ul");
+
+                            if (!ul)
+                                return;
+
+                            ul.classList.toggle("hidden");
+                            btn.textContent = ul.classList.contains("hidden")
+                                    ? "▶"
+                                    : "▼";
+                        });
+                    });
+
+                    /* sync selected topic IDs to hidden input */
+                    function syncTopics() {
+
+                        const checkedTopics = [
+                            ...document.querySelectorAll(".real-topic:checked")
+                        ].map(cb => cb.value);
+
+                        document.getElementById("topicHidden").value =
+                                JSON.stringify(checkedTopics);
+                    }
+
+                    /* parent/child checkbox handling */
+                    document.addEventListener("change", function (e) {
+
+                        if (!e.target.classList.contains("topic-box")) {
+                            return;
+                        }
+
+                        const checkbox = e.target;
+                        const li = checkbox.closest("li");
+
+                        if (!li)
+                            return;
+
+                        const childBoxes =
+                                li.querySelectorAll("ul input.topic-box");
+
+                        /* Category checkbox clicked */
+                        if (
+                                childBoxes.length > 0 &&
+                                !checkbox.classList.contains("real-topic")
+                                ) {
+
+                            childBoxes.forEach(cb => {
+                                cb.checked = checkbox.checked;
+                            });
+                        }
+
+                        /* Topic checkbox clicked */
+                        if (checkbox.classList.contains("real-topic")) {
+
+                            const parentUl = checkbox.closest("ul");
+                            const parentLi = parentUl?.closest("li");
+
+                            if (parentLi) {
+
+                                const parentCheckbox =
+                                        parentLi.querySelector(
+                                                ":scope > label > input.topic-box"
+                                                );
+
+                                if (parentCheckbox) {
+
+                                    const siblings =
+                                            parentUl.querySelectorAll(
+                                                    "input.real-topic"
+                                                    );
+
+                                    const checkedSiblings =
+                                            parentUl.querySelectorAll(
+                                                    "input.real-topic:checked"
+                                                    );
+
+                                    parentCheckbox.checked =
+                                            siblings.length === checkedSiblings.length;
+                                }
+                            }
+                        }
+
+                        syncTopics();
+                    });
+
+                    /* initialize hidden field */
+                    syncTopics();
+        </script>
+
+
+        <script>
+            function addRelatedFile() {
+
+                const container = document.getElementById("relatedFileList");
+
+                const div = document.createElement("div");
+                div.className = "related-upload";
+
+                div.innerHTML = `
+                <label>Related Attachment:</label>
+                <input type="file" name="relatedFiles[]">
+            `;
+
+                container.appendChild(div);
+            }
+
+            function addRelatedLink() {
+
+                const container = document.getElementById("relatedLinkList");
+
+                const div = document.createElement("div");
+                div.className = "related-link";
+
+                div.innerHTML = `
+                <label>Related Link:</label>
+                <input
+                    type="url"
+                    name="relatedLinks[]"
+                    placeholder="https://example.com">
+            `;
+
+                container.appendChild(div);
+            }
+
+            function addRelatedListing() {
+
+                const container = document.getElementById("relatedListingList");
+
+                const div = document.createElement("div");
+                div.className = "related-listing";
+
+                div.innerHTML = `
+                <label>Related Listing:</label>
+
+                <div class="listing-search-wrap">
+                    <input
+                        type="text"
+                        class="listing-search"
+                        placeholder="Search listing by title">
+
+                    <input
+                        type="hidden"
+                        name="relatedListingIDs[]">
+
+                    <div class="listing-results"></div>
+                </div>
+            `;
+
+                container.appendChild(div);
+            }
+        </script>
+        <script>
+            function removeRelated(btn) {
+                btn.closest('.related-link, .related-upload, .related-listing').remove();
+            }
+
+            function addRelatedFile() {
+
+                const container = document.getElementById("relatedFileList");
+
+                const div = document.createElement("div");
+                div.className = "related-upload";
+
+                div.innerHTML = `
+                <label>Related Attachment:</label>
+                <input type="file" name="relatedFiles[]">
+                <button type="button" onclick="removeRelated(this)">✕</button>
+            `;
+
+                container.appendChild(div);
+            }
+
+            function addRelatedLink() {
+
+                const container = document.getElementById("relatedLinkList");
+
+                const div = document.createElement("div");
+                div.className = "related-link";
+
+                div.innerHTML = `
+                <label>Related Link:</label>
+                <input type="url"
+                       name="relatedLinks[]"
+                       placeholder="https://example.com">
+
+                <button type="button"
+                        onclick="removeRelated(this)">✕</button>
+            `;
+
+                container.appendChild(div);
+            }
+
+            function addRelatedListing() {
+
+                const container = document.getElementById("relatedListingList");
+
+                const div = document.createElement("div");
+                div.className = "related-listing";
+
+                div.innerHTML = `
+                <label>Related Listing:</label>
+
+                <div class="listing-search-wrap">
+                    <input
+                        type="text"
+                        class="listing-search"
+                        placeholder="Search listing by title">
+
+                    <input
+                        type="hidden"
+                        name="relatedListingIDs[]">
+
+                    <div class="listing-results"></div>
+                </div>
+
+                <button type="button" onclick="removeRelated(this)">✕</button>
+            `;
+
+                container.appendChild(div);
+            }
+        </script>
