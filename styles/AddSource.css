@@ -315,3 +315,8 @@
 .topic-tree input[type="checkbox"]:checked {
     font-weight: 500;
 }
+.error {
+    color: red;
+    display: block;
+    margin-top: 5px;
+}

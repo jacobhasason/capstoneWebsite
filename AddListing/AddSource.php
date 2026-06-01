@@ -8,7 +8,7 @@ if (!isset($_SESSION['userID'])) {
 
 $fieldErrors = [];
 
-/* 🐒 FETCH TOPICS */
+/* FETCH TOPICS */
 $catStmt = $db->query("
     SELECT category_id, category_name
     FROM topic_category
@@ -26,27 +26,26 @@ $topicStmt = $db->query("
 $topics = $topicStmt->fetchAll();
 
 $topicArray = json_decode($_POST['topic'] ?? '[]', true);
-
-if (!is_array($topicArray)) {
+if (!is_array($topicArray))
     $topicArray = [];
-}
 
-/* POST */
+
+/* =========================
+  POST HANDLER
+  ========================= */
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $thumbnailPath = null;
     $filePath = null;
+    $primaryListingID = null;
 
+    /* VALIDATION */
     if (empty($_POST['title'])) {
         $fieldErrors['title'] = "Title is required";
     }
 
     if (empty($_POST['author'])) {
         $fieldErrors['author'] = "Author is required";
-    }
-
-    if (empty($_POST['year'])) {
-        $fieldErrors['datePub'] = "Year is required";
     }
 
     if (empty($_POST['medium'])) {
@@ -57,212 +56,212 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $fieldErrors['file'] = "Please upload a file or provide a link";
     }
 
-    /* Thumbnail */
-    if (
-            !empty($_FILES['thumbnail']['tmp_name']) &&
-            $_FILES['thumbnail']['error'] === UPLOAD_ERR_OK
-    ) {
-        $originalName = basename($_FILES['thumbnail']['name']);
-        $safeName = preg_replace('/[^A-Za-z0-9.\-_]/', '_', $originalName);
-        $thumbName = time() . "_" . $safeName;
+    $hasErrors = !empty($fieldErrors);
 
-        $thumbnailPath = uploadToSupabase(
-                $_FILES['thumbnail']['tmp_name'],
-                $thumbName
-        );
-    }
+    /* THUMBNAIL */
+    if (!$hasErrors) {
 
-    $abstract = $_POST['abs'] ?? '';
-    $citations = $_POST['citations'] ?? '';
-    $sourceLink = !empty($_POST['externalLink']) ? trim($_POST['externalLink']) : null;
+        $thumbnailPath = null;
+        $filePath = null;
+        if (
+                !empty($_FILES['thumbnail']['tmp_name']) &&
+                $_FILES['thumbnail']['error'] === UPLOAD_ERR_OK
+        ) {
+            $originalName = basename($_FILES['thumbnail']['name']);
+            $safeName = preg_replace('/[^A-Za-z0-9.\-_]/', '_', $originalName);
+            $thumbName = time() . "_" . $safeName;
 
-    /* FILE UPLOAD */
-    if (!empty($_FILES['file']['name'])) {
+            $thumbnailPath = uploadToSupabase(
+                    $_FILES['thumbnail']['tmp_name'],
+                    $thumbName
+            );
+        }
 
-        $originalName = basename($_FILES['file']['name']);
-        $safeName = preg_replace('/[^A-Za-z0-9.\-_]/', '_', $originalName);
-        $fileName = time() . "_" . $safeName;
+        /* FILE UPLOAD */
+        if (!empty($_FILES['file']['name'])) {
 
-        $filePath = uploadToSupabase(
-                $_FILES['file']['tmp_name'],
-                $fileName
-        );
-    }
+            $originalName = basename($_FILES['file']['name']);
+            $safeName = preg_replace('/[^A-Za-z0-9.\-_]/', '_', $originalName);
+            $fileName = time() . "_" . $safeName;
 
-    /* DATE BUILD */
-    $year = $_POST['year'] ?? null;
-    $month = $_POST['month'] ?? null;
-    $day = $_POST['day'] ?? null;
+            $filePath = uploadToSupabase(
+                    $_FILES['file']['tmp_name'],
+                    $fileName
+            );
+        }
 
-    if ($year) {
-        $year = str_pad($year, 4, "0", STR_PAD_LEFT);
-        if ($month)
-            $month = str_pad($month, 2, "0", STR_PAD_LEFT);
-        if ($day)
-            $day = str_pad($day, 2, "0", STR_PAD_LEFT);
+        /* DATE BUILD */
+        $year = $_POST['year'] ?? null;
+        $month = $_POST['month'] ?? null;
+        $day = $_POST['day'] ?? null;
 
-        $datePub = ($month && $day) ? "$year-$month-$day" : ($month ? "$year-$month" : "$year");
-    } else {
-        $datePub = null;
-    }
+        if ($year) {
+            $year = str_pad($year, 4, "0", STR_PAD_LEFT);
+            if ($month)
+                $month = str_pad($month, 2, "0", STR_PAD_LEFT);
+            if ($day)
+                $day = str_pad($day, 2, "0", STR_PAD_LEFT);
 
-    /* INSERT LISTING */
-    $ch = curl_init("https://zdysuvkcmymlwpernryq.supabase.co/rest/v1/Listing");
+            $datePub = ($month && $day) ? "$year-$month-$day" : ($month ? "$year-$month" : "$year");
+        } else {
+            $datePub = null;
+        }
 
-    $data = [
-        "title" => $_POST['title'],
-        "author" => $_POST['author'],
-        "date" => $datePub,
-        "medium" => $_POST['medium'],
-        "icon" => $thumbnailPath,
-        "file" => $filePath,
-        "links" => $sourceLink,
-        "abstract" => $abstract,
-        "citations" => $citations,
-        "userID" => $_SESSION['userID'],
-    ];
+        /* =========================
+          INSERT LISTING
+          ========================= */
+        $ch = curl_init("https://zdysuvkcmymlwpernryq.supabase.co/rest/v1/Listing");
 
-    curl_setopt_array($ch, [
-        CURLOPT_SSL_VERIFYPEER => false,
-        CURLOPT_SSL_VERIFYHOST => false,
-        CURLOPT_HTTPHEADER => [
-            "apikey: sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
-            "Authorization: sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
-            "Content-Type: application/json",
-            "Prefer: return=representation"
-        ],
-        CURLOPT_POST => true,
-        CURLOPT_POSTFIELDS => json_encode($data),
-        CURLOPT_RETURNTRANSFER => true
-    ]);
+        $data = [
+            "title" => $_POST['title'],
+            "author" => $_POST['author'],
+            "date" => $datePub,
+            "medium" => $_POST['medium'],
+            "icon" => $thumbnailPath,
+            "file" => $filePath,
+            "links" => !empty($_POST['externalLink']) ? trim($_POST['externalLink']) : null,
+            "abstract" => $_POST['abs'] ?? '',
+            "citations" => $_POST['citations'] ?? '',
+            "userID" => $_SESSION['userID'],
+        ];
 
-    $response = curl_exec($ch);
-    $insertedRows = json_decode($response, true);
-    $primaryListingID = $insertedRows[0]['listingID'] ?? null;
+        curl_setopt_array($ch, [
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => false,
+            CURLOPT_HTTPHEADER => [
+                "apikey: sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
+                "Authorization: sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
+                "Content-Type: application/json",
+                "Prefer: return=representation"
+            ],
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => json_encode($data),
+            CURLOPT_RETURNTRANSFER => true
+        ]);
 
-    curl_close($ch);
+        $response = curl_exec($ch);
+        $insertedRows = json_decode($response, true);
+        curl_close($ch);
 
-    /* TOPICS INSERT */
-    if ($primaryListingID && !empty($topicArray)) {
+        $primaryListingID = $insertedRows[0]['listingID'] ?? null;
+        header("Location: controller.php?page=addsource&success=1");
+        exit;
 
-        $stmt = $db->prepare("
+        /* =========================
+          TOPICS
+          ========================= */
+        if ($primaryListingID && !empty($topicArray)) {
+
+            $stmt = $db->prepare("
             INSERT INTO \"ListingTopic\" (\"listingID\", topic_id)
             VALUES (?, ?)
         ");
 
-        foreach ($topicArray as $topicId) {
-
-            if (!is_numeric($topicId)) {
-                continue;
-            }
-
-            $stmt->execute([
-                $primaryListingID,
-                (int) $topicId
-            ]);
-        }
-    }
-
-    /* RELATED FILES */
-    if (!empty($_FILES['relatedFiles']['name'])) {
-
-        foreach ($_FILES['relatedFiles']['name'] as $i => $name) {
-
-            if (!empty($name) && $_FILES['relatedFiles']['error'][$i] === UPLOAD_ERR_OK) {
-
-                $originalName = basename($name);
-                $title = pathinfo($originalName, PATHINFO_FILENAME);
-
-                $safeName = preg_replace('/[^A-Za-z0-9.\-_]/', '_', $originalName);
-
-                $relatedFileName = time() . "_" . $safeName;
-
-                $relatedFilePath = uploadToSupabase(
-                        $_FILES['relatedFiles']['tmp_name'][$i],
-                        $relatedFileName
-                );
-
-                insertRelatedListing(
-                        $primaryListingID,
-                        $_POST['topic'] ?? null,
-                        "file",
-                        $title,
-                        $relatedFilePath,
-                        null
-                );
+            foreach ($topicArray as $topicId) {
+                if (is_numeric($topicId)) {
+                    $stmt->execute([$primaryListingID, (int) $topicId]);
+                }
             }
         }
-    }
-}
 
-/* Related links */
-if (!empty($_POST['relatedLinks'])) {
-    foreach ($_POST['relatedLinks'] as $link) {
-        $link = trim($link);
+        /* =========================
+          RELATED FILES
+          ========================= */
+        if ($primaryListingID && !empty($_FILES['relatedFiles']['name'])) {
 
-        if (!empty($link)) {
-            $title = getPageTitle($link);
+            foreach ($_FILES['relatedFiles']['name'] as $i => $name) {
 
-            insertRelatedListing(
-                    $primaryListingID,
-                    $_POST['topic'] ?? null,
-                    "link",
-                    $title,
-                    null,
-                    $link
-            );
+                if (!empty($name) && $_FILES['relatedFiles']['error'][$i] === UPLOAD_ERR_OK) {
+
+                    $safeName = preg_replace('/[^A-Za-z0-9.\-_]/', '_', basename($name));
+                    $relatedFileName = time() . "_" . $safeName;
+
+                    $relatedFilePath = uploadToSupabase(
+                            $_FILES['relatedFiles']['tmp_name'][$i],
+                            $relatedFileName
+                    );
+
+                    insertRelatedListing(
+                            $primaryListingID,
+                            $_POST['topic'] ?? null,
+                            "file",
+                            pathinfo($name, PATHINFO_FILENAME),
+                            $relatedFilePath,
+                            null
+                    );
+                }
+            }
+        }
+
+        /* =========================
+          RELATED LINKS
+          ========================= */
+        if ($primaryListingID && !empty($_POST['relatedLinks'])) {
+            foreach ($_POST['relatedLinks'] as $link) {
+                $link = trim($link);
+
+                if (!empty($link)) {
+                    insertRelatedListing(
+                            $primaryListingID,
+                            $_POST['topic'] ?? null,
+                            getPageTitle($link),
+                            "link",
+                            null,
+                            $link
+                    );
+                }
+            }
+        }
+
+        /* =========================
+          RELATED LISTINGS
+          ========================= */
+        if ($primaryListingID && !empty($_POST['relatedListingIDs'])) {
+            foreach ($_POST['relatedListingIDs'] as $relatedID) {
+
+                if (!empty($relatedID)) {
+                    insertRelatedListing(
+                            $primaryListingID,
+                            $_POST['topic'] ?? null,
+                            getListingTitleByID($relatedID),
+                            "listing",
+                            null,
+                            $relatedID
+                    );
+                }
+            }
         }
     }
 }
 
-/* Related listings */
-if (!empty($_POST['relatedListingIDs'])) {
-    foreach ($_POST['relatedListingIDs'] as $relatedID) {
-        $relatedID = trim($relatedID);
 
-        if (!empty($relatedID)) {
-            $title = getListingTitleByID($relatedID);
-
-            insertRelatedListing(
-                    $primaryListingID,
-                    $_POST['topic'] ?? null,
-                    $title,
-                    "listing",
-                    null,
-                    $relatedID
-            );
-        }
-    }
-}
-
-/* FUNCTIONS */
+/* =========================
+  FUNCTIONS
+  ========================= */
 
 function getPageTitle($url) {
     $html = @file_get_contents($url);
     if (!$html)
         return $url;
 
-    if (preg_match('/<title[^>]*>(.*?)<\/title>/is', $html, $matches)) {
-        return trim(html_entity_decode($matches[1]));
+    if (preg_match('/<title[^>]*>(.*?)<\/title>/is', $html, $m)) {
+        return trim(html_entity_decode($m[1]));
     }
 
     return $url;
 }
 
 function getListingTitleByID($id) {
-    $projectUrl = "https://zdysuvkcmymlwpernryq.supabase.co";
-    $key = "sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o";
+    $projectUrl = "";
+    $key = "";
 
-    $url = $projectUrl . "/rest/v1/Listing"
-            . "?select=title"
-            . "&listingID=eq." . urlencode($id)
-            . "&limit=1";
+    $url = $projectUrl . "/rest/v1/Listing?select=title&listingID=eq." . urlencode($id);
 
     $ch = curl_init($url);
 
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        "apikey: $key",
-        "Authorization: Bearer $key",
+        "apikey: sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
+        "Authorization: sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
         "Content-Type: application/json"
     ]);
 
@@ -279,29 +278,28 @@ function getListingTitleByID($id) {
 function uploadToSupabase($tmpFile, $fileName, $bucket = "uploads") {
 
     $projectUrl = "https://zdysuvkcmymlwpernryq.supabase.co";
-
     $fileName = rawurlencode($fileName);
 
     $uploadUrl = "$projectUrl/storage/v1/object/$bucket/$fileName";
-
-    $ch = curl_init($uploadUrl);
-
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        "apikey: sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
-        "Authorization: Bearer sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
-        "Content-Type: application/octet-stream"
-    ]);
 
     if (empty($tmpFile) || !file_exists($tmpFile)) {
         die("Invalid upload file path");
     }
 
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, file_get_contents($tmpFile));
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $ch = curl_init($uploadUrl);
+
+    curl_setopt_array($ch, [
+        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_SSL_VERIFYHOST => false,
+        CURLOPT_HTTPHEADER => [
+            "apikey: sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
+            "Authorization: sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
+            "Content-Type: application/json"
+        ],
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => file_get_contents($tmpFile),
+        CURLOPT_RETURNTRANSFER => true
+    ]);
 
     curl_exec($ch);
     curl_close($ch);
@@ -310,6 +308,7 @@ function uploadToSupabase($tmpFile, $fileName, $bucket = "uploads") {
 }
 
 function insertRelatedListing($listingID, $topic, $title, $type, $file = null, $link = null) {
+
     $ch = curl_init("https://zdysuvkcmymlwpernryq.supabase.co/rest/v1/RelatedListing");
 
     $data = [
@@ -321,29 +320,40 @@ function insertRelatedListing($listingID, $topic, $title, $type, $file = null, $
         "links" => $link
     ];
 
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        "apikey: sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
-        "Authorization: Bearer sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
-        "Content-Type: application/json",
-        "Prefer: return=representation"
+    curl_setopt_array($ch, [
+        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_SSL_VERIFYHOST => false,
+        CURLOPT_HTTPHEADER => [
+            "apikey: sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
+            "Authorization: sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o",
+            "Content-Type: application/json"
+        ],
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => json_encode($data),
+        CURLOPT_RETURNTRANSFER => true
     ]);
-
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
     curl_exec($ch);
     curl_close($ch);
 }
 ?>
 
-
 <main>
     <body>
-
+       <?php if (isset($_GET['success'])): ?>
+    <div style="
+        background: #e6ffed;
+        color: #1a7f37;
+        padding: 10px;
+        border: 1px solid #1a7f37;
+        margin-bottom: 15px;
+        border-radius: 5px;
+        font-weight: bold;
+    ">
+        Uploaded Successfully!
+    </div>
+<?php endif; ?>
+        
         <form action="controller.php?page=AddSource" method="post" class="input-group" enctype="multipart/form-data">
 
             <div class="field">
@@ -387,6 +397,11 @@ function insertRelatedListing($listingID, $topic, $title, $type, $file = null, $
                         <span class="drop-message">Drag & Drop (pdf/docx/mp3/mp4/wav)<br>File</span>
                         <button type="button" class="remove-file">✕</button>
                         <input type="file" name="file" accept=".pdf,.docx,.mp3,.mp4,.wav" hidden>
+                        <?php if (!empty($fieldErrors['file'])): ?>
+                            <span style="color: red;">
+                                <?= $fieldErrors['file'] ?>
+                            </span>
+                        <?php endif; ?>
                     </div>
 
                     <div class="link-field">

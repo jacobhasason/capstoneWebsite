@@ -50,7 +50,8 @@ $totalListings = $totalStmt->fetchColumn();
                         <div class="source-details">
                             <h3><?= htmlspecialchars($listing['title']) ?></h3>
                             <p><?= htmlspecialchars($listing['author']) ?></p>
-                            <p><?= htmlspecialchars($listing['date']) ?></p>
+                            <p><?= htmlspecialchars($listing['date'] ?? '') ?></p>
+
                         </div>
 
                         <div class="source-icon">

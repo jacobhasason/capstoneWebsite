@@ -1,60 +1,63 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
+
+<head>
     <meta charset="UTF-8">
     <title>Add Source</title>
-    <body>
-        <header class="site-header">
 
-            <!-- LEFT SIDE -->
-            <div class="header-left">
+    <link rel="stylesheet" href="styles/AddSource.css">
+    <link rel="stylesheet" href="styles/main.css">
+</head>
 
-                <img src="images/CWULOGO2.png"
-                     alt="CWU Logo"
-                     class="header-logo">
+<body>
 
-                <h1 class="header-title">
-                    Add Source
-                </h1>
+<header class="site-header">
 
-            </div>
-            <!-- RIGHT SIDE -->
-            <div class="header-right">
+    <!-- LEFT SIDE -->
+    <div class="header-left">
 
-                <!-- ABOUT -->
-                <a href="controller.php?page=about"
-                   class="about-btn"
-                   title="About">
+        <img src="images/CWULOGO2.png"
+             alt="CWU Logo"
+             class="header-logo">
 
-                    ?
+        <h1 class="header-title">
+            Add Source
+        </h1>
 
-                </a>
+    </div>
 
-                <!-- USER -->
-                <?php if (isset($_SESSION["userID"])): ?>
+    <!-- RIGHT SIDE -->
+    <div class="header-right">
 
-                    <a href="controller.php?page=usersPage"
-                       class="user-icon-btn"
-                       title="My Account">
+        <!-- ABOUT -->
+        <a href="controller.php?page=about"
+           class="about-btn"
+           title="About">
+            ?
+        </a>
 
-                        👤
+        <!-- USER -->
+        <?php if (isset($_SESSION["userID"])): ?>
 
-                    </a>
+            <a href="controller.php?page=usersPage"
+               class="user-icon-btn"
+               title="My Account">
+                👤
+            </a>
 
-                <?php else: ?>
+        <?php else: ?>
 
-                    <a href="controller.php?page=login"
-                       class="user-icon-btn"
-                       title="Login">
+            <a href="controller.php?page=login"
+               class="user-icon-btn"
+               title="Login">
+                👤
+            </a>
 
-                        👤
+        <?php endif; ?>
 
-                    </a>
+    </div>
 
-                <?php endif; ?>
+</header>
 
-            </div>
-            <link rel="stylesheet" href="styles/AddSource.css">
-            <link rel="stylesheet" href="styles/main.css"> 
-        </header>
-    </body>
+</body>
 </html>
