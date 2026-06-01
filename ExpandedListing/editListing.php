@@ -201,8 +201,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         </div>
 
         <label>Abstract</label>
-        <textarea name="abstract"><?= htmlspecialchars($listing["abstract"]) ?></textarea>
-
+        <textarea name="abstract"><?= htmlspecialchars($listing["abstract"] ?? '') ?></textarea>
         <label>External Link</label>
         <input type="text" name="links"
                value="<?= htmlspecialchars($listing["links"]) ?>">
