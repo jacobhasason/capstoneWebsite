@@ -9,22 +9,15 @@
             <file>file:/C:/xampp/htdocs/capstoneWebsite/AddListing/AddSource.php</file>
             <file>file:/C:/xampp/htdocs/capstoneWebsite/getListing.php</file>
             <file>file:/C:/xampp/htdocs/capstoneWebsite/styles/main.css</file>
-            <file>file:/C:/xampp/htdocs/capstoneWebsite/ExpandedListing/deleteListing.php</file>
-            <file>file:/C:/xampp/htdocs/capstoneWebsite/view/LoginHeader.php</file>
-            <file>file:/C:/xampp/htdocs/capstoneWebsite/view/header.php</file>
-            <file>file:/C:/xampp/htdocs/capstoneWebsite/Users/toggleModifyPermission.php</file>
-            <file>file:/C:/xampp/htdocs/capstoneWebsite/controller.php</file>
-            <file>file:/C:/xampp/htdocs/capstoneWebsite/view/horizontal_nav_bar.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/styles/userpage.css</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/styles/editListing.css</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/styles/reportPage.css</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/Login/login.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/ExpandedListing/ViewReport.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/view/home.php</file>
             <file>file:/C:/xampp/htdocs/capstoneWebsite/cocoNut.jpg</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/controller.php</file>
             <file>file:/C:/xampp/htdocs/capstoneWebsite/view/reportHeader.php</file>
-            <file>file:/C:/xampp/htdocs/capstoneWebsite/view/header2.php</file>
-            <file>file:/C:/xampp/htdocs/capstoneWebsite/view/footer.php</file>
-            <file>file:/C:/xampp/htdocs/capstoneWebsite/view/addUserHeader.php</file>
-            <file>file:/C:/xampp/htdocs/capstoneWebsite/indexControllerLoad.php</file>
-            <file>file:/C:/xampp/htdocs/capstoneWebsite/view/modifyUserHeader.php</file>
-            <file>file:/C:/xampp/htdocs/capstoneWebsite/view/userPageHeader.php</file>
-            <file>file:/C:/xampp/htdocs/capstoneWebsite/view/AddSourceHeader.php</file>
-            <file>file:/C:/xampp/htdocs/capstoneWebsite/view/editListing.php</file>
         </group>
     </open-files>
 </project-private>
