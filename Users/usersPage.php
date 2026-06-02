@@ -1,5 +1,6 @@
 <?php
 require "DBConnect/db.php";
+// Superuser Panel with options to modify WL users list
 
 /* AUTH CHECK */
 if (!isset($_SESSION["userID"])) {

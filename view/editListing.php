@@ -1,7 +1,7 @@
 <!DOCTYPE html> 
 <html lang="en">
     <meta charset="UTF-8">
-    <title>Add User</title>
+    <title>Edit Listing</title>
     <body>
         <header>
             <link rel="stylesheet" href="styles/main.css">

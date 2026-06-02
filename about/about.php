@@ -1,4 +1,6 @@
 <main class="about-page">
+    <!-- Shows about page with abbreviations table -->
+
 
     <div class="about-container">
 

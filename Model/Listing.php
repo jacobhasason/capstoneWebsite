@@ -1,5 +1,5 @@
 <?php
-
+// Adds a listing record to the DB
 
 
 function addListing($title, $author, $date, $icon, $medium, $abstract, $links, $file, $userID, $topic, $citation) {

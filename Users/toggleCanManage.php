@@ -1,4 +1,5 @@
 <?php
+// Allows WL Users to Modify site sources
 
 /*AUTH CHECK */
 if (!isset($_SESSION["userType"])) {

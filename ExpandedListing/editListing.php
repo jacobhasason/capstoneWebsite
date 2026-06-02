@@ -1,5 +1,5 @@
 <?php
-
+// Allows UI modification of sources after upload
 
 
 /* PERMISSION CHECK */

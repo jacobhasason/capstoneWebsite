@@ -1,5 +1,6 @@
 <?php
 require "DBConnect/db.php";
+// Modify a WL user through UI (Superuser only)
 
 $currentUserType = (int) ($_SESSION["userType"] ?? 1);
 $currentCanManage = (int) ($_SESSION["canManage"] ?? 1);

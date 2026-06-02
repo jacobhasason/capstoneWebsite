@@ -1,4 +1,5 @@
 <?php
+// Removes listings and any relation to that listing from the DB
 
 /* PERMISSION CHECK*/
 $currentUserType = (int)($_SESSION["userType"] ?? 0);
