@@ -256,9 +256,28 @@ if (!empty($_POST['relatedListingIDs'])) {
         $relatedID = trim($relatedID);
 
         if (!empty($relatedID)) {
-            $title = getListingTitleByID($relatedID);
+            $primaryTitle = $_POST['title'] ?? "Related Listing #" . $primaryListingID;
+            $relatedTitle = getListingTitleByID($relatedID);
 
-            insertRelatedListing($primaryListingID, $_POST['topic'] ?? null, $title, "listing", null, $relatedID);
+            // Primary source relates to selected source
+            insertRelatedListing(
+                $primaryListingID,
+                $_POST['topic'] ?? null,
+                $relatedTitle,
+                "listing",
+                null,
+                $relatedID
+            );
+
+            // Selected source also relates back to primary source
+            insertRelatedListing(
+                $relatedID,
+                $_POST['topic'] ?? null,
+                $primaryTitle,
+                "listing",
+                null,
+                $primaryListingID
+            );
         }
     }
 }
