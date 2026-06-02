@@ -21,10 +21,13 @@ if (!$id) {
 /*DELETE LISTING*/
 echo "ID received: " . htmlspecialchars($id) . "<br>";
 
-// Delete related rows first
-//$stmt = $db->prepare('DELETE FROM "RelatedListing" WHERE "listingID" = ?');
-//$stmt->execute([$id]);
-//echo "Related rows deleted: " . $stmt->rowCount() . "<br>";
+// Delete related rows where this listing is the primary
+$stmt = $db->prepare('DELETE FROM "RelatedListing" WHERE "listingID" = ?');
+$stmt->execute([$id]);
+
+// Delete related rows where this listing is the related site listing
+$stmt = $db->prepare('DELETE FROM "RelatedListing" WHERE "type" = ? AND "links" = ?');
+$stmt->execute(["listing", $id]);
 
 
 // Then delete main listing

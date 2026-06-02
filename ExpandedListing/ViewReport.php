@@ -8,22 +8,29 @@ if ($primaryID <= 0) {
 }
 
 // Load primary source
-$stmt = $db->prepare('SELECT * FROM "Listing" WHERE "listingID" = ?');
+$stmt = $db->prepare(
+        'SELECT * FROM "Listing" WHERE "listingID" = ?'
+);
 $stmt->execute([$primaryID]);
+
 $primary = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$primary) {
     die("Primary listing not found");
 }
 
-// Load related sources for this primary listing
-$stmt = $db->prepare('SELECT * FROM "RelatedListing" WHERE "listingID" = ? ORDER BY "relatedListingID" ASC');
+// Load related sources
+$stmt = $db->prepare(
+        'SELECT * FROM "RelatedListing"
+     WHERE "listingID" = ?
+     ORDER BY "relatedListingID" ASC'
+);
 $stmt->execute([$primaryID]);
+
 $relatedRows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Build carousel items: primary first, related after
+// Build carousel items
 $listings = [];
-
 $listings[] = [
     "title" => $primary["title"] ?? "Untitled",
     "author" => $primary["author"] ?? "Unknown",
@@ -36,15 +43,28 @@ $listings[] = [
 
 foreach ($relatedRows as $row) {
     if (($row["type"] ?? '') === "listing" && !empty($row["links"])) {
+
         $relatedListingID = (int) $row["links"];
 
+        $relatedStmt = $db->prepare(
+                'SELECT * FROM "Listing" WHERE "listingID" = ?'
+        );
+
+        $relatedStmt->execute([$relatedListingID]);
+
+        $relatedListing = $relatedStmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$relatedListing) {
+            continue;
+        }
+
         $listings[] = [
-            "title" => $row["title"] ?? ucfirst($row["type"] ?? "Related Source"),
-            "author" => "Unknown",
-            "topic" => $row["topic"] ?? ($primary["topic"] ?? "Uncategorized"),
-            "abstract" => $primary['abstract'] ?? "Click below to view this related listing.",
-            "file" => null,
-            "links" => "ListingInfo.php?id=" . $relatedListingID,
+            "title" => $relatedListing["title"] ?? $row["title"],
+            "author" => $relatedListing["author"] ?? "Unknown",
+            "topic" => $relatedListing["topic"] ?? "Uncategorized",
+            "abstract" => $relatedListing["abstract"] ?? "No abstract available",
+            "file" => $relatedListing["file"] ?? null,
+            "links" => "controller.php?page=listingInfo&id=" . $relatedListingID,
             "type" => "listing"
         ];
     } else {
@@ -66,16 +86,15 @@ $selectedTopic = $_GET['topic'] ?? 'all';
 
 // Build a list of unique topics from the carousel items.
 $topics = array_unique(
-    array_filter(
-        array_column($listings, 'topic'),
-        function ($topic) {
-            return !empty($topic)
-                // Exclude empty topics and "Uncategorized".
-                && strtolower(trim($topic)) !== 'uncategorized';
-        }
-    )
+        array_filter(
+                array_column($listings, 'topic'),
+                function ($topic) {
+                    return !empty($topic)
+                            // Exclude empty topics and "Uncategorized".
+                            && strtolower(trim($topic)) !== 'uncategorized';
+                }
+        )
 );
-
 
 // Sort topics alphabetically for cleaner display.
 sort($topics);
@@ -142,11 +161,11 @@ if ($totalItems <= 1) {
 
             <!-- Previous carousel item -->
             <a class="arrow"
-                href="controller.php?page=ViewReport&id=<?= $primaryID ?>&topic=<?= urlencode($selectedTopic) ?>&i=<?= $prevIndex ?>">
+               href="controller.php?page=ViewReport&id=<?= $primaryID ?>&topic=<?= urlencode($selectedTopic) ?>&i=<?= $prevIndex ?>">
                 ◀
             </a>
         <?php else: ?>
-            
+
             <span class="arrow disabled">◀</span>
 
         <?php endif; ?>
@@ -242,7 +261,7 @@ if ($totalItems <= 1) {
             <a class="btn"
                href="<?= htmlspecialchars($current["links"]) ?>"
                <?= ($current["type"] ?? '') === "listing" ? '' : 'target="_blank" rel="noopener noreferrer"' ?>>
-                   <?= ($current["type"] ?? '') === "listing" ? 'View Related Listing' : 'Visit Source' ?>
+               <?= ($current["type"] ?? '') === "listing" ? 'View Related Listing' : 'Visit Source' ?>
             </a>
 
         <?php else: ?>
