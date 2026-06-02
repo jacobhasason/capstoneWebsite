@@ -1,16 +1,18 @@
 <?php
 
+$SUPABASE_URL = "https://zdysuvkcmymlwpernryq.supabase.co";
+$SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpkeXN1dmtjbXltbHdwZXJucnlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4ODA4MjMsImV4cCI6MjA5MjQ1NjgyM30.bDlADBNjnNoiTC6L5fjb13pK6YB1uHp5yZqHGIHLOuQ";
 error_reporting(0);
 ini_set('display_errors', 0);
 
-function ieeeAuthors(string $authors): string
-{
+function ieeeAuthors(string $authors): string {
     $names = array_map('trim', explode(',', $authors));
     $formatted = [];
 
     foreach ($names as $name) {
 
-        if (empty($name)) continue;
+        if (empty($name))
+            continue;
 
         $parts = preg_split('/\s+/', trim($name));
 
@@ -40,15 +42,14 @@ function ieeeAuthors(string $authors): string
     return $formatted[0] ?? '';
 }
 
-function buildIEEECitation($title, $authors, $source, $year)
-{
+function buildIEEECitation($title, $authors, $source, $year) {
     $authorText = ieeeAuthors($authors);
 
     if (!empty($year)) {
         $source = preg_replace(
-            '/,\s*' . preg_quote($year, '/') . '\s*$/',
-            '',
-            $source
+                '/,\s*' . preg_quote($year, '/') . '\s*$/',
+                '',
+                $source
         );
     }
 
@@ -69,16 +70,15 @@ function buildIEEECitation($title, $authors, $source, $year)
     return $citation . '.';
 }
 
-function detectMedium($source, $title, $link)
-{
+function detectMedium($source, $title, $link) {
     $source = strtolower($source);
     $title = strtolower($title);
     $link = strtolower($link);
 
     if (
-        str_contains($source, 'springer') ||
-        str_contains($source, 'kluwer') ||
-        str_contains($source, 'press')
+            str_contains($source, 'springer') ||
+            str_contains($source, 'kluwer') ||
+            str_contains($source, 'press')
     ) {
         return "Book";
     }
@@ -88,21 +88,21 @@ function detectMedium($source, $title, $link)
     }
 
     if (
-        str_contains($title, 'tutorial') ||
-        str_contains($source, 'tutorial')
+            str_contains($title, 'tutorial') ||
+            str_contains($source, 'tutorial')
     ) {
         return "Tutorial";
     }
 
     if (
-        str_contains($source, 'conference') ||
-        str_contains($source, 'proceedings')
+            str_contains($source, 'conference') ||
+            str_contains($source, 'proceedings')
     ) {
         return "Presentation";
     }
 
     if (
-        str_contains($link, 'youtube')
+            str_contains($link, 'youtube')
     ) {
         return "Video";
     }
@@ -128,7 +128,8 @@ for ($start = 0; $start < 1000; $start += 20) {
 
     $html = file_get_contents($url, false, $context);
 
-    if (!$html) break;
+    if (!$html)
+        break;
 
     $dom = new DOMDocument();
 
@@ -140,7 +141,8 @@ for ($start = 0; $start < 1000; $start += 20) {
 
     $rows = $xpath->query("//tr[@class='gsc_a_tr']");
 
-    if ($rows->length == 0) break;
+    if ($rows->length == 0)
+        break;
 
     foreach ($rows as $row) {
 
@@ -148,14 +150,12 @@ for ($start = 0; $start < 1000; $start += 20) {
 
         $title = $titleNode ? trim($titleNode->nodeValue) : '';
 
-        $link = $titleNode
-            ? "https://scholar.google.com" . $titleNode->getAttribute("href")
-            : '';
+        $link = $titleNode ? "https://scholar.google.com" . $titleNode->getAttribute("href") : '';
 
         $gray = $xpath->query(".//div[@class='gs_gray']", $row);
 
         $authors = $gray->item(0) ? trim($gray->item(0)->nodeValue) : '';
-        $source  = $gray->item(1) ? trim($gray->item(1)->nodeValue) : '';
+        $source = $gray->item(1) ? trim($gray->item(1)->nodeValue) : '';
 
         $yearNode = $xpath->query(".//span[@class='gsc_a_h gsc_a_hc gs_ibl']", $row)->item(0);
         $year = $yearNode ? trim($yearNode->nodeValue) : '';
@@ -176,11 +176,52 @@ for ($start = 0; $start < 1000; $start += 20) {
 
     sleep(3);
 }
-
-$json = json_encode($allData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+$json = json_encode(
+        $allData,
+        JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE
+);
 
 file_put_contents("scholar.json", $json);
 
-echo $json;
+/*
+  |--------------------------------------------------------------------------
+  | Upload to Supabase
+  |--------------------------------------------------------------------------
+ */
 
+$payload = json_encode($allData);
+
+$ch = curl_init(
+        $SUPABASE_URL . "/rest/v1/Listing"
+);
+
+curl_setopt_array($ch, [
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_POST => true,
+    CURLOPT_POSTFIELDS => $payload,
+    CURLOPT_SSL_VERIFYPEER => false,
+    CURLOPT_SSL_VERIFYHOST => false,
+    CURLOPT_HTTPHEADER => [
+        "Content-Type: application/json",
+        "apikey: $SUPABASE_KEY",
+        "Authorization: Bearer $SUPABASE_KEY",
+        "Prefer: return=representation"
+    ]
+]);
+
+$response = curl_exec($ch);
+$status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+if (curl_errno($ch)) {
+    die("Supabase Error: " . curl_error($ch));
+}
+
+curl_close($ch);
+
+echo json_encode([
+    "success" => $status >= 200 && $status < 300,
+    "status" => $status,
+    "records_found" => count($allData),
+    "supabase_response" => json_decode($response, true)
+        ], JSON_PRETTY_PRINT);
 ?>
