@@ -124,7 +124,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 
 
-<a href="controller.php?page=usersPage" class="fab">←</a>
+<a href="controller.php?page=usersPage" class="fab"><<</a>
 
 <script>
     document.querySelectorAll(".toggle-mod").forEach((btn) => {
