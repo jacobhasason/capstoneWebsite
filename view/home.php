@@ -56,6 +56,7 @@ $totalListings = $totalStmt->fetchColumn();
                                         break;
 
                                     case "podcast":
+                                    case "podcasts":
                                         echo "🎧";
                                         break;
                                     case "Book":
