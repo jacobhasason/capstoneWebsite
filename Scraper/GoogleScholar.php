@@ -1,4 +1,5 @@
 <?php
+//Formats research provided from GS as JSON
 
 $baseUrl = "https://scholar.google.com/citations?view_op=list_works&hl=en&hl=en&user=k12ONA8AAAAJ";
 

@@ -1,5 +1,5 @@
 <?php
-
+// Login screen for Whitelist/Super users
 
 // If already logged in, redirect to users page
 if (isset($_SESSION["userID"])) {

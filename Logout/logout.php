@@ -1,5 +1,5 @@
 <?php
-
+// Logs out users
 
 // clear all session data
 $_SESSION = [];

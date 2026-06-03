@@ -1,4 +1,6 @@
 <?php
+// Page that displays primary source and related sources on a carousel
+
 require "DBConnect/db.php";
 
 $primaryID = isset($_GET['id']) ? (int) $_GET['id'] : 0;

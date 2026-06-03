@@ -1,4 +1,6 @@
 <?php
+// Page Displaying the Primary Source with options to see related sources, edit (elevated), delete (elevated) or copy the citation
+
 require "DBConnect/db.php";
 
 /* PERMISSION CHECK */

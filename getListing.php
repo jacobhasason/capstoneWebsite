@@ -1,4 +1,6 @@
 <?php
+// Handles each individual listing
+
 require "DBConnect/db.php";
 
 // read JSON from AJAX

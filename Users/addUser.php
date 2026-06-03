@@ -1,4 +1,5 @@
 <?php
+// Adds a WL User through UI (Superuser only)
 
 require "DBConnect/db.php";
 

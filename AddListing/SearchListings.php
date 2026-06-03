@@ -1,4 +1,6 @@
 <?php
+// Search for Listings in the Database
+
 $q = $_GET['q'] ?? '';
 
 if (strlen($q) < 2) {
