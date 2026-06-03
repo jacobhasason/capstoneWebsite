@@ -49,8 +49,7 @@
         <?php endif; ?>
 
     </div>
-    
-    <link rel="stylesheet" href="styles/manageHeader.css"> 
+
     <link rel="stylesheet" href="styles/main.css"> 
     
 </header>
