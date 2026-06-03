@@ -1,18 +1,15 @@
-
 <?php
 //require_once "controller.php";
 require "DBConnect/db.php";
 ?>
-<link rel="stylesheet" href="styles/main.css">
 
 
 <?php
 $limit = isset($_GET['limit']) ? (int) $_GET['limit'] : 10;
 
-// Get listings
+// Get initial listings
 $stmt = $db->prepare('
-    SELECT * 
-    FROM "Listing" 
+    SELECT * FROM "Listing" 
     ORDER BY "listingID" DESC 
     LIMIT :limit
 ');
@@ -22,14 +19,12 @@ $stmt->execute();
 
 $listings = $stmt->fetchAll();
 
-// Count total listings
+// Count total listings for initial load
 $totalStmt = $db->prepare('SELECT COUNT(*) FROM "Listing"');
 $totalStmt->execute();
 
 $totalListings = $totalStmt->fetchColumn();
 ?>
-
-
 
 <body>
 
@@ -40,9 +35,7 @@ $totalListings = $totalStmt->fetchColumn();
             <?php foreach ($listings as $listing): ?>
 
                 <div class="source-item">
-
                     <a href="controller.php?page=listingInfo&id=<?= $listing['listingID'] ?>" class="item-link">
-
                         <div class="thumbnail">
                           <img src="<?= !empty($listing['icon']) ? htmlspecialchars($listing['icon']) : 'cocoNut.jpg' ?>">                         
                         </div>
@@ -55,58 +48,32 @@ $totalListings = $totalStmt->fetchColumn();
 
                         <div class="source-icon">
                             <span class="icon">
-
                                 <?php
-                                switch ($listing['medium']) {
-
-                                    case "video":
-                                        echo "🎥";
-                                        break;
-
-                                    case "podcast":
-                                        echo "🎧";
-                                        break;
-
-                                    case "paper":
-                                        echo "📄";
-                                        break;
-
-                                    case "tutorial":
-                                        echo "📘";
-                                        break;
-
-                                    case "presentation":
-                                        echo "📊";
-                                        break;
-
-                                    default:
-                                        echo "📚";
-                                        break;
+                                switch (strtolower($listing['medium'])) {
+                                    case "video": echo "🎥"; break;
+                                    case "podcast": echo "🎧"; break;
+                                    case "paper": echo "📄"; break;
+                                    case "tutorial": echo "📘"; break;
+                                    case "presentation": echo "📊"; break;
+                                    default: echo "📚"; break;
                                 }
                                 ?>
-
                             </span>
                         </div>
-
                     </a>
-
                 </div>
 
             <?php endforeach; ?>
 
+            <?php if ($limit < $totalListings): ?>
+                <div class="show-more-container">
+                    <button type="button" id="show-more-btn" class="show-more-btn">
+                        Show More
+                    </button>
+                </div>
+            <?php endif; ?>
+
         </div>
-
-        <?php if ($limit < $totalListings): ?>
-
-            <div class="show-more-container">
-
-                <a href="controller.php?page=index&limit=<?= $limit + 10 ?>" class="show-more-btn">
-                    Show More
-                </a>
-
-            </div>
-
-        <?php endif; ?>
 
         <?php
         if (
@@ -114,9 +81,7 @@ $totalListings = $totalStmt->fetchColumn();
                 ($_SESSION['userType'] == 1 || $_SESSION['userType'] == 2)
         ):
             ?>
-
             <a href="controller.php?page=AddSource" class="fab">+</a>
-
         <?php endif; ?>
 
     </main>
@@ -125,4 +90,3 @@ $totalListings = $totalStmt->fetchColumn();
 
 <script src="scripts/date.js"></script>
 <script src="scripts/checkmark.js"></script>
-
