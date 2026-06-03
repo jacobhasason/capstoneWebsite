@@ -106,13 +106,15 @@ $topics = $topicStmt->fetchAll();
 
         <div class="action-buttons">
 
-            <button class="btn">Copy Citation</button>
+            <a class="btn" id="copyCitation" data-citation="<?= htmlspecialchars($listing['citations'] ?? '') ?>">
+                Copy Citation
+            </a>
 
-            <a class="btn external"
+            <a class="btn edit"
                href="controller.php?page=ViewReport&id=<?= $listing['listingID'] ?>">
                 View Primary Source & Related Resources
             </a>
-
+            <!-- EDIT BUTTON -->
             <?php if ($currentCanModify === 2): ?>
 
                 <a class="btn edit"
@@ -168,3 +170,31 @@ $topics = $topicStmt->fetchAll();
 <a href="controller.php?page=index" class="fab">&lt;&lt;</a>
 
 <script src="../scripts/date.js"></script>
+
+<!-- JAVASCRIPT FOR COPY CITATIONS -->
+<script>
+                   document.getElementById("copyCitation").addEventListener("click", async function () {
+
+                       const citation = this.dataset.citation;
+
+                       if (!citation || citation.trim() === "") {
+                           alert("No citation available.");
+                           return;
+                       }
+
+                       try {
+                           await navigator.clipboard.writeText(citation);
+                           // Button changes to 'Copied!' for 2 seconds
+                           const originalText = this.textContent;
+                           this.textContent = "Copied!";
+
+                           setTimeout(() => {
+                               this.textContent = originalText;
+                           }, 2000);
+
+                       } catch (err) {
+                           console.error(err);
+                           alert("Failed to copy citation.");
+                       }
+                   });
+</script>
