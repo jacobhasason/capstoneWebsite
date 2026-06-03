@@ -40,7 +40,7 @@ if (!empty($mediums)) {
     $mediumConditions = [];
 
     foreach ($mediums as $m) {
-        
+
         // --- TRANSLATION LAYER ---
         // If the user clicks the UI element for "books", map it to what the DB uses
         $m = trim(strtolower($m));
@@ -69,7 +69,6 @@ $countStmt = $db->prepare($countSql);
 // Execute count query with current parameters
 $countStmt->execute($params);
 $totalListings = (int) $countStmt->fetchColumn();
-
 
 /* DATE SORTING */
 if ($date === "Most Recent") {
@@ -117,23 +116,40 @@ $listings = $stmt->fetchAll();
                     </div>
 
                     <div class="source-icon">
-    <span class="icon">
-        <?php
-        // Added trim() here as well to sanitize the AJAX output
-        switch (trim(strtolower($listing['medium']))) {
-            case "video": echo "🎥"; break;
-            case "podcast": echo "🎧"; break;
-            case "paper": 
-            case "papers": echo "📄"; break;
-            case "tutorial": echo "📘"; break;
-            case "presentation": 
-            case "presentations": echo "📊"; break;
-            case "software": echo "💻"; break;
-            default: echo "🐒"; break;
-        }
-        ?>
-    </span>
-</div>
+                        <span class="icon">
+                            <?php
+                            // Added trim() here as well to sanitize the AJAX output
+                            switch (trim(strtolower($listing['medium']))) {
+                            case "video": echo "🎥";
+                            break;
+                            case "podcast": echo "🎧";
+                            break;
+                            case:"Book":
+                            case:"Books":
+                            case:"book":
+                            case "books": echo "📖";
+                            break;
+                            case "ticles":
+                            case "Articles":
+                            case "Article":
+                            case "articles":
+                            case "article":
+                            case "paper":
+                            case "papers": echo "📄";
+                            break;
+                            case "tutorial": echo "📘";
+                            break;
+                            case "presentation":
+                            case "presentations": echo "📊";
+                            break;
+                            case "software": echo "💻";
+                            break;
+                            default: echo "🐒";
+                            break;
+                            }
+                            ?>
+                        </span>
+                    </div>
                 </a>
             </div>
 
