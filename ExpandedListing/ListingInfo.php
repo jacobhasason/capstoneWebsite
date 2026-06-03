@@ -39,6 +39,21 @@ $topics = $topicStmt->fetchAll();
 
 <link rel="stylesheet" href="../styles/main.css">
 
+<style>
+    .action-buttons .btn,
+    .action-buttons a.btn:link,
+    .action-buttons a.btn:visited {
+        background-color: #ff0000 !important;
+        color: #8b0000 !important;
+        font-weight: bold;
+    }
+    .action-buttons .btn:hover,
+    .action-buttons .btn:focus {
+        background-color: #cc0000 !important;
+        color: #550000 !important;
+    }
+</style>
+
 <main class="listing-full">
 
     <h1><?= htmlspecialchars($listing['title'] ?? 'Untitled') ?></h1>
@@ -49,7 +64,6 @@ $topics = $topicStmt->fetchAll();
 
     <p><strong>Medium:</strong> <?= htmlspecialchars($listing['medium'] ?? 'N/A') ?></p>
 
-    <!-- UPDATED TOPIC DISPLAY -->
     <p><strong>Topics:</strong></p>
 
     <?php if (!empty($topics)): ?>
@@ -80,7 +94,6 @@ $topics = $topicStmt->fetchAll();
         <?= nl2br(htmlspecialchars($listing['abstract'] ?? 'No abstract available')) ?>
     </p>
 
-    <!-- IMAGE -->
     <div class="listing-image">
 
         <?php $iconPath = $listing['icon'] ?? ''; ?>
@@ -101,7 +114,6 @@ $topics = $topicStmt->fetchAll();
 
     </div>
 
-    <!-- ACTIONS -->
     <div class="listing-actions">
 
         <div class="action-buttons">
@@ -114,7 +126,7 @@ $topics = $topicStmt->fetchAll();
                href="controller.php?page=ViewReport&id=<?= $listing['listingID'] ?>">
                 View Primary Source & Related Resources
             </a>
-            <!-- EDIT BUTTON -->
+            
             <?php if ($currentCanModify === 2): ?>
 
                 <a class="btn edit"
@@ -132,9 +144,7 @@ $topics = $topicStmt->fetchAll();
                 <a class="btn delete-source"
                    href="controller.php?page=deleteListing&id=<?= $listing['listingID'] ?>"
                    onclick="return confirm('Delete this source permanently?')">
-
                     Delete Source
-
                 </a>
 
             <?php endif; ?>
@@ -143,7 +153,25 @@ $topics = $topicStmt->fetchAll();
 
     </div>
 
+    <?php if (!empty($listing['links'])): ?>
 
+        <p class="extra-link">
+            <a href="<?= htmlspecialchars($listing['links']) ?>" target="_blank">
+                External Link
+            </a>
+        </p>
+
+    <?php endif; ?>
+
+    <?php if (!empty($listing['file'])): ?>
+
+        <p class="extra-link">
+            <a href="<?= htmlspecialchars($listing['file']) ?>" download>
+                Download File
+            </a>
+        </p>
+
+    <?php endif; ?>
 
 </main>
 
@@ -151,30 +179,27 @@ $topics = $topicStmt->fetchAll();
 
 <script src="scripts/date.js"></script>
 
-<!-- JAVASCRIPT FOR COPY CITATIONS -->
 <script>
-                   document.getElementById("copyCitation").addEventListener("click", async function () {
+document.getElementById("copyCitation").addEventListener("click", async function () {
+    const citation = this.dataset.citation;
 
-                       const citation = this.dataset.citation;
+    if (!citation || citation.trim() === "") {
+        alert("No citation available.");
+        return;
+    }
 
-                       if (!citation || citation.trim() === "") {
-                           alert("No citation available.");
-                           return;
-                       }
+    try {
+        await navigator.clipboard.writeText(citation);
+        const originalText = this.textContent;
+        this.textContent = "Copied!";
 
-                       try {
-                           await navigator.clipboard.writeText(citation);
-                           // Button changes to 'Copied!' for 2 seconds
-                           const originalText = this.textContent;
-                           this.textContent = "Copied!";
+        setTimeout(() => {
+            this.textContent = originalText;
+        }, 2000);
 
-                           setTimeout(() => {
-                               this.textContent = originalText;
-                           }, 2000);
-
-                       } catch (err) {
-                           console.error(err);
-                           alert("Failed to copy citation.");
-                       }
-                   });
+    } catch (err) {
+        console.error(err);
+        alert("Failed to copy citation.");
+    }
+});
 </script>
