@@ -143,33 +143,13 @@ $topics = $topicStmt->fetchAll();
 
     </div>
 
-    <!-- OPTIONAL EXTERNAL LINK -->
-    <?php if (!empty($listing['links'])): ?>
 
-        <p class="extra-link">
-            <a href="<?= htmlspecialchars($listing['links']) ?>" target="_blank">
-                External Link
-            </a>
-        </p>
-
-    <?php endif; ?>
-
-    <!-- FILE DOWNLOAD -->
-    <?php if (!empty($listing['file'])): ?>
-
-        <p class="extra-link">
-            <a href="<?= htmlspecialchars($listing['file']) ?>" download>
-                Download File
-            </a>
-        </p>
-
-    <?php endif; ?>
 
 </main>
 
 <a href="controller.php?page=index" class="fab">&lt;&lt;</a>
 
-<script src="../scripts/date.js"></script>
+<script src="scripts/date.js"></script>
 
 <!-- JAVASCRIPT FOR COPY CITATIONS -->
 <script>
