@@ -120,32 +120,47 @@ $listings = $stmt->fetchAll();
                             <?php
                             // Added trim() here as well to sanitize the AJAX output
                             switch (trim(strtolower($listing['medium']))) {
-                            case "video": echo "🎥";
-                            break;
-                            case "podcast": echo "🎧";
-                            break;
-                            case:"Book":
-                            case:"Books":
-                            case:"book":
-                            case "books": echo "📖";
-                            break;
-                            case "ticles":
-                            case "Articles":
-                            case "Article":
-                            case "articles":
-                            case "article":
-                            case "paper":
-                            case "papers": echo "📄";
-                            break;
-                            case "tutorial": echo "📘";
-                            break;
-                            case "presentation":
-                            case "presentations": echo "📊";
-                            break;
-                            case "software": echo "💻";
-                            break;
-                            default: echo "🐒";
-                            break;
+                                case "video":
+                                    echo "🎥";
+                                    break;
+
+                                case "podcast":
+                                    echo "🎧";
+                                    break;
+                                case "Book":
+                                case "Books":
+                                case "book":
+                                case "books":
+                                    echo "📖";
+                                    break;
+
+                                case "Articles":
+                                case "Article":
+                                case "articles":
+                                case "article":
+                                case "paper":
+                                case "papers":
+                                    echo "📄";
+                                    break;
+                                case "Tutorial":
+                                case "Tutorials":
+                                case "tutorials":
+                                case "tutorial":
+                                    echo "📘";
+                                    break;
+
+                                case "presentation":
+                                case "presentations":
+                                    echo "📊";
+                                    break;
+
+                                case "software":
+                                    echo "💻";
+                                    break;
+
+                                default:
+                                    echo "🐒";
+                                    break;
                             }
                             ?>
                         </span>
