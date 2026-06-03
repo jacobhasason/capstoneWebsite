@@ -37,7 +37,7 @@ $totalListings = $totalStmt->fetchColumn();
                 <div class="source-item">
                     <a href="controller.php?page=listingInfo&id=<?= $listing['listingID'] ?>" class="item-link">
                         <div class="thumbnail">
-                          <img src="<?= !empty($listing['icon']) ? htmlspecialchars($listing['icon']) : 'cocoNut.jpg' ?>">                         
+                            <img src="<?= !empty($listing['icon']) ? htmlspecialchars($listing['icon']) : 'cocoNut.jpg' ?>">                         
                         </div>
 
                         <div class="source-details">
@@ -51,15 +51,47 @@ $totalListings = $totalStmt->fetchColumn();
                                 <?php
                                 // trim() here to strip out accidental hidden database spaces
                                 switch (trim(strtolower($listing['medium']))) {
-                                    case "video": echo "🎥"; break;
-                                    case "podcast": echo "🎧"; break;
-                                    case "paper": 
-                                    case "papers": echo "📄"; break;
-                                    case "tutorial": echo "📘"; break;
-                                    case "presentation": 
-                                    case "presentations": echo "📊"; break;
-                                    case "software": echo "💻"; break;
-                                    default: echo "🐒"; break;
+                                    case "video":
+                                        echo "🎥";
+                                        break;
+
+                                    case "podcast":
+                                        echo "🎧";
+                                        break;
+                                    case "Book":
+                                    case "Books":
+                                    case "book":
+                                    case "books":
+                                        echo "📖";
+                                        break;
+
+                                    case "Articles":
+                                    case "Article":
+                                    case "articles":
+                                    case "article":
+                                    case "paper":
+                                    case "papers":
+                                        echo "📄";
+                                        break;
+                                    case "Tutorial":
+                                    case "Tutorials":
+                                    case "tutorials":
+                                    case "tutorial":
+                                        echo "📘";
+                                        break;
+
+                                    case "presentation":
+                                    case "presentations":
+                                        echo "📊";
+                                        break;
+
+                                    case "software":
+                                        echo "💻";
+                                        break;
+
+                                    default:
+                                        echo "🐒";
+                                        break;
                                 }
                                 ?>
                             </span>
