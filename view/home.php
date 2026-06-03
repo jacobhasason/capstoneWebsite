@@ -53,8 +53,10 @@ $totalListings = $totalStmt->fetchColumn();
                                     case "video": echo "🎥"; break;
                                     case "podcast": echo "🎧"; break;
                                     case "paper": echo "📄"; break;
+                                    case "papers": echo "📄"; break;
                                     case "tutorial": echo "📘"; break;
                                     case "presentation": echo "📊"; break;
+                                    case "presentations": echo "📊"; break;
                                     default: echo "📚"; break;
                                 }
                                 ?>
