@@ -49,7 +49,8 @@ $totalListings = $totalStmt->fetchColumn();
                         <div class="source-icon">
                             <span class="icon">
                                 <?php
-                                switch (strtolower($listing['medium'])) {
+                                // trim() here to strip out accidental hidden database spaces
+                                switch (trim(strtolower($listing['medium']))) {
                                     case "video": echo "🎥"; break;
                                     case "podcast": echo "🎧"; break;
                                     case "paper": 
