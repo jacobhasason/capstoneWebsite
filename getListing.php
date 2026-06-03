@@ -125,6 +125,7 @@ $listings = $stmt->fetchAll();
                                     break;
 
                                 case "podcast":
+                                case "podcasts":
                                     echo "🎧";
                                     break;
                                 case "Book":
