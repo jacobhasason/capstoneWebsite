@@ -310,8 +310,13 @@ function insertRelatedListing($listingID, $topic, $title, $type, $file = null, $
                 <label>File:</label>
                 <div id="drop-zone-icon" class="drop-area">
                     <span class="drop-message">Drag & Drop (pdf/docx/mp3/mp4/wav)<br>File</span>
-                    <button type="button" class="remove-file">✕</button>
-                    <input type="file" name="file" accept=".pdf,.docx,.mp3,.mp4,.wav" hidden>
+                        <button type="button" class="remove-file">✕</button>
+                        <input type="file" name="file" accept=".pdf,.docx,.mp3,.mp4,.wav" hidden>
+                        <?php if (!empty($fieldErrors['file'])): ?>
+                            <span style="color: red;">
+                                <?= $fieldErrors['file'] ?>
+                            </span>
+                        <?php endif; ?>
                 </div>
 
                 <div class="link-field">
