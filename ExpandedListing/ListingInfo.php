@@ -46,13 +46,13 @@ $topics = $topicStmt->fetchAll();
     .action-buttons a.btn:link,
     .action-buttons a.btn:visited {
         background-color: #cc0000 !important;
-        color: #300202 !important;
+        color: #000000 !important;
         font-weight: bold;
     }
     
     .action-buttons .btn:focus {
         background-color: #cc0000 !important;
-        color: #550000 !important;
+        color: #000000 !important;
     }
 </style>
 
