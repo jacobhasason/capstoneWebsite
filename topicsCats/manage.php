@@ -178,7 +178,7 @@ if (isset($_POST['delete_topic'])) {
                         <button type="submit"
                                 name="add_topic"
                                 class="btn">
-                            Add Topic
+                            Add Sub-Topic
                         </button>
 
                     </div>
@@ -189,7 +189,7 @@ if (isset($_POST['delete_topic'])) {
             <!-- DELETE TOPIC -->
             <div class="manage-box">
 
-                <h3>Delete Category</h3>
+                <h3>Delete Topic</h3>
 
                 <form method="POST">
 
@@ -207,7 +207,7 @@ if (isset($_POST['delete_topic'])) {
                     <button type="submit"
                             name="delete_category"
                             class="btn delete-btn">
-                        Delete Category
+                        Delete Topic
                     </button>
 
                 </form>
@@ -216,7 +216,7 @@ if (isset($_POST['delete_topic'])) {
             <!-- DELETE SUB TOPIC -->
             <div class="manage-box">
 
-                <h3>Delete Topic</h3>
+                <h3>Delete Sub-Topic</h3>
 
                 <form method="POST">
 
@@ -234,7 +234,7 @@ if (isset($_POST['delete_topic'])) {
                     <button type="submit"
                             name="delete_topic"
                             class="btn delete-btn">
-                        Delete Topic
+                        Delete Sub-Topic
                     </button>
 
                 </form>
