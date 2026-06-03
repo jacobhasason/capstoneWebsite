@@ -105,19 +105,22 @@ $listings = $stmt->fetchAll();
                     </div>
 
                     <div class="source-icon">
-                        <span class="icon">
-                            <?php
-                            switch (strtolower($listing['medium'])) {
-                                case "video": echo "🎥"; break;
-                                case "podcast": echo "🎧"; break;
-                                case "paper": echo "📄"; break;
-                                case "tutorial": echo "📘"; break;
-                                case "presentation": echo "📊"; break;
-                                default: echo "📚"; break;
-                            }
-                            ?>
-                        </span>
-                    </div>
+    <span class="icon">
+        <?php
+        switch (strtolower($listing['medium'])) {
+            case "video": echo "🎥"; break;
+            case "podcast": echo "🎧"; break;
+            case "paper": 
+            case "papers": echo "📄"; break;
+            case "tutorial": echo "📘"; break;
+            case "presentation": 
+            case "presentations": echo "📊"; break;
+            case "software": echo "💻"; break;
+            default: echo "🐒"; break;
+        }
+        ?>
+    </span>
+</div>
                 </a>
             </div>
 
