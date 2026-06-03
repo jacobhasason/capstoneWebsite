@@ -1,3 +1,5 @@
+<title> Primary Source and Related Resources </title>
+
 <?php
 require "DBConnect/db.php";
 

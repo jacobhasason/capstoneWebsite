@@ -3,6 +3,7 @@
 require "DBConnect/db.php";
 ?>
 <link rel="stylesheet" href="styles/main.css">
+<title> Research Hub </title>
 
 <?php
 $limit = isset($_GET['limit']) ? (int) $_GET['limit'] : 10;

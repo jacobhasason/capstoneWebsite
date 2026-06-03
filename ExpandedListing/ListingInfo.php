@@ -1,3 +1,5 @@
+<title> Research Hub </title>
+
 <?php
 
 require "DBConnect/db.php";
