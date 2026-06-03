@@ -312,13 +312,8 @@ function insertRelatedListing($listingID, $topic, $title, $type, $file = null, $
                 <label>File:</label>
                 <div id="drop-zone-icon" class="drop-area">
                     <span class="drop-message">Drag & Drop (pdf/docx/mp3/mp4/wav)<br>File</span>
-                        <button type="button" class="remove-file">✕</button>
-                        <input type="file" name="file" accept=".pdf,.docx,.mp3,.mp4,.wav" hidden>
-                        <?php if (!empty($fieldErrors['file'])): ?>
-                            <span style="color: red;">
-                                <?= $fieldErrors['file'] ?>
-                            </span>
-                        <?php endif; ?>
+                    <button type="button" class="remove-file">✕</button>
+                    <input type="file" name="file" accept=".pdf,.docx,.mp3,.mp4,.wav" hidden>
                 </div>
 
                 <div class="link-field">
@@ -349,28 +344,32 @@ function insertRelatedListing($listingID, $topic, $title, $type, $file = null, $
 
             <div class="topic-tree">
                 <ul>
-                            <?php foreach ($categories as $category): ?>
+                    <?php foreach ($categories as $category): ?>
                         <li>
-                            <button type="button" class="tree-toggle">▶</button>
-                            <label>
-                                <input type="checkbox" class="topic-box" value="<?= htmlspecialchars($category['category_name']) ?>">
-                                <?= htmlspecialchars($category['category_name']) ?>
-                            </label>
+
+
+                            <button type="button" class="tree-toggle">
+                                <span class="arrow">▶</span>
+                                <span class="topic-category-header">
+                                    <?= htmlspecialchars($category['category_name']) ?>
+                                </span>
+                            </button>
+
 
                             <ul class="hidden">
-                                        <?php foreach ($topics as $topic): ?>
-                                            <?php if ($topic['category_id'] == $category['category_id']): ?>
+                                <?php foreach ($topics as $topic): ?>
+                                    <?php if ($topic['category_id'] == $category['category_id']): ?>
                                         <li>
                                             <label>
                                                 <input type="checkbox" class="topic-box real-topic" value="<?= htmlspecialchars($topic['topic_id']) ?>">
-                                        <?= htmlspecialchars($topic['topic_name']) ?>
+                                                <?= htmlspecialchars($topic['topic_name']) ?>
                                             </label>
                                         </li>
-                            <?php endif; ?>
-    <?php endforeach; ?>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
                             </ul>
                         </li>
-<?php endforeach; ?>
+                    <?php endforeach; ?>
                 </ul>
             </div>
         </div>
@@ -436,11 +435,18 @@ function insertRelatedListing($listingID, $topic, $title, $type, $file = null, $
                     /* 1. Toggle tree collapse functionality */
                     document.querySelectorAll(".tree-toggle").forEach(btn => {
                         btn.addEventListener("click", () => {
+
                             const ul = btn.parentElement.querySelector("ul");
+
                             if (!ul)
                                 return;
+
                             ul.classList.toggle("hidden");
-                            btn.textContent = ul.classList.contains("hidden") ? "▶" : "▼";
+
+                            const isOpen = !ul.classList.contains("hidden");
+
+                            btn.querySelector(".arrow").textContent =
+                                    isOpen ? "▼" : "▶";
                         });
                     });
 

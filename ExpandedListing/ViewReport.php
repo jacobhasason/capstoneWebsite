@@ -20,6 +20,8 @@ function getListingTopics($db, $listingID) {
 
 /* Get topic array for dropdown/filtering */
 function getListingTopicArray($db, $listingID) {
+
+    // First try ListingTopic -> topic
     $stmt = $db->prepare(
         'SELECT t."topic_name"
          FROM "ListingTopic" lt
@@ -28,6 +30,25 @@ function getListingTopicArray($db, $listingID) {
     );
 
     $stmt->execute([$listingID]);
+
+    $topics = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+    // If topics found, return them
+    if (!empty($topics)) {
+        return $topics;
+    }
+
+    // Otherwise try ListingCategory -> topic_category
+    $stmt = $db->prepare(
+        'SELECT tc."category_name"
+         FROM "ListingCategory" lc
+         JOIN "topic_category" tc
+              ON lc."category_id" = tc."category_id"
+         WHERE lc."listingID" = ?'
+    );
+
+    $stmt->execute([$listingID]);
+
     return $stmt->fetchAll(PDO::FETCH_COLUMN);
 }
 

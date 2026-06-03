@@ -283,15 +283,23 @@
     accent-color: #2b6fff;
 }
 
+.topic-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
 /* collapse button */
 .tree-toggle {
+    background: none;
     border: none;
-    background: transparent;
-    font-size: 14px;
     cursor: pointer;
-    margin-right: 4px;
-    color: #555;
-    transition: transform 0.15s ease;
+    font-size: 1rem;
+    padding: 0;
+}
+
+.topic-category-header {
+    font-weight: bold;
 }
 
 .tree-toggle:hover {
