@@ -298,7 +298,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     </form>
 
-    <a href="controller.php?page=listingInfo&id=<?= $id ?>" class="fab">←</a>
+    <a href="controller.php?page=listingInfo&id=<?= $id ?>" class="fab"><<</a>
 </main>
 
 <script src="scripts/relatedListings.js"></script>
