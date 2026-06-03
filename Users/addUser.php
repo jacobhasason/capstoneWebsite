@@ -1,3 +1,4 @@
+<title> Add User </title>
 <?php
 // Adds a WL User through UI (Superuser only)
 

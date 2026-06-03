@@ -1,3 +1,4 @@
+<title> Modify User </title>
 <?php
 require "DBConnect/db.php";
 // Modify a WL user through UI (Superuser only)
