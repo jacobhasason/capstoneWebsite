@@ -66,6 +66,6 @@
 
     </div>
 
-    <a href="controller.php?page=index" class="fab">←</a>
+    <a href="controller.php?page=index" class="fab"><<</a>
 
 </main>
