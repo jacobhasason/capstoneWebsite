@@ -106,7 +106,7 @@ $topics = $topicStmt->fetchAll();
 
         <div class="action-buttons">
 
-            <a class="btn" id="copyCitation" data-citation="<?= htmlspecialchars($listing['citations'] ?? '') ?>">
+            <a class="btn edit" id="copyCitation" data-citation="<?= htmlspecialchars($listing['citations'] ?? '') ?>">
                 Copy Citation
             </a>
 
@@ -129,7 +129,7 @@ $topics = $topicStmt->fetchAll();
                 ($currentUserType === 1 && $currentCanManage === 2)
             ): ?>
 
-                <a class="btn delete-source"
+                <a class="btn edit"
                    href="controller.php?page=deleteListing&id=<?= $listing['listingID'] ?>"
                    onclick="return confirm('Delete this source permanently?')">
 
