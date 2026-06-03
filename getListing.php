@@ -17,24 +17,21 @@ $params = [];
 
 /* TOPIC FILTER (UPDATED FOR MANY-TO-MANY) */
 if (!empty($topics)) {
-
     $topicConditions = [];
-
     foreach ($topics as $t) {
-
+        // Using TRIM() on both the database column and the incoming parameter
+        // eliminates failure from hidden spaces/newlines.
         $topicConditions[] = '
             EXISTS (
                 SELECT 1
                 FROM "ListingTopic" lt
                 JOIN topic t2 ON t2.topic_id = lt.topic_id
                 WHERE lt."listingID" = l."listingID"
-                AND LOWER(t2.topic_name) = LOWER(?)
+                AND LOWER(TRIM(t2.topic_name)) = LOWER(TRIM(?))
             )
         ';
-
         $params[] = $t;
     }
-
     $where[] = '(' . implode(' OR ', $topicConditions) . ')';
 }
 
