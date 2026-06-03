@@ -11,7 +11,7 @@ $limit = isset($_GET['limit']) ? (int) $_GET['limit'] : 10;
 // Get initial listings
 $stmt = $db->prepare('
     SELECT * FROM "Listing" 
-    ORDER BY "listingID" DESC 
+    ORDER BY "date" DESC 
     LIMIT :limit
 ');
 
