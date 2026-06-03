@@ -2,7 +2,7 @@
 //require_once "controller.php";
 require "DBConnect/db.php";
 ?>
-
+<link rel="stylesheet" href="styles/main.css">
 
 <?php
 $limit = isset($_GET['limit']) ? (int) $_GET['limit'] : 10;
@@ -52,14 +52,12 @@ $totalListings = $totalStmt->fetchColumn();
                                 switch (strtolower($listing['medium'])) {
                                     case "video": echo "🎥"; break;
                                     case "podcast": echo "🎧"; break;
-                                    case "paper": echo "📄"; break;
+                                    case "paper": 
                                     case "papers": echo "📄"; break;
                                     case "tutorial": echo "📘"; break;
-                                    case "presentation": echo "📊"; break;
+                                    case "presentation": 
                                     case "presentations": echo "📊"; break;
-                                    case "software": echo "💻";break;
-                                    case "Software": echo "💻";break;
-                                    
+                                    case "software": echo "💻"; break;
                                     default: echo "🐒"; break;
                                 }
                                 ?>
