@@ -106,7 +106,7 @@ $listings = $stmt->fetchAll();
             <div class="source-item">
                 <a href="controller.php?page=listingInfo&id=<?= $listing['listingID'] ?>" class="item-link">
                     <div class="thumbnail">
-                        <img src="<?= htmlspecialchars($listing['icon'] ?? 'cocoNut.jpg') ?>" alt="">
+                        <img src="<?= htmlspecialchars($listing['icon'] ?? 'wildcat.png') ?>" alt="">
                     </div>
 
                     <div class="source-details">
