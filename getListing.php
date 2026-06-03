@@ -77,7 +77,7 @@ foreach ($listings as $listing): ?>
 
 
             <div class="thumbnail">
-                <img src="<?= $listing['icon'] ?? 'cocoNut.jpg' ?>" alt="">
+                <img src="<?= $listing['icon'] ?? 'wildcat.png' ?>" alt="">
             </div>
 
             <div class="source-details">
