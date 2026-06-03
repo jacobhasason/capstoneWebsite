@@ -19,8 +19,6 @@ $params = [];
 if (!empty($topics)) {
     $topicConditions = [];
     foreach ($topics as $t) {
-        // Using TRIM() on both the database column and the incoming parameter
-        // eliminates failure from hidden spaces/newlines.
         $topicConditions[] = '
             EXISTS (
                 SELECT 1
@@ -37,23 +35,29 @@ if (!empty($topics)) {
 
 /* MEDIUM FILTER */
 if (!empty($mediums)) {
-
     $mediumConditions = [];
-
     foreach ($mediums as $m) {
-
         $mediumConditions[] = 'LOWER(l.medium) = LOWER(?)';
-
         $params[] = $m;
     }
-
     $where[] = '(' . implode(' OR ', $mediumConditions) . ')';
 }
 
 /* BUILD WHERE CLAUSE */
+$whereSql = "";
 if (!empty($where)) {
-    $sql .= " WHERE " . implode(" AND ", $where);
+    $whereSql = " WHERE " . implode(" AND ", $where);
 }
+$sql .= $whereSql;
+
+/* --- COUNT TOTAL MATCHING LISTINGS BEFORE APPLYING LIMIT --- */
+//replicate the exact same filters to see how many total items exist
+$countSql = 'SELECT COUNT(DISTINCT l."listingID") FROM "Listing" l' . $whereSql;
+$countStmt = $db->prepare($countSql);
+// Execute count query with current parameters
+$countStmt->execute($params);
+$totalListings = (int) $countStmt->fetchColumn();
+
 
 /* DATE SORTING */
 if ($date === "Most Recent") {
@@ -68,7 +72,7 @@ if ($date === "Most Recent") {
 $sql .= ' LIMIT ?';
 $params[] = $limit;
 
-/* PREPARE + BIND */
+/* PREPARE + BIND FOR LISTINGS */
 $stmt = $db->prepare($sql);
 
 foreach ($params as $index => $param) {
@@ -78,51 +82,54 @@ foreach ($params as $index => $param) {
 
 /* EXECUTE */
 $stmt->execute();
-
 $listings = $stmt->fetchAll();
+?>
 
-/* OUTPUT HTML */
-foreach ($listings as $listing):
-    ?>
+<div class="listings-container">
 
-    <div class="source-item">
+    <?php if (empty($listings)): ?>
+        <p>No listings found matching your criteria.</p>
+    <?php else: ?>
+        <?php foreach ($listings as $listing): ?>
 
-        <a href="controller.php?page=listingInfo&id=<?= $listing['listingID'] ?>"
-           class="item-link">
+            <div class="source-item">
+                <a href="controller.php?page=listingInfo&id=<?= $listing['listingID'] ?>" class="item-link">
+                    <div class="thumbnail">
+                        <img src="<?= htmlspecialchars($listing['icon'] ?? 'cocoNut.jpg') ?>" alt="">
+                    </div>
 
-            <div class="thumbnail">
-                <img src="<?= htmlspecialchars($listing['icon'] ?? 'cocoNut.jpg') ?>" alt="">
+                    <div class="source-details">
+                        <h3><?= htmlspecialchars($listing['title']) ?></h3>
+                        <p><?= htmlspecialchars($listing['author']) ?></p>
+                        <p><?= htmlspecialchars($listing['date'] ?? '') ?></p>
+                    </div>
+
+                    <div class="source-icon">
+                        <span class="icon">
+                            <?php
+                            switch (strtolower($listing['medium'])) {
+                                case "video": echo "🎥"; break;
+                                case "podcast": echo "🎧"; break;
+                                case "paper": echo "📄"; break;
+                                case "tutorial": echo "📘"; break;
+                                case "presentation": echo "📊"; break;
+                                default: echo "📚"; break;
+                            }
+                            ?>
+                        </span>
+                    </div>
+                </a>
             </div>
 
-            <div class="source-details">
-                <h3><?= htmlspecialchars($listing['title']) ?></h3>
-                <p><?= htmlspecialchars($listing['author']) ?></p>
-                <p><?= htmlspecialchars($listing['date'] ?? '') ?></p>
-            </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
 
-            <div class="source-icon">
-                <span class="icon">
-                    <?php
-                    switch (strtolower($listing['medium'])) {
-                        case "video": echo "🎥";
-                            break;
-                        case "podcast": echo "🎧";
-                            break;
-                        case "paper": echo "📄";
-                            break;
-                        case "tutorial": echo "📘";
-                            break;
-                        case "presentation": echo "📊";
-                            break;
-                        default: echo "📚";
-                            break;
-                    }
-                    ?>
-                </span>
-            </div>
+    <?php if ($limit < $totalListings): ?>
+        <div class="show-more-container">
+            <button type="button" id="show-more-btn" class="show-more-btn">
+                Show More
+            </button>
+        </div>
+    <?php endif; ?>
 
-        </a>
-
-    </div>
-
-<?php endforeach; ?>
+</div>
