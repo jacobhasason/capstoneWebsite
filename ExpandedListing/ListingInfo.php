@@ -47,7 +47,7 @@ $topics = $topicStmt->fetchAll();
         color: #300202 !important;
         font-weight: bold;
     }
-    .action-buttons .btn:hover,
+    
     .action-buttons .btn:focus {
         background-color: #cc0000 !important;
         color: #550000 !important;
