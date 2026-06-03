@@ -57,7 +57,10 @@ $totalListings = $totalStmt->fetchColumn();
                                     case "tutorial": echo "📘"; break;
                                     case "presentation": echo "📊"; break;
                                     case "presentations": echo "📊"; break;
-                                    default: echo "📚"; break;
+                                    case "software": echo "💻";break;
+                                    case "Software": echo "💻";break;
+                                    
+                                    default: echo "🐒"; break;
                                 }
                                 ?>
                             </span>
