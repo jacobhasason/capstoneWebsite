@@ -11,19 +11,19 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     && docker-php-ext-install pdo pdo_pgsql pgsql
 
-# Create virtual environment
+
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
+    && echo "output_buffering = 4096" >> "$PHP_INI_DIR/php.ini"
+
+
 RUN python3 -m venv /venv
 
-# Install Python packages inside venv
+
 RUN /venv/bin/pip install --no-cache-dir pymupdf python-docx
 
-# Make venv default python
+
 ENV PATH="/venv/bin:$PATH"
 
 COPY . /var/www/html/
 
 RUN a2enmod rewrite
-
-WORKDIR /var/www/html
-
-EXPOSE 80

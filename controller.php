@@ -78,6 +78,11 @@ switch ($page) {
         include 'Users/toggleModifyPermission.php';
         break;
 
+    case 'manageTopics':
+        include 'view/manageHeader.php';
+        include 'topicsCats/manage.php';
+        break;
+
     default:
         include 'view/header.php';
         include 'view/horizontal_nav_bar.php';

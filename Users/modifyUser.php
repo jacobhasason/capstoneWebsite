@@ -1,3 +1,4 @@
+<title> Modify User </title>
 <?php
 require "DBConnect/db.php";
 // Modify a WL user through UI (Superuser only)
@@ -124,7 +125,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 
 
-<a href="controller.php?page=usersPage" class="fab">←</a>
+<a href="controller.php?page=usersPage" class="fab"><<</a>
 
 <script>
     document.querySelectorAll(".toggle-mod").forEach((btn) => {

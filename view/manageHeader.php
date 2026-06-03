@@ -8,7 +8,7 @@
              class="header-logo">
 
         <h1 class="header-title">
-            Login
+            Manage Topics & Sub-Topics
         </h1>
 
     </div>
@@ -49,6 +49,7 @@
         <?php endif; ?>
 
     </div>
-    <link rel="stylesheet" href="styles/main.css">
- 
+
+    <link rel="stylesheet" href="styles/main.css"> 
+    
 </header>

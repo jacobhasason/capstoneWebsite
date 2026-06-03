@@ -1,7 +1,58 @@
-<?php
-// Page that displays primary source and related sources on a carousel
+<title> Primary Source and Related Resources </title>
 
+<?php
 require "DBConnect/db.php";
+
+/* Get all topics for a listing through ListingTopic -> topic */
+
+function getListingTopics($db, $listingID) {
+    $stmt = $db->prepare(
+            'SELECT t."topic_name"
+         FROM "ListingTopic" lt
+         JOIN "topic" t ON lt."topic_id" = t."topic_id"
+         WHERE lt."listingID" = ?'
+    );
+
+    $stmt->execute([$listingID]);
+    $topics = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+    return !empty($topics) ? implode(", ", $topics) : "Uncategorized";
+}
+
+/* Get topic array for dropdown/filtering */
+
+function getListingTopicArray($db, $listingID) {
+
+    // First try ListingTopic -> topic
+    $stmt = $db->prepare(
+            'SELECT t."topic_name"
+         FROM "ListingTopic" lt
+         JOIN "topic" t ON lt."topic_id" = t."topic_id"
+         WHERE lt."listingID" = ?'
+    );
+
+    $stmt->execute([$listingID]);
+
+    $topics = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+    // If topics found, return them
+    if (!empty($topics)) {
+        return $topics;
+    }
+
+    // Otherwise try ListingCategory -> topic_category
+    $stmt = $db->prepare(
+            'SELECT tc."category_name"
+         FROM "ListingCategory" lc
+         JOIN "topic_category" tc
+              ON lc."category_id" = tc."category_id"
+         WHERE lc."listingID" = ?'
+    );
+
+    $stmt->execute([$listingID]);
+
+    return $stmt->fetchAll(PDO::FETCH_COLUMN);
+}
 
 $primaryID = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 
@@ -9,72 +60,96 @@ if ($primaryID <= 0) {
     die("Missing primary listing ID");
 }
 
-// Load primary source
-$stmt = $db->prepare(
-        'SELECT * FROM "Listing" WHERE "listingID" = ?'
-);
+/* Load primary source */
+$stmt = $db->prepare('SELECT * FROM "Listing" WHERE "listingID" = ?');
 $stmt->execute([$primaryID]);
-
 $primary = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$primary) {
     die("Primary listing not found");
 }
 
-// Load related sources
+/* Load related sources */
 $stmt = $db->prepare(
-        'SELECT * FROM "RelatedListing"
+        'SELECT *
+     FROM "RelatedListing"
      WHERE "listingID" = ?
      ORDER BY "relatedListingID" ASC'
 );
 $stmt->execute([$primaryID]);
-
 $relatedRows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Build carousel items
+/* Build carousel items */
 $listings = [];
+
+/* Primary source */
+$primaryTopics = getListingTopicArray($db, $primaryID);
+
 $listings[] = [
     "title" => $primary["title"] ?? "Untitled",
     "author" => $primary["author"] ?? "Unknown",
-    "topic" => $primary["topic"] ?? "Uncategorized",
+    "topic" => !empty($primaryTopics) ? implode(", ", $primaryTopics) : "Uncategorized",
+    "topicArray" => $primaryTopics,
     "abstract" => $primary["abstract"] ?? "No description available",
     "file" => $primary["file"] ?? null,
     "links" => $primary["links"] ?? null,
     "type" => "primary"
 ];
 
+/* Related sources */
+$seenListings = [
+    $primaryID => true
+];
+
 foreach ($relatedRows as $row) {
+
+    /* Related source is another listing on the site */
     if (($row["type"] ?? '') === "listing" && !empty($row["links"])) {
 
         $relatedListingID = (int) $row["links"];
 
+        // Skip duplicate site listings only
+        if (isset($seenListings[$relatedListingID])) {
+            continue;
+        }
+
+        $seenListings[$relatedListingID] = true;
+
         $relatedStmt = $db->prepare(
-                'SELECT * FROM "Listing" WHERE "listingID" = ?'
+            'SELECT * FROM "Listing" WHERE "listingID" = ?'
         );
 
         $relatedStmt->execute([$relatedListingID]);
-
         $relatedListing = $relatedStmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$relatedListing) {
             continue;
         }
 
+        $relatedTopics = getListingTopicArray($db, $relatedListingID);
+
         $listings[] = [
-            "title" => $relatedListing["title"] ?? $row["title"],
+            "title" => $relatedListing["title"] ?? ($row["title"] ?? "Related Listing"),
             "author" => $relatedListing["author"] ?? "Unknown",
-            "topic" => $relatedListing["topic"] ?? "Uncategorized",
+            "topic" => !empty($relatedTopics) ? implode(", ", $relatedTopics) : "Uncategorized",
+            "topicArray" => $relatedTopics,
             "abstract" => $relatedListing["abstract"] ?? "No abstract available",
             "file" => $relatedListing["file"] ?? null,
             "links" => "controller.php?page=listingInfo&id=" . $relatedListingID,
             "type" => "listing"
         ];
+
     } else {
+
+        /* Related source is an uploaded file or hyperlink */
+        $fallbackTopics = getListingTopicArray($db, $primaryID);
+
         $listings[] = [
-            "title" => ucfirst($row["type"] ?? "Related Source"),
+            "title" => $row["title"] ?? ucfirst($row["type"] ?? "Related Source"),
             "author" => "Unknown",
-            "topic" => $row["topic"] ?? ($primary["topic"] ?? "Uncategorized"),
-            "abstract" => ($row["type"] ?? "source"),
+            "topic" => !empty($fallbackTopics) ? implode(", ", $fallbackTopics) : "Uncategorized",
+            "topicArray" => $fallbackTopics,
+            "abstract" => ucfirst($row["type"] ?? "source"),
             "file" => $row["file"] ?? null,
             "links" => $row["links"] ?? null,
             "type" => $row["type"] ?? "related"
@@ -82,48 +157,45 @@ foreach ($relatedRows as $row) {
     }
 }
 
-// Get the selected topic from the URL.
-// Default to "all" if none is selected.
+/* Topic filter from URL */
 $selectedTopic = $_GET['topic'] ?? 'all';
 
-// Build a list of unique topics from the carousel items.
-$topics = array_unique(
-        array_filter(
-                array_column($listings, 'topic'),
-                function ($topic) {
-                    return !empty($topic)
-                            // Exclude empty topics and "Uncategorized".
-                            && strtolower(trim($topic)) !== 'uncategorized';
-                }
-        )
-);
+/* Build unique dropdown topics */
+$topics = [];
 
-// Sort topics alphabetically for cleaner display.
+foreach ($listings as $item) {
+    foreach (($item["topicArray"] ?? []) as $topic) {
+        $topic = trim($topic);
+
+        if ($topic !== "" && strtolower($topic) !== "uncategorized") {
+            $topics[] = $topic;
+        }
+    }
+}
+
+$topics = array_unique($topics);
 sort($topics);
 
-// If a specific topic was selected,
-// only keep listings that match that topic.
+/* Filter carousel by selected topic */
 if ($selectedTopic !== 'all') {
-
     $listings = array_values(
             array_filter($listings, function ($item) use ($selectedTopic) {
-
-                return ($item['topic'] ?? 'Uncategorized') === $selectedTopic;
+                return in_array($selectedTopic, $item["topicArray"] ?? []);
             })
     );
 }
 
-// Prevent carousel errors if no results match.
 if (empty($listings)) {
     die("No sources found for this topic.");
 }
 
-
+/* Carousel index */
 $index = isset($_GET['i']) ? (int) $_GET['i'] : 0;
 
 if ($index < 0) {
     $index = count($listings) - 1;
 }
+
 if ($index >= count($listings)) {
     $index = 0;
 }
@@ -132,7 +204,7 @@ $current = $listings[$index];
 
 $totalItems = count($listings);
 
-// Disable Arrows if there is only a primary source
+/* Arrow index logic */
 if ($totalItems <= 1) {
     $prevIndex = 0;
     $nextIndex = 0;
@@ -150,30 +222,19 @@ if ($totalItems <= 1) {
 }
 ?>
 
-
-
 <main class="report-page">
 
-    <!-- Carousel -->
     <div class="carousel">
 
-        <!-- Left arrow -->
-
         <?php if (count($listings) > 1): ?>
-
-            <!-- Previous carousel item -->
             <a class="arrow"
                href="controller.php?page=ViewReport&id=<?= $primaryID ?>&topic=<?= urlencode($selectedTopic) ?>&i=<?= $prevIndex ?>">
                 ◀
             </a>
         <?php else: ?>
-
             <span class="arrow disabled">◀</span>
-
         <?php endif; ?>
 
-
-        <!-- Content -->
         <div class="carousel-content">
 
             <h2><?= htmlspecialchars($current["title"] ?? 'Untitled') ?></h2>
@@ -184,7 +245,7 @@ if ($totalItems <= 1) {
             </p>
 
             <p>
-                <strong>Topic:</strong>
+                <strong>Topic(s):</strong>
                 <?= htmlspecialchars($current["topic"] ?? 'Uncategorized') ?>
             </p>
 
@@ -196,59 +257,41 @@ if ($totalItems <= 1) {
 
         </div>
 
-        <!-- Right arrow -->
-
         <?php if (count($listings) > 1): ?>
-
-            <!-- Next carousel item -->
             <a class="arrow"
                href="controller.php?page=ViewReport&id=<?= $primaryID ?>&topic=<?= urlencode($selectedTopic) ?>&i=<?= $nextIndex ?>">
                 ▶
             </a>
-
         <?php else: ?>
-
             <span class="arrow disabled">▶</span>
-
         <?php endif; ?>
-
 
     </div>
 
-    <!-- Control bar -->
     <div class="report-controls">
 
-        <!-- Topic Filter Dropdown -->
         <select onchange="window.location.href = this.value">
 
-            <!-- Show all topics -->
             <option
                 value="controller.php?page=ViewReport&id=<?= $primaryID ?>&topic=all&i=0"
                 <?= $selectedTopic === 'all' ? 'selected' : '' ?>>
                 All Topics
             </option>
 
-            <!-- Create one option per topic -->
             <?php foreach ($topics as $topic): ?>
-
                 <option
                     value="controller.php?page=ViewReport&id=<?= $primaryID ?>&topic=<?= urlencode($topic) ?>&i=0"
-                    <?= $selectedTopic === $topic ? 'selected' : '' ?>
-                    >
-                        <?= htmlspecialchars($topic) ?>
+                    <?= $selectedTopic === $topic ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($topic) ?>
                 </option>
-
             <?php endforeach; ?>
 
         </select>
 
-        <!-- Title -->
         <div class="current-title">
             <?= htmlspecialchars($current["title"] ?? 'Untitled') ?>
         </div>
 
-
-        <!-- Download button -->
         <?php if (!empty($current["file"])): ?>
 
             <a class="btn"
@@ -256,7 +299,6 @@ if ($totalItems <= 1) {
                download>
                 Download
             </a>
-
 
         <?php elseif (!empty($current["links"])): ?>
 
@@ -270,20 +312,14 @@ if ($totalItems <= 1) {
 
             <button class="btn" disabled>No attachment</button>
 
-
         <?php endif; ?>
 
     </div>
 
-    <!-- Position -->
     <p style="text-align:center; margin-top:10px;">
         <?= $index + 1 ?> / <?= count($listings) ?>
     </p>
 
-
     <a href="controller.php?page=index" class="fab"><<</a>
 
 </main>
-
-
-
