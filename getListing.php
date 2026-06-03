@@ -34,12 +34,24 @@ if (!empty($topics)) {
 }
 
 /* MEDIUM FILTER */
+
 if (!empty($mediums)) {
+
     $mediumConditions = [];
+
     foreach ($mediums as $m) {
+        
+        // --- TRANSLATION LAYER ---
+        // If the user clicks the UI element for "books", map it to what the DB uses
+        $m = trim(strtolower($m));
+        if ($m === 'books') {
+            $m = 'book'; // Change this to match your DB value (e.g., 'book', 'default', etc.)
+        }
+
         $mediumConditions[] = 'LOWER(l.medium) = LOWER(?)';
         $params[] = $m;
     }
+
     $where[] = '(' . implode(' OR ', $mediumConditions) . ')';
 }
 
