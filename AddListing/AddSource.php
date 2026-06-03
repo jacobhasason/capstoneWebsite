@@ -170,13 +170,38 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
 
         /* RELATED LISTINGS */
+        /* RELATED LISTINGS - BIDIRECTIONAL */
         if ($primaryListingID && !empty($_POST['relatedListingIDs'])) {
             foreach ($_POST['relatedListingIDs'] as $relatedID) {
                 $relatedID = trim($relatedID);
-                if (!empty($relatedID)) {
-                    $title = getListingTitleByID($relatedID);
-                    // Fixed Parameters order: listingID, topic, title, type, file, link
-                    insertRelatedListing($primaryListingID, $topicContext, $title, "listing", null, $relatedID);
+
+                if (!empty($relatedID) && (int) $relatedID !== (int) $primaryListingID) {
+
+                    // Title of the existing listing selected in the dropdown
+                    $relatedTitle = getListingTitleByID($relatedID);
+
+                    // Title of the newly created primary listing
+                    $primaryTitle = $_POST['title'] ?? ("Related Listing #" . $primaryListingID);
+
+                    // Direction 1: primary -> related
+                    insertRelatedListing(
+                            $primaryListingID,
+                            $topicContext,
+                            $relatedTitle,
+                            "listing",
+                            null,
+                            $relatedID
+                    );
+
+                    // Direction 2: related -> primary
+                    insertRelatedListing(
+                            $relatedID,
+                            $topicContext,
+                            $primaryTitle,
+                            "listing",
+                            null,
+                            $primaryListingID
+                    );
                 }
             }
         }

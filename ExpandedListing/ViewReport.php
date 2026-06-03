@@ -4,9 +4,10 @@
 require "DBConnect/db.php";
 
 /* Get all topics for a listing through ListingTopic -> topic */
+
 function getListingTopics($db, $listingID) {
     $stmt = $db->prepare(
-        'SELECT t."topic_name"
+            'SELECT t."topic_name"
          FROM "ListingTopic" lt
          JOIN "topic" t ON lt."topic_id" = t."topic_id"
          WHERE lt."listingID" = ?'
@@ -19,11 +20,12 @@ function getListingTopics($db, $listingID) {
 }
 
 /* Get topic array for dropdown/filtering */
+
 function getListingTopicArray($db, $listingID) {
 
     // First try ListingTopic -> topic
     $stmt = $db->prepare(
-        'SELECT t."topic_name"
+            'SELECT t."topic_name"
          FROM "ListingTopic" lt
          JOIN "topic" t ON lt."topic_id" = t."topic_id"
          WHERE lt."listingID" = ?'
@@ -40,7 +42,7 @@ function getListingTopicArray($db, $listingID) {
 
     // Otherwise try ListingCategory -> topic_category
     $stmt = $db->prepare(
-        'SELECT tc."category_name"
+            'SELECT tc."category_name"
          FROM "ListingCategory" lc
          JOIN "topic_category" tc
               ON lc."category_id" = tc."category_id"
@@ -69,7 +71,7 @@ if (!$primary) {
 
 /* Load related sources */
 $stmt = $db->prepare(
-    'SELECT *
+        'SELECT *
      FROM "RelatedListing"
      WHERE "listingID" = ?
      ORDER BY "relatedListingID" ASC'
@@ -95,6 +97,10 @@ $listings[] = [
 ];
 
 /* Related sources */
+$seenListings = [
+    $primaryID => true
+];
+
 foreach ($relatedRows as $row) {
 
     /* Related source is another listing on the site */
@@ -102,9 +108,17 @@ foreach ($relatedRows as $row) {
 
         $relatedListingID = (int) $row["links"];
 
+        // Skip duplicate site listings only
+        if (isset($seenListings[$relatedListingID])) {
+            continue;
+        }
+
+        $seenListings[$relatedListingID] = true;
+
         $relatedStmt = $db->prepare(
             'SELECT * FROM "Listing" WHERE "listingID" = ?'
         );
+
         $relatedStmt->execute([$relatedListingID]);
         $relatedListing = $relatedStmt->fetch(PDO::FETCH_ASSOC);
 
@@ -165,9 +179,9 @@ sort($topics);
 /* Filter carousel by selected topic */
 if ($selectedTopic !== 'all') {
     $listings = array_values(
-        array_filter($listings, function ($item) use ($selectedTopic) {
-            return in_array($selectedTopic, $item["topicArray"] ?? []);
-        })
+            array_filter($listings, function ($item) use ($selectedTopic) {
+                return in_array($selectedTopic, $item["topicArray"] ?? []);
+            })
     );
 }
 
@@ -291,7 +305,7 @@ if ($totalItems <= 1) {
             <a class="btn"
                href="<?= htmlspecialchars($current["links"]) ?>"
                <?= ($current["type"] ?? '') === "listing" ? '' : 'target="_blank" rel="noopener noreferrer"' ?>>
-                <?= ($current["type"] ?? '') === "listing" ? 'View Related Listing' : 'Visit Source' ?>
+               <?= ($current["type"] ?? '') === "listing" ? 'View Related Listing' : 'Visit Source' ?>
             </a>
 
         <?php else: ?>
