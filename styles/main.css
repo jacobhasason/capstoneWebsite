@@ -49,7 +49,7 @@ a:focus {
 
 header {
     border-bottom: 2px solid black;
-    background: linear-gradient(45deg, white 0%, crimson 75%, black 100%);
+    background: linear-gradient(to right, white 0%, white 80%, crimson 90%, black 100%);
     padding: 15px 15px 35px 15px;
     display: flex;
     align-items: center;
@@ -79,7 +79,7 @@ header h3 {
 /* --- Navigation Bar --- */
 
 .main-nav {
-     width: 100vw;
+    width: 100vw;
     margin-left: calc(50% - 50vw);
     list-style: none;
     padding: 0;
@@ -122,18 +122,20 @@ header h3 {
     z-index: 100;
 }
 
-.main-nav li:hover .dropdown {
+.main-nav > li:hover .dropdown {
     display: block;
 }
 
 .dropdown li a {
     display: flex;
-    align-items: center; 
+    align-items: center;
     padding: 10px 15px;
     text-decoration: none;
     color: black;
     font-size: 0.9rem;
     gap: 10px;
+    align-items: center;
+    line-height: 1;
 }
 
 .dropdown li a:hover {
@@ -144,21 +146,26 @@ header h3 {
 .checkbox-box {
     width: 14px;
     height: 14px;
+
     border: 1px solid black;
     background-color: white;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
     flex-shrink: 0;
+
     position: relative;
+    vertical-align: middle;
 }
 
 .checkbox-box.checked::after {
-    content: "✓"; 
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    content: "✓";
     font-size: 12px;
-    color: #cc0000; /* red check */
+    color: #cc0000;
     font-weight: bold;
+    line-height: 1;
 }
 
 section {
@@ -199,9 +206,9 @@ section p {
 
 /* Theme variables */
 :root {
-  --bg-light: #f0d6d6; /* light red */
-  --accent-red: #e15d5d;
-  --border-color: #333;
+    --bg-light: #f0d6d6; /* light red */
+    --accent-red: #e15d5d;
+    --border-color: #333;
 }
 
 
@@ -264,25 +271,25 @@ section p {
 }
 
 .fab {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background-color: #cc0000;
-  color: white;
-  font-size: 30px;
-  text-align: center;
-  line-height: 60px;
-  text-decoration: none;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-  z-index: 1000;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #cc0000;
+    color: white;
+    font-size: 30px;
+    text-align: center;
+    line-height: 60px;
+    text-decoration: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    z-index: 1000;
 }
 
 .fab:hover {
-  background-color: #990000;
-  transform: scale(1.1);
+    background-color: #990000;
+    transform: scale(1.1);
 }
 
 ul {
@@ -330,18 +337,13 @@ footer div:last-child {
     width: 180px;
     padding: 10px;
     background-color: #e15d5d;
-    color: black;
+    color: white;
     border: none;
     text-decoration: none;
     text-align: center;
     cursor: pointer;
     border-radius: 5px;
 }
-
-.btn:hover {
-   color: black; 
-}
-
 
 .btn.external {
     background-color: #a83232;
@@ -385,7 +387,7 @@ main {
     box-shadow: 0 0 10px rgba(0,0,0,0.2);
 }
 .listing-full {
-    min-height: calc(100vh - 200px); 
+    min-height: calc(100vh - 200px);
     display: block;
 }
 
@@ -449,14 +451,21 @@ main {
 }
 
 .show-more-container {
-    text-align: center;
+
+    width: 100%;
+
+    display: flex;
+
+    justify-content: center;
+
     margin: 30px 0;
 }
 
 .show-more-btn {
+
     display: inline-block;
     padding: 12px 24px;
-    background-color: #333;
+    background-color: darkred;
     color: white;
     text-decoration: none;
     border-radius: 8px;
@@ -465,17 +474,25 @@ main {
 }
 
 .show-more-btn:hover {
-    background-color: #555;
+    background-color: darkred;
+    
 }
 
 .site-header {
+
     display: flex;
+
     align-items: center;
+
     justify-content: space-between;
-    position: relative;
 
     padding: 25px 20px;
+
     min-height: 140px;
+
+    border-bottom: 2px solid black;
+
+   background: linear-gradient(45deg, white 0%, white 30%, crimson 40%, crimson 80%,black 100%);
 }
 
 /* left + right stay normal */
@@ -487,56 +504,92 @@ main {
 /* center becomes a vertical stack */
 .header-center {
     position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+   
+    
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    top: 5px;
+   
+}
+/* LEFT SIDE */
+.header-left {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 16px;
+}
+/* RIGHT SIDE */
+.header-right {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
 }
 
-/* title above image */
+/* TITLE */
 .header-title {
+
     margin: 0;
-    font-size: 18px;
-    font-weight: 600;
+
+    font-size: 28px;
+
+    font-weight: 700;
+
+    color: black;
 }
 
-/* logo styling */
+/* LOGO */
 .header-logo {
-    height: 60px;
+
+    height: 120px;
+
     width: auto;
-    margin-top: 5px;
-    position: relative;
-    left: 28px; 
 }
 
 
+/* ABOUT BUTTON */
 .about-btn {
+
     width: 42px;
+
     height: 42px;
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
 
     border-radius: 50%;
 
     background: #b22222;
+
     color: white;
 
     text-decoration: none;
+
     font-size: 1.4rem;
+
     font-weight: bold;
 
     transition: 0.2s;
 }
 
-.about-btn:hover {
-    transform: scale(1.08);
-    opacity: 0.9;
+
+.user-icon-btn:hover {
+
+    background: #ffcccc;
+
+    transform: scale(1.05);
+
+    cursor: pointer;
 }
+
 
 .about-page {
     min-height: calc(100vh - 260px);
@@ -600,3 +653,4 @@ main {
 .report-page {
     min-height: calc(100vh - 200px);
 }
+

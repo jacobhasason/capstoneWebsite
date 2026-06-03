@@ -1,6 +1,5 @@
 <?php
 require "DBConnect/db.php";
-// Superuser Panel with options to modify WL users list
 
 /* AUTH CHECK */
 if (!isset($_SESSION["userID"])) {
@@ -14,7 +13,7 @@ $currentUserType = (int) ($_SESSION["userType"] ?? 1);
 $currentUserName = $_SESSION["userName"] ?? "User";
 
 /* ROLE CHECK */
-$isSuperUser = ($currentUserType === 2);
+$isSuperUser = ((int) $currentUserType === 2);
 ?>
 
 <main>
@@ -45,13 +44,12 @@ $isSuperUser = ($currentUserType === 2);
     <?php else: ?>
 
         <!-- SUPERUSER VIEW -->
-
         <h2>Users</h2>
 
         <?php
-            $stmt = $db->prepare('SELECT * FROM "User" WHERE "userID" != ?');
-            $stmt->execute([$currentUserID]);
-            $users = $stmt->fetchAll();
+        $stmt = $db->prepare('SELECT * FROM "User" WHERE "userID" != ?');
+        $stmt->execute([$currentUserID]);
+        $users = $stmt->fetchAll();
         ?>
 
         <?php if (!empty($users)): ?>
@@ -70,19 +68,19 @@ $isSuperUser = ($currentUserType === 2);
 
                             <p><strong>Type:</strong>
                                 <?php
-                                    if ($user["userType"] == 2) {
-                                        echo "Superuser";
-                                    } elseif ($user["userType"] == 1) {
-                                        echo "Whitelist";
-                                    } else {
-                                        echo "Standard User";
-                                    }
+                                if ($user["userType"] == 2) {
+                                    echo "Superuser";
+                                } elseif ($user["userType"] == 1) {
+                                    echo "Whitelist";
+                                } else {
+                                    echo "Standard User";
+                                }
                                 ?>
                             </p>
 
                         </div>
 
-                        <?php if ($user["userType"] != 2): ?>
+                        <?php if ((int) $user["userType"] !== 2): ?>
                             <div class="user-actions">
 
                                 <a href="controller.php?page=modifyUser&id=<?= $user["userID"] ?>"
@@ -110,6 +108,37 @@ $isSuperUser = ($currentUserType === 2);
             <p>No users found.</p>
 
         <?php endif; ?>
+
+        <!-- CREATE USER PANEL (NOW AT BOTTOM) -->
+        <div class="create-user-panel">
+
+            <h3>Create User</h3>
+
+            <a href="controller.php?page=addUser&type=1"
+               class="btn">
+
+                Add User (Whitelist)
+
+            </a>
+
+        </div>
+
+        <!-- TOPIC MANAGEMENT PANEL -->
+        <div class="create-user-panel">
+
+            <h3>Topics & Sub-Topics</h3>
+
+            <a href="controller.php?page=manageTopics"
+               class="btn">
+
+                Manage
+
+            </a>
+
+        </div>
+
+
+
 
     <?php endif; ?>
 

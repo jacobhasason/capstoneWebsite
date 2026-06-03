@@ -1,0 +1,188 @@
+/* 🐒 GLOBAL SAFETY FIXES */
+/* prevents outside layout rules from breaking layout */
+body {
+    display: block !important;
+    margin: 0;
+}
+
+.container {
+    margin: 0 !important;
+    max-width: none !important;
+}
+
+/* 🐒 PAGE WRAPPER */
+.manage-page {
+    min-height: calc(100vh - 200px);
+    padding: 40px 20px;
+
+    max-width: 1100px;
+    margin: 0;
+}
+
+.manage-page h2 {
+    text-align: left;
+    margin-bottom: 25px;
+}
+
+/* 🐒 MAIN 2-COLUMN LAYOUT */
+.manage-content {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    gap: 30px;
+}
+
+/* 🐒 LEFT SIDE (STRUCTURE VIEW) */
+.structure-section {
+    flex: 2 !important;
+
+    background: #f8f8f8;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+
+    padding: 20px;
+}
+
+/* category block */
+.category-block {
+    margin-top: 15px;
+    padding: 15px;
+
+    background: white;
+    border-left: 4px solid crimson;
+    border-radius: 10px;
+}
+
+.category-block h4 {
+    margin-bottom: 10px;
+}
+
+.category-block ul {
+    margin: 0;
+    padding-left: 18px;
+}
+
+/* 🐒 CATEGORY / TOPIC DISPLAY ROWS */
+.category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.topic-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 8px;
+}
+
+/* 🐒 RIGHT SIDE (STACKED CONTROL PANEL) */
+.form-section {
+    flex: 1 !important;
+
+    display: flex;
+    flex-direction: column;   /* STACK vertically */
+    gap: 20px;
+}
+
+/* 🐒 EACH CONTROL PANEL */
+.manage-box {
+    background: #f8f8f8;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+
+    padding: 20px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* panel title */
+.manage-box h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.1rem;
+}
+
+/* form layout */
+.manage-box form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* inputs + selects */
+.manage-box input,
+.manage-box select {
+    width: 100%;
+    padding: 10px;
+
+    border: 1px solid #bbb;
+    border-radius: 6px;
+}
+
+/* 🐒 INLINE ROW (ADD TOPIC SELECT + BUTTON) */
+.topic-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.topic-row select {
+    flex: 1;
+}
+
+.topic-row .btn {
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+/* 🐒 BUTTONS */
+.manage-box .btn {
+    padding: 10px 14px;
+
+    background: crimson;
+    color: white;
+
+    border: none;
+    border-radius: 6px;
+
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.manage-box .btn:hover {
+    background: darkred;
+}
+
+/* 🐒 DELETE BUTTONS */
+.delete-btn {
+    background: crimson;
+    color: white;
+
+    border: none;
+    border-radius: 6px;
+
+    padding: 8px 10px;
+
+    cursor: pointer;
+}
+
+.delete-btn.small {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+}
+
+.delete-btn:hover {
+    background: darkred;
+}
+
+/* 🐒 INPUT FOCUS EFFECTS */
+.manage-box input:focus,
+.manage-box select:focus {
+    outline: none;
+    border-color: crimson;
+    box-shadow: 0 0 4px rgba(220, 20, 60, 0.3);
+}

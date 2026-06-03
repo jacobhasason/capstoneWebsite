@@ -238,3 +238,80 @@
     cursor: default;
 }
 
+.topic-tree {
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 12px;
+    max-height: 320px;
+    overflow-y: auto;
+    background: #fafafa;
+    font-family: Arial, sans-serif;
+}
+
+/* reset list styling */
+.topic-tree ul {
+    list-style: none;
+    padding-left: 18px;
+    margin: 6px 0;
+}
+
+/* each row */
+.topic-tree li {
+    margin: 4px 0;
+    position: relative;
+}
+
+/* category label row */
+.topic-tree label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+/* hover effect */
+.topic-tree label:hover {
+    background: #e9f2ff;
+}
+
+/* checkbox styling */
+.topic-tree input[type="checkbox"] {
+    transform: scale(1.1);
+    accent-color: #2b6fff;
+}
+
+/* collapse button */
+.tree-toggle {
+    border: none;
+    background: transparent;
+    font-size: 14px;
+    cursor: pointer;
+    margin-right: 4px;
+    color: #555;
+    transition: transform 0.15s ease;
+}
+
+.tree-toggle:hover {
+    color: #2b6fff;
+}
+
+/* nested subtopics indentation line effect */
+.topic-tree ul ul {
+    border-left: 2px solid #e0e0e0;
+    margin-left: 10px;
+    padding-left: 14px;
+}
+
+/* smoother hide/show */
+.hidden {
+    display: none;
+}
+
+/* selected highlight */
+.topic-tree input[type="checkbox"]:checked + span,
+.topic-tree input[type="checkbox"]:checked {
+    font-weight: 500;
+}
