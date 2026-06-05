@@ -1,0 +1,84 @@
+.edit-listing {
+    max-width: 700px;
+    margin: 30px auto;
+    padding: 20px;
+}
+
+.edit-listing h1 {
+    margin-bottom: 20px;
+    color: #12395b;
+}
+
+/*FORM CONTAINER*/
+.edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+
+    padding: 20px;
+    background: linear-gradient(135deg, #f7fbff, #eef5ff);
+    border: 1px solid #d0d7e2;
+    border-radius: 12px;
+
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+/*LABELS*/
+.edit-form label {
+    font-weight: bold;
+    color: #12395b;
+    margin-top: 6px;
+}
+
+/*INPUTS*/
+.edit-form input,
+.edit-form textarea {
+    padding: 10px 12px;
+
+    border: 1px solid #b8c4d6;
+    border-radius: 8px;
+
+    font-size: 0.95rem;
+
+    background: white;
+
+    transition: all 0.2s ease;
+}
+
+.edit-form input:focus,
+.edit-form textarea:focus {
+    outline: none;
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 3px rgba(74,144,226,0.2);
+}
+
+/*TEXTAREA*/
+.edit-form textarea {
+    min-height: 140px;
+    resize: vertical;
+}
+
+/*SAVE BUTTON*/
+.edit-save {
+    margin-top: 10px;
+    padding: 12px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: #4a90e2;
+    color: white;
+
+    font-weight: bold;
+    font-size: 1rem;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+.edit-save:hover {
+    background: #357ab8;
+    transform: translateY(-2px);
+}
+
