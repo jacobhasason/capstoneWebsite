@@ -1,112 +1,105 @@
+// Central State Object
 const filters = {
-
     date: null,
     topic: [],
     medium: [],
     limit: 10
-
 };
 
+/* GLOBAL EVENT DELEGATION LISTENER */
+document.addEventListener("click", function (e) {
+    // Find if the click happened directly on or inside a link with the .filter-item class
+    const item = e.target.closest(".filter-item");
+    if (!item) return; // Ignore clicks on tree layout toggles, arrows, or general links
 
-/* FILTER CLICK LOGIC */
-document.querySelectorAll(".checkbox-box").forEach(box => {
+    e.preventDefault();
 
-    const item = box.closest("a");
-    if (!item)
-        return;
+    // Pull values directly from HTML attributes
+    const filterType = item.getAttribute("data-type");   // "date", "topic", or "medium"
+    const filterValue = item.getAttribute("data-value"); // e.g., "most_recent", "1", "book"
+    const box = item.querySelector(".checkbox-box");
 
-    item.addEventListener("click", function (e) {
+    if (!box || !filterType) return;
 
-        e.preventDefault();
+    // Reset pagination viewing ceiling on any state change
+    filters.limit = 10;
 
-        const value =
-                this.textContent.trim().toLowerCase();
+    // 1. HANDLE DATE SELECTION (Mutual Exclusion Rule)
+    if (filterType === "date") {
+        const isAlreadyChecked = box.classList.contains("checked");
 
-        const parentCategory =
-                this.closest('.main-nav > li')
-                ?.querySelector(':scope > a')
-                ?.innerText.trim();
+        // Clear layout check visual indicator classes ONLY from items inside the Date column drop-down
+        document.querySelectorAll('.filter-item[data-type="date"] .checkbox-box').forEach(b => {
+            b.classList.remove("checked");
+        });
 
-        if (parentCategory === "Date") {
-
-            document.querySelectorAll(".checkbox-box")
-                    .forEach(b => b.classList.remove("checked"));
-
-            box.classList.add("checked");
-
-            filters.date = this.textContent.trim();
-
+        if (isAlreadyChecked) {
+            // Unchecking an active choice fully clears the sorting restriction parameter
+            filters.date = null;
         } else {
-
-            box.classList.toggle("checked");
-
-            const arr =
-                    parentCategory === "Topic"
-                    ? filters.topic
-                    : filters.medium;
-
-            const index = arr.indexOf(value);
-
-            if (index === -1) {
-                arr.push(value);
-            } else {
-                arr.splice(index, 1);
+            // Check the current element box container and update sorting variables explicitly
+            box.classList.add("checked");
+            
+            if (filterValue === "most_recent") {
+                filters.date = "Most Recent";
+            } else if (filterValue === "oldest") {
+                filters.date = "Oldest";
             }
         }
 
-        fetchListings();
+    // 2. MULTI-SELECT ARRAY HANDLING (Topics & Mediums)
+    } else if (filterType === "topic" || filterType === "medium") {
+        const isAlreadyChecked = box.classList.contains("checked");
+        
+        // Use standard layout toggles to change individual visibility instantly
+        box.classList.toggle("checked");
 
-    });
+        const arr = filterType === "topic" ? filters.topic : filters.medium;
+        const index = arr.indexOf(filterValue);
 
+        if (isAlreadyChecked) {
+            // Yeet item cleanly out of arrays if it is being unchecked
+            if (index > -1) arr.splice(index, 1);
+        } else {
+            // Push search value tracking details to array objects if its missing
+            if (index === -1) arr.push(filterValue);
+        }
+    }
+
+    // Hand execution pipeline off to backend queries engine
+    fetchListings(false);
 });
 
-
-/* FETCH LISTINGS */
-function fetchListings() {
-
+/* FETCH LISTINGS ENGINE */
+function fetchListings(isAppend = false) {
     fetch("getListing.php", {
-
         method: "POST",
-
         headers: {
             "Content-Type": "application/json"
         },
-
         body: JSON.stringify(filters)
-
     })
+    .then(res => res.text())
+    .then(html => {
+        const container = document.querySelector(".listings-container");
+        if (!container) return;
 
-            .then(res => res.text())
-
-            .then(html => {
-
-                const container =
-                        document.querySelector(".listings-container");
-
-                if (container) {
-                    container.innerHTML = html;
-                }
-
-            })
-
-            .catch(console.error);
-
+        if (isAppend) {
+            const oldBtnContainer = container.querySelector(".show-more-container");
+            if (oldBtnContainer) oldBtnContainer.remove();
+            container.insertAdjacentHTML("beforeend", html);
+        } else {
+            container.innerHTML = html;
+        }
+    })
+    .catch(console.error);
 }
 
-
-/* SHOW MORE */
+/* PAGINATION INTERCEPT HANDLER */
 document.addEventListener("click", (e) => {
-
     if (e.target.id === "show-more-btn") {
-
         e.preventDefault();
-
         filters.limit += 10;
-
-        fetchListings();
+        fetchListings(true);
     }
-
 });
-
-
-
