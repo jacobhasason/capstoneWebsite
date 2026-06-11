@@ -396,7 +396,7 @@ function insertRelatedListing(
                                 </select>
 
                                 <button type="button"
-                                        onclick="removeRelated(this, '<?= (int) $id ?>', '<?= htmlspecialchars($relItem['relatedListingID'] ?? '') ?>')">
+                                        onclick="removeRelated(this, '<?= (int) $relItem['relatedListingID'] ?>')">
                                     ✕
                                 </button>
                             </div>
@@ -429,13 +429,14 @@ function insertRelatedListing(
                     // Explicitly expose functions to the global window scope 
                     // so the HTML inline onclick attribute can actually see them, and prevent yeeting the COMPUTA
                     window.removeRelated = async function (btn, relatedListingID) {
-                        const row = btn.closest(".related-listing");
-
-                        await fetch(
+                        const response = await fetch(
                                 `controller.php?page=removeRelatedListing&relatedListingID=${relatedListingID}`
                                 );
 
-                        row.remove();
+                        const text = await response.text();
+                        console.log(text);
+
+                        btn.closest(".related-listing").remove();
                     };
 
                     window.addRelatedListing = function () {
