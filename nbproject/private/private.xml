@@ -10,14 +10,22 @@
             <file>file:/C:/xampp/htdocs/capstoneWebsite/getListing.php</file>
             <file>file:/C:/xampp/htdocs/capstoneWebsite/styles/main.css</file>
             <file>file:/C:/xampp/htdocs/capstoneWebsite/styles/userpage.css</file>
-            <file>file:/C:/xampp/htdocs/capstoneWebsite/styles/editListing.css</file>
             <file>file:/C:/xampp/htdocs/capstoneWebsite/styles/reportPage.css</file>
             <file>file:/C:/xampp/htdocs/capstoneWebsite/Login/login.php</file>
             <file>file:/C:/xampp/htdocs/capstoneWebsite/ExpandedListing/ViewReport.php</file>
-            <file>file:/C:/xampp/htdocs/capstoneWebsite/view/home.php</file>
             <file>file:/C:/xampp/htdocs/capstoneWebsite/cocoNut.jpg</file>
-            <file>file:/C:/xampp/htdocs/capstoneWebsite/controller.php</file>
             <file>file:/C:/xampp/htdocs/capstoneWebsite/view/reportHeader.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/Model/Listing.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/DBConnect/db.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/Logout/logout.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/Users/addUser.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/Users/deleteUser.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/Users/modifyUser.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/Users/usersPage.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/view/AddSourceHeader.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/ExpandedListing/editListing.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/controller.php</file>
+            <file>file:/C:/xampp/htdocs/capstoneWebsite/ExpandedListing/removeRelatedListing.php</file>
         </group>
     </open-files>
 </project-private>
