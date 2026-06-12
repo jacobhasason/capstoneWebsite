@@ -118,8 +118,24 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         ]);
 
         $response = curl_exec($ch);
+
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        
+
         $insertedRows = json_decode($response, true);
         $primaryListingID = $insertedRows[0]['listingID'] ?? null;
+        
+        if (!$primaryListingID) {
+            echo "<pre>";
+            echo "Could not get listingID\n";
+            echo "HTTP: $httpCode\n";
+            echo "Response:\n";
+            echo htmlspecialchars($response);
+            echo "</pre>";
+            exit;
+        }
+        
         curl_close($ch);
 
         /* RELATION PLACEMENT: LISTING TOPICS */
@@ -203,6 +219,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             }
         }
 
+
+
         // Redirect upon successful upload structure assignment
         header("Location: controller.php?page=index");
         exit;
@@ -273,7 +291,7 @@ function insertRelatedListing($listingID, $topic, $title, $type, $file = null, $
 
     $data = [
         "listingID" => (int) $listingID,
-        "topic" => $topic !== null ? (int) $topic : null,
+        "topic" => $topic !== null ? $topic : null,
         "title" => $title,
         "type" => $type,
         "file" => $file,
