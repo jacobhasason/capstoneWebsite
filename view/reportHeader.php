@@ -2,14 +2,21 @@
 
     <!-- LEFT SIDE -->
     <div class="header-left">
+        <figure style="margin:0; text-align:center;">
+            <img src="images/CWULOGO2.png"
+                 alt="CWU Logo"
+                 class="header-logo"
+                 >
 
-        <img src="images/CWULOGO2.png"
-             alt="CWU Logo"
-             class="header-logo">
+            <figcaption style="color:red">Visual Knowledge Discovery Lab </figcaption>
+        </figure>
+
+
 
         <h1 class="header-title">
             Primary Source & Related Resources
         </h1>
+
 
     </div>
 

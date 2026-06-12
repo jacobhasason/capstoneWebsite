@@ -3,69 +3,76 @@
     <meta charset="UTF-8">
     <title>Add Source</title>
     <body>
-        
-    
+
+
 
     </div>
-        <header class="site-header">
+    <header class="site-header">
 
-                
+
         <!-- LEFT SIDE -->
-    <div class="header-left">
+        <div class="header-left">
+            <figure style="margin:0; text-align:center;">
+                <img src="images/CWULOGO2.png"
+                     alt="CWU Logo"
+                     class="header-logo"
+                     >
 
-        <img src="images/CWULOGO2.png"
-             alt="CWU Logo"
-             class="header-logo">
+                <figcaption style="color:red">Visual Knowledge Discovery Lab </figcaption>
+            </figure>
 
-        <h1 class="header-title">
-            Add Source
-        </h1>
 
-    </div>
-        <hea
-             <div class="header-right">
-   
-        <a href="https://www.cwu.edu/about/directory/computer-science/boris-kovalerchuk.php"
-           class="contact-btn"
-           title="Contact">
 
-            Contact
+            <h1 class="header-title">
+                Add Source
+            </h1>
 
-        </a>
-        
-        <a href="controller.php?page=about"
-           class="about-btn"
-           title="About">
 
-            ?
+        </div>
 
-        </a>
+        <div class="header-right">
 
-        <?php if (isset($_SESSION["userID"])): ?>
+            <a href="https://www.cwu.edu/about/directory/computer-science/boris-kovalerchuk.php"
+               class="contact-btn"
+               title="Contact">
 
-            <a href="controller.php?page=usersPage"
-               class="user-icon-btn"
-               title="My Account">
-
-                👤
+                Contact
 
             </a>
 
-        <?php else: ?>
+            <a href="controller.php?page=about"
+               class="about-btn"
+               title="About">
 
-            <a href="controller.php?page=login"
-               class="user-icon-btn"
-               title="Login">
-
-                👤
+                ?
 
             </a>
 
-        <?php endif; ?>
+            <?php if (isset($_SESSION["userID"])): ?>
 
-    </div>
-            <link rel="stylesheet" href="styles/AddSource.css">
-            <link rel="stylesheet" href="styles/main.css"> 
-        </header>
-    </body>
+                <a href="controller.php?page=usersPage"
+                   class="user-icon-btn"
+                   title="My Account">
+
+                    👤
+
+                </a>
+
+            <?php else: ?>
+
+                <a href="controller.php?page=login"
+                   class="user-icon-btn"
+                   title="Login">
+
+                    👤
+
+                </a>
+
+            <?php endif; ?>
+
+        </div>
+        <link rel="stylesheet" href="styles/AddSource.css">
+        <link rel="stylesheet" href="styles/main.css"> 
+    </header>
+</body>
 </html>

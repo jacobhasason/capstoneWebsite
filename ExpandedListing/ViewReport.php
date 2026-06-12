@@ -56,6 +56,11 @@ function getListingTopicArray($db, $listingID) {
 
 $primaryID = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 
+// Return to previous listing
+$returnID = isset($_GET['returnID'])
+    ? (int)$_GET['returnID']
+    : $primaryID;
+
 if ($primaryID <= 0) {
     die("Missing primary listing ID");
 }
@@ -83,7 +88,7 @@ $relatedRows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $listings = [];
 
 /* Primary source */
-$primaryTopics = getListingTopicArray($db, $primaryID);
+$primaryTopics = array_map('trim', getListingTopicArray($db, $primaryID));
 
 $listings[] = [
     "title" => $primary["title"] ?? "Untitled",
@@ -116,7 +121,7 @@ foreach ($relatedRows as $row) {
         $seenListings[$relatedListingID] = true;
 
         $relatedStmt = $db->prepare(
-            'SELECT * FROM "Listing" WHERE "listingID" = ?'
+                'SELECT * FROM "Listing" WHERE "listingID" = ?'
         );
 
         $relatedStmt->execute([$relatedListingID]);
@@ -126,7 +131,7 @@ foreach ($relatedRows as $row) {
             continue;
         }
 
-        $relatedTopics = getListingTopicArray($db, $relatedListingID);
+        $relatedTopics = array_map('trim', getListingTopicArray($db, $relatedListingID));
 
         $listings[] = [
             "title" => $relatedListing["title"] ?? ($row["title"] ?? "Related Listing"),
@@ -138,7 +143,6 @@ foreach ($relatedRows as $row) {
             "links" => "controller.php?page=listingInfo&id=" . $relatedListingID,
             "type" => "listing"
         ];
-
     } else {
 
         /* Related source is an uploaded file or hyperlink */
@@ -158,7 +162,17 @@ foreach ($relatedRows as $row) {
 }
 
 /* Topic filter from URL */
-$selectedTopic = $_GET['topic'] ?? 'all';
+$selectedTopic = trim($_GET['topic'] ?? 'all');
+
+/* Filter carousel by selected topic */
+if ($selectedTopic !== 'all') {
+    $listings = array_values(
+            array_filter($listings, function ($item) use ($selectedTopic) {
+                $itemTopics = array_map('trim', $item["topicArray"] ?? []);
+                return in_array($selectedTopic, $itemTopics);
+            })
+    );
+}
 
 /* Build unique dropdown topics */
 $topics = [];
@@ -228,7 +242,7 @@ if ($totalItems <= 1) {
 
         <?php if (count($listings) > 1): ?>
             <a class="arrow"
-               href="controller.php?page=ViewReport&id=<?= $primaryID ?>&topic=<?= urlencode($selectedTopic) ?>&i=<?= $prevIndex ?>">
+               href="controller.php?page=ViewReport&id=<?= $primaryID ?>&returnID=<?= $returnID ?>&topic=<?= urlencode($selectedTopic) ?>&i=<?= $prevIndex ?>">
                 ◀
             </a>
         <?php else: ?>
@@ -259,7 +273,7 @@ if ($totalItems <= 1) {
 
         <?php if (count($listings) > 1): ?>
             <a class="arrow"
-               href="controller.php?page=ViewReport&id=<?= $primaryID ?>&topic=<?= urlencode($selectedTopic) ?>&i=<?= $nextIndex ?>">
+               href="controller.php?page=ViewReport&id=<?= $primaryID ?>&returnID=<?= $returnID ?>&topic=<?= urlencode($selectedTopic) ?>&i=<?= $nextIndex ?>">
                 ▶
             </a>
         <?php else: ?>
@@ -270,49 +284,50 @@ if ($totalItems <= 1) {
 
     <div class="report-controls">
 
-        <select onchange="window.location.href = this.value">
+        <select style="width:200px; min-width:200px; max-width:200px;"
+                onchange="window.location.href = this.value">>
 
-            <option
-                value="controller.php?page=ViewReport&id=<?= $primaryID ?>&topic=all&i=0"
-                <?= $selectedTopic === 'all' ? 'selected' : '' ?>>
-                All Topics
-            </option>
-
-            <?php foreach ($topics as $topic): ?>
                 <option
-                    value="controller.php?page=ViewReport&id=<?= $primaryID ?>&topic=<?= urlencode($topic) ?>&i=0"
-                    <?= $selectedTopic === $topic ? 'selected' : '' ?>>
-                    <?= htmlspecialchars($topic) ?>
+                    value="controller.php?page=ViewReport&id=<?= $primaryID ?>&returnID=<?= $returnID ?>&topic=all&i=0"
+                    <?= $selectedTopic === 'all' ? 'selected' : '' ?>>
+                    All Topics
                 </option>
-            <?php endforeach; ?>
 
-        </select>
+                <?php foreach ($topics as $topic): ?>
+                    <option
+                        value="controller.php?page=ViewReport&id=<?= $primaryID ?>&returnID=<?= $returnID ?>&topic=<?= urlencode($topic) ?>&i=0"
+                        <?= $selectedTopic === $topic ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($topic) ?>
+                    </option>
+                <?php endforeach; ?>
 
-        <div class="current-title">
-            <?= htmlspecialchars($current["title"] ?? 'Untitled') ?>
-        </div>
+            </select>
 
-        <?php if (!empty($current["file"])): ?>
+            <div class="current-title">
+                <?= htmlspecialchars($current["title"] ?? 'Untitled') ?>
+            </div>
 
-            <a class="btn"
-               href="<?= htmlspecialchars($current["file"]) ?>"
-               download>
-                Download
-            </a>
+            <?php if (!empty($current["file"])): ?>
 
-        <?php elseif (!empty($current["links"])): ?>
+                <a class="btn"
+                   href="<?= htmlspecialchars($current["file"]) ?>"
+                   download>
+                    Download
+                </a>
 
-            <a class="btn"
-               href="<?= htmlspecialchars($current["links"]) ?>"
-               <?= ($current["type"] ?? '') === "listing" ? '' : 'target="_blank" rel="noopener noreferrer"' ?>>
-               <?= ($current["type"] ?? '') === "listing" ? 'View Related Listing' : 'Visit Source' ?>
-            </a>
+            <?php elseif (!empty($current["links"])): ?>
 
-        <?php else: ?>
+                <a class="btn"
+                   href="<?= htmlspecialchars($current["links"]) ?>"
+                   <?= ($current["type"] ?? '') === "listing" ? '' : 'target="_blank" rel="noopener noreferrer"' ?>>
+                   <?= ($current["type"] ?? '') === "listing" ? 'View Related Listing' : 'Visit Source' ?>
+                </a>
 
-            <button class="btn" disabled>No attachment</button>
+            <?php else: ?>
 
-        <?php endif; ?>
+                <button class="btn" disabled>No attachment</button>
+
+            <?php endif; ?>
 
     </div>
 
@@ -320,6 +335,6 @@ if ($totalItems <= 1) {
         <?= $index + 1 ?> / <?= count($listings) ?>
     </p>
 
-    <a href="controller.php?page=index" class="fab"><<</a>
+    <a href="controller.php?page=listingInfo&id=<?= $returnID ?>" class="fab"><<</a>
 
 </main>

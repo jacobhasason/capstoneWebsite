@@ -80,11 +80,14 @@
                 <tr><td>GLC Divide &amp; Classify Process</td><td>D&amp;C</td></tr>
                 <tr><td>Combined SPC with several CPC</td><td>SCPC</td></tr>
             </tbody>
+            
 
         </table>
+        <br>
+        <p style="text-align: center"> This site was created for Dr. Kovalerchuk by Isak Jacobson, Saul Rodriguez-Tapia, Holden Robinson and Guillermo Leon. </p>
 
     </div>
-
+    
     <a href="controller.php?page=index" class="fab"><<</a>
 
 </main>

@@ -3,7 +3,7 @@
 require "DBConnect/db.php";
 ?>
 <link rel="stylesheet" href="styles/main.css">
-<title> Research Hub </title>
+<title> Artificial Intelligence and Visual Knowledge Discovery (AI-VKD) </title>
 
 <?php
 $limit = isset($_GET['limit']) ? (int) $_GET['limit'] : 10;

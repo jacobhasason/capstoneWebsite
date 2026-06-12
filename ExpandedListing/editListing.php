@@ -389,7 +389,7 @@ function insertRelatedListing(
                         <?php foreach ($existingRelatedListings as $relItem): ?>
                             <div class="related-listing">
                                 <label>Related Listing:</label>
-                                <select name="relatedListingIDs[]" class="related-listing-select">
+                                <select name="relatedListingIDs[]" class="related-listing-select" style="max-width: 100%; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
                                     <option value="<?= htmlspecialchars($relItem['links'] ?? '') ?>">
                                         <?= htmlspecialchars($relItem['title'] ?? 'Selected Listing') ?>
                                     </option>
@@ -404,7 +404,7 @@ function insertRelatedListing(
                     <?php else: ?>
                         <div class="related-listing">
                             <label>Related Listing:</label>
-                            <select name="relatedListingIDs[]" class="related-listing-select">
+                            <select name="relatedListingIDs[]" class="related-listing-select" style="max-width: 100%; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
                                 <option value="">Select a topic first</option>
                             </select>
                         </div>

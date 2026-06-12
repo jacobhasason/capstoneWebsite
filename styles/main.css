@@ -440,10 +440,12 @@ main {
     border-radius: 8px;
     font-weight: bold;
     transition: 0.2s;
+    cursor: pointer;
 }
 
-.show-more-btn:hover {
+.show-more-btn:hover .show-more-btn:focus {
     background-color: darkred;
+    cursor: pointer;
 }
 
 .site-header {

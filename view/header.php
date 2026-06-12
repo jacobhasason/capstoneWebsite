@@ -1,13 +1,12 @@
 <header class="site-header">
-
     <div class="header-left">
-
-        <figure>
+        <figure style="margin:0; text-align:center;">
             <img src="images/CWULOGO2.png"
                  alt="CWU Logo"
-                 class="header-logo">
+                 class="header-logo"
+                 >
 
-            <figcaption style="color:red"> Visual Knowledge Discovery Lab </figcaption>
+            <figcaption style="color:red">Visual Knowledge Discovery Lab </figcaption>
         </figure>
 
 

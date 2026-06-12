@@ -1,11 +1,10 @@
 <?php
-
 require "DBConnect/db.php";
 
 /* PERMISSION CHECK */
 $currentCanModify = (int) ($_SESSION["permisMod"] ?? 1);
-$currentUserType = (int)($_SESSION["userType"] ?? 0);
-$currentCanManage = (int)($_SESSION["canManage"] ?? 1);
+$currentUserType = (int) ($_SESSION["userType"] ?? 0);
+$currentCanManage = (int) ($_SESSION["canManage"] ?? 1);
 
 /* GET LISTING */
 $id = $_GET['id'] ?? null;
@@ -34,7 +33,6 @@ $topicStmt = $db->prepare("
 
 $topicStmt->execute([$id]);
 $topics = $topicStmt->fetchAll();
-
 ?>
 <title> Artificial Intelligence and Visual Knowledge Discovery (AI-VKD)  </title>
 
@@ -48,7 +46,7 @@ $topics = $topicStmt->fetchAll();
         color: #000000 !important;
         font-weight: bold;
     }
-    
+
     .action-buttons .btn:focus {
         background-color: #cc0000 !important;
         color: #000000 !important;
@@ -67,37 +65,37 @@ $topics = $topicStmt->fetchAll();
 
     <p><strong>Topics:</strong></p>
 
-    <?php if (!empty($topics)): ?>
+<?php if (!empty($topics)): ?>
 
         <ul class="topic-list">
 
-            <?php foreach ($topics as $t): ?>
+    <?php foreach ($topics as $t): ?>
 
                 <li>
-                    <?= htmlspecialchars($t['category_name']) ?>
+        <?= htmlspecialchars($t['category_name']) ?>
                     →
                     <?= htmlspecialchars($t['topic_name']) ?>
                 </li>
 
-            <?php endforeach; ?>
+    <?php endforeach; ?>
 
         </ul>
 
-    <?php else: ?>
+<?php else: ?>
 
         <p>Uncategorized</p>
 
-    <?php endif; ?>
+<?php endif; ?>
 
     <hr>
 
     <p class="abstract">
-        <?= nl2br(htmlspecialchars($listing['abstract'] ?? 'No abstract available')) ?>
+<?= nl2br(htmlspecialchars($listing['abstract'] ?? 'No abstract available')) ?>
     </p>
 
     <div class="listing-image">
 
-        <?php $iconPath = $listing['icon'] ?? ''; ?>
+<?php $iconPath = $listing['icon'] ?? ''; ?>
 
         <?php if (!empty($iconPath)): ?>
 
@@ -105,13 +103,13 @@ $topics = $topicStmt->fetchAll();
                  alt="Listing Icon"
                  class="listing-img">
 
-        <?php else: ?>
+<?php else: ?>
 
             <div class="no-image">
                 Icon Not Found
             </div>
 
-        <?php endif; ?>
+<?php endif; ?>
 
     </div>
 
@@ -124,23 +122,25 @@ $topics = $topicStmt->fetchAll();
             </a>
 
             <a class="btn edit"
-               href="controller.php?page=ViewReport&id=<?= $listing['listingID'] ?>">
+               href="controller.php?page=ViewReport&id=<?= $listing['listingID'] ?>&returnID=<?= $listing['listingID'] ?>">
                 View Primary Source & Related Resources
             </a>
-            
-            <?php if ($currentCanModify === 2): ?>
+
+<?php if ($currentCanModify === 2): ?>
 
                 <a class="btn edit"
                    href="controller.php?page=editListing&id=<?= $listing['listingID'] ?>">
                     Edit Source
                 </a>
 
-            <?php endif; ?>
+<?php endif; ?>
 
-            <?php if (
-                $currentUserType === 2 ||
-                ($currentUserType === 1 && $currentCanManage === 2)
-            ): ?>
+            <?php
+            if (
+                    $currentUserType === 2 ||
+                    ($currentUserType === 1 && $currentCanManage === 2)
+            ):
+                ?>
 
                 <a class="btn delete-source"
                    href="controller.php?page=deleteListing&id=<?= $listing['listingID'] ?>"
@@ -161,26 +161,26 @@ $topics = $topicStmt->fetchAll();
 <script src="scripts/date.js"></script>
 
 <script>
-document.getElementById("copyCitation").addEventListener("click", async function () {
-    const citation = this.dataset.citation;
+                       document.getElementById("copyCitation").addEventListener("click", async function () {
+                           const citation = this.dataset.citation;
 
-    if (!citation || citation.trim() === "") {
-        alert("No citation available.");
-        return;
-    }
+                           if (!citation || citation.trim() === "") {
+                               alert("No citation available.");
+                               return;
+                           }
 
-    try {
-        await navigator.clipboard.writeText(citation);
-        const originalText = this.textContent;
-        this.textContent = "Copied!";
+                           try {
+                               await navigator.clipboard.writeText(citation);
+                               const originalText = this.textContent;
+                               this.textContent = "Copied!";
 
-        setTimeout(() => {
-            this.textContent = originalText;
-        }, 2000);
+                               setTimeout(() => {
+                                   this.textContent = originalText;
+                               }, 2000);
 
-    } catch (err) {
-        console.error(err);
-        alert("Failed to copy citation.");
-    }
-});
+                           } catch (err) {
+                               console.error(err);
+                               alert("Failed to copy citation.");
+                           }
+                       });
 </script>
