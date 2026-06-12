@@ -3,7 +3,7 @@
 require "DBConnect/db.php";
 ?>
 <link rel="stylesheet" href="styles/main.css">
-<title> Research Hub </title>
+
 
 <?php
 $limit = isset($_GET['limit']) ? (int) $_GET['limit'] : 10;
@@ -26,6 +26,7 @@ $totalStmt->execute();
 
 $totalListings = $totalStmt->fetchColumn();
 ?>
+<!-- <title> Artificial Intelligence and Visual Knowledge Discovery (AI-VKD)  </title> -->
 
 <body>
 
@@ -38,10 +39,10 @@ $totalListings = $totalStmt->fetchColumn();
                 <div class="source-item">
                     <a href="controller.php?page=listingInfo&id=<?= $listing['listingID'] ?>" class="item-link">
                         <div class="thumbnail">
+                        <div class="source-details">
                             <img src="<?= !empty($listing['icon']) ? htmlspecialchars($listing['icon']) : 'cocoNut.jpg' ?>">                         
                         </div>
 
-                        <div class="source-details">
                             <h3><?= htmlspecialchars($listing['title']) ?></h3>
                             <p><?= htmlspecialchars($listing['author']) ?></p>
                             <p><?= htmlspecialchars($listing['date']) ?></p>

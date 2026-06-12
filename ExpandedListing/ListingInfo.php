@@ -1,5 +1,3 @@
-<title> Research Hub </title>
-
 <?php
 
 require "DBConnect/db.php";
@@ -38,6 +36,7 @@ $topicStmt->execute([$id]);
 $topics = $topicStmt->fetchAll();
 
 ?>
+<title> Artificial Intelligence and Visual Knowledge Discovery (AI-VKD)  </title>
 
 <link rel="stylesheet" href="../styles/main.css">
 

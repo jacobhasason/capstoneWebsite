@@ -15,9 +15,10 @@ $currentUserName = $_SESSION["userName"] ?? "User";
 /* ROLE CHECK */
 $isSuperUser = ((int) $currentUserType === 2);
 ?>
+<title> User Page </title>
 
 <main>
-
+    
     <!-- USER BAR (ALWAYS SHOWN) -->
     <div class="user-bar">
 
