@@ -1,11 +1,11 @@
 <?php
 require "DBConnect/db.php";
 
-/* READ AJAX JSON🐒🍌 */
+/* READ AJAX JSON */
 $data = json_decode(file_get_contents("php://input"), true) ?? [];
 
 $date = $data['date'] ?? null;
-$topics = $data['topic'] ?? []; // Array of numerical topic_ids from front-end checkbox values 🐒🍌
+$topics = $data['topic'] ?? []; // Array of numerical topic_ids from front-end checkbox values
 $mediums = $data['medium'] ?? [];
 $limit = (int) ($data['limit'] ?? 10);
 
@@ -15,7 +15,7 @@ $sql = 'SELECT DISTINCT l.* FROM public."Listing" l';
 $where = [];
 $params = [];
 
-/* 1. TOPIC FILTER (MANY-TO-MANY JUNCTION QUERY) 🐒🍌*/
+/* 1. TOPIC FILTER (MANY-TO-MANY JUNCTION QUERY) */
 if (!empty($topics)) {
     $topicConditions = [];
     foreach ($topics as $t) {
@@ -28,7 +28,7 @@ if (!empty($topics)) {
                 AND lt.topic_id = ?
             )
         ';
-        $params[] = (int) $t; // Safely bind as integer to match primary key configuration 🐒🍌🐒🍌
+        $params[] = (int) $t; // Safely bind as integer to match primary key configuration
     }
     // Match listings that contain any of the selected topics (OR logic within topics)
     $where[] = '(' . implode(' OR ', $topicConditions) . ')';

@@ -1,3 +1,3 @@
 <?php
-header("Location: controller.php?page=index");
+header("Location: controller.php?page=about");
 exit;

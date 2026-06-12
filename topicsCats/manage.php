@@ -165,7 +165,7 @@ if (isset($_POST['delete_topic'])) {
                     <div class="topic-row">
 
                         <select name="category_id" required>
-                            <option value="">Select Category</option>
+                            <option value="">Select Topic</option>
 
                             <?php foreach ($categories as $c): ?>
                                 <option value="<?= $c['category_id'] ?>">
@@ -194,7 +194,7 @@ if (isset($_POST['delete_topic'])) {
                 <form method="POST">
 
                     <select name="delete_category_id" required>
-                        <option value="">Select Category</option>
+                        <option value="">Select Topic</option>
 
                         <?php foreach ($categories as $c): ?>
                             <option value="<?= $c['category_id'] ?>">
@@ -221,7 +221,7 @@ if (isset($_POST['delete_topic'])) {
                 <form method="POST">
 
                     <select name="delete_topic_id" required>
-                        <option value="">Select Topic</option>
+                        <option value="">Select Sub- Topic</option>
 
                         <?php foreach ($topics as $t): ?>
                             <option value="<?= $t['topic_id'] ?>">

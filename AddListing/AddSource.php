@@ -1,5 +1,3 @@
-<title> Add Source </title>
-
 <?php
 require "DBConnect/db.php";
 
@@ -169,7 +167,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             }
         }
 
-        /* RELATED LISTINGS */
         /* RELATED LISTINGS - BIDIRECTIONAL */
         if ($primaryListingID && !empty($_POST['relatedListingIDs'])) {
             foreach ($_POST['relatedListingIDs'] as $relatedID) {
@@ -190,12 +187,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                             $relatedTitle,
                             "listing",
                             null,
-                            $relatedID
+                            (int) $relatedID
                     );
 
                     // Direction 2: related -> primary
                     insertRelatedListing(
-                            $relatedID,
+                            (int) $relatedID,
                             $topicContext,
                             $primaryTitle,
                             "listing",
@@ -225,11 +222,14 @@ function getPageTitle($url) {
 }
 
 function getListingTitleByID($id) {
+    // SECURITY PATCH: Force conversion to integer to eliminate parameter injection vectors and send JOHN PORK TO HACKERS HOUSE
+    $id = (int) $id;
+
     $projectUrl = "https://zdysuvkcmymlwpernryq.supabase.co";
     $key = "sb_publishable_LaDWDoLk-FfeKFFqYmoviw_6kpXsK-o";
+
     $url = $projectUrl . "/rest/v1/Listing?select=title&listingID=eq." . urlencode($id) . "&limit=1";
 
-    $ch = curl_init($url);
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         "apikey: $key",
@@ -270,9 +270,10 @@ function uploadToSupabase($tmpFile, $fileName, $bucket = "uploads") {
 
 function insertRelatedListing($listingID, $topic, $title, $type, $file = null, $link = null) {
     $ch = curl_init("https://zdysuvkcmymlwpernryq.supabase.co/rest/v1/RelatedListing");
+
     $data = [
         "listingID" => (int) $listingID,
-        "topic" => $topic,
+        "topic" => $topic !== null ? (int) $topic : null,
         "title" => $title,
         "type" => $type,
         "file" => $file,
@@ -303,13 +304,13 @@ function insertRelatedListing($listingID, $topic, $title, $type, $file = null, $
 
         <div class="field">
             <label for="title">Title:</label>
-            <input type="text" id="title" name="title" value="<?= htmlspecialchars($_POST['title'] ?? '') ?>">
+            <textarea id="title" name="title" class="textarea-input-style"><?= htmlspecialchars($_POST['title'] ?? '') ?></textarea>
             <span class="error-text"><?= $fieldErrors['title'] ?? '' ?></span>
         </div>
 
         <div class="field">
             <label for="author">Author(s):</label>
-            <input type="text" id="author" name="author" value="<?= htmlspecialchars($_POST['author'] ?? '') ?>">
+            <textarea id="author" name="author" class="textarea-input-style"><?= htmlspecialchars($_POST['author'] ?? '') ?></textarea>
             <span class="error-text"><?= $fieldErrors['author'] ?? '' ?></span>
         </div>
 
@@ -371,15 +372,12 @@ function insertRelatedListing($listingID, $topic, $title, $type, $file = null, $
                 <ul>
                     <?php foreach ($categories as $category): ?>
                         <li>
-
-
                             <button type="button" class="tree-toggle">
                                 <span class="arrow">▶</span>
                                 <span class="topic-category-header">
                                     <?= htmlspecialchars($category['category_name']) ?>
                                 </span>
                             </button>
-
 
                             <ul class="hidden">
                                 <?php foreach ($topics as $topic): ?>
@@ -399,14 +397,14 @@ function insertRelatedListing($listingID, $topic, $title, $type, $file = null, $
             </div>
         </div>
 
-        <div class="field">
-            <label>Abstract:</label>
-            <input type="text" name="abs">
+        <div class="field field-top-align">
+            <label for="abs">Abstract:</label>
+            <textarea id="abs" name="abs" class="textarea-field"><?= htmlspecialchars($_POST['abs'] ?? '') ?></textarea>
         </div>
 
-        <div class="field">
-            <label>Citations:</label>
-            <input type="text" name="citations">
+        <div class="field field-top-align">
+            <label for="citations">Citations:</label>
+            <textarea id="citations" name="citations" class="textarea-field"><?= htmlspecialchars($_POST['citations'] ?? '') ?></textarea>
         </div>
 
         <div id="relatedSources">
@@ -460,18 +458,12 @@ function insertRelatedListing($listingID, $topic, $title, $type, $file = null, $
                     /* 1. Toggle tree collapse functionality */
                     document.querySelectorAll(".tree-toggle").forEach(btn => {
                         btn.addEventListener("click", () => {
-
                             const ul = btn.parentElement.querySelector("ul");
-
                             if (!ul)
                                 return;
-
                             ul.classList.toggle("hidden");
-
                             const isOpen = !ul.classList.contains("hidden");
-
-                            btn.querySelector(".arrow").textContent =
-                                    isOpen ? "▼" : "▶";
+                            btn.querySelector(".arrow").textContent = isOpen ? "▼" : "▶";
                         });
                     });
 
@@ -486,7 +478,6 @@ function insertRelatedListing($listingID, $topic, $title, $type, $file = null, $
                             hiddenInput.value = JSON.stringify(checkedTopics);
                         }
 
-                        // Fires your related listings dependency logic if it exists
                         if (typeof updateRelatedListings === "function") {
                             updateRelatedListings();
                         }
@@ -529,8 +520,6 @@ function insertRelatedListing($listingID, $topic, $title, $type, $file = null, $
                 <button type="button" onclick="this.parentElement.remove()">✕</button>
             `;
                         container.appendChild(div);
-
-                        // Refresh list context for the new listing dropdown
                         syncTopics();
                     };
 

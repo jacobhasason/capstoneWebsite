@@ -240,7 +240,7 @@ if ($totalItems <= 1) {
             <h2><?= htmlspecialchars($current["title"] ?? 'Untitled') ?></h2>
 
             <p>
-                <strong>Author:</strong>
+                <strong>Author(s):</strong>
                 <?= htmlspecialchars($current["author"] ?? 'Unknown') ?>
             </p>
 

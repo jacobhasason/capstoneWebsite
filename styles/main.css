@@ -3,8 +3,6 @@
     box-sizing: border-box;
 }
 
-
-
 h1, h2, h3, p {
     margin: 0;
     padding: 0;
@@ -27,7 +25,6 @@ body {
 
     background-color: white;
     box-shadow: 0 10px 5px red;
-
 }
 
 a {
@@ -69,6 +66,7 @@ header h3 {
     font-size: 1.25em;
     text-indent: 25px;
 }
+
 
 /* --- Centering the whole layout --- */
 .container {
@@ -211,8 +209,6 @@ section p {
     --border-color: #333;
 }
 
-
-
 .source-item {
     width: 100%;
     margin: 0;
@@ -277,8 +273,8 @@ section p {
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background-color: #cc0000;
-    color: white;
+    background-color: red;
+    color: black !important;
     font-size: 30px;
     text-align: center;
     line-height: 60px;
@@ -288,7 +284,8 @@ section p {
 }
 
 .fab:hover {
-    background-color: #990000;
+    background-color: black;
+    color: red !important;
     transform: scale(1.1);
 }
 
@@ -297,7 +294,6 @@ ul {
 }
 
 footer {
-
     min-height: 120px;
     font-size: 0.9em;
     clear: both;
@@ -349,27 +345,6 @@ footer div:last-child {
     background-color: #a83232;
 }
 
-.user-icon-btn {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    text-decoration: none;
-    border: 1px solid black;
-    border-radius: 50%;
-    background: white;
-    font-size: 18px;
-    transition: 0.2s ease;
-}
-
-.user-icon-btn:hover {
-    background: #ffcccc;
-    transform: scale(1.05);
-    cursor: pointer;
-}
-
 main {
     padding-bottom: 60px;
 }
@@ -405,7 +380,6 @@ main {
 
     border-radius: 12px;
 }
-
 
 .topic-tree ul {
     margin-left: 20px;
@@ -451,18 +425,13 @@ main {
 }
 
 .show-more-container {
-
     width: 100%;
-
     display: flex;
-
     justify-content: center;
-
     margin: 30px 0;
 }
 
 .show-more-btn {
-
     display: inline-block;
     padding: 12px 24px;
     background-color: darkred;
@@ -475,24 +444,16 @@ main {
 
 .show-more-btn:hover {
     background-color: darkred;
-    
 }
 
 .site-header {
-
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
-
     padding: 25px 20px;
-
     min-height: 140px;
-
     border-bottom: 2px solid black;
-
-   background: linear-gradient(45deg, white 0%, white 30%, crimson 40%, crimson 80%,black 100%);
+    background: linear-gradient(45deg, white 0%, white 30%, crimson 40%, crimson 80%, black 100%);
 }
 
 /* left + right stay normal */
@@ -504,92 +465,102 @@ main {
 /* center becomes a vertical stack */
 .header-center {
     position: absolute;
-   
-    
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-   
 }
 /* LEFT SIDE */
 .header-left {
-
     display: flex;
-
     align-items: center;
-
     gap: 16px;
 }
 /* RIGHT SIDE */
 .header-right {
-
     display: flex;
-
     align-items: center;
-
     gap: 12px;
 }
 
 /* TITLE */
 .header-title {
-
     margin: 0;
-
     font-size: 28px;
-
     font-weight: 700;
-
     color: black;
 }
 
 /* LOGO */
 .header-logo {
-
     height: 120px;
-
     width: auto;
 }
 
 
-/* ABOUT BUTTON */
-.about-btn {
-
-    width: 42px;
-
-    height: 42px;
-
-    display: flex;
-
+/* CONTACT BUTTON (Rectangular) */
+.contact-btn {
+    display: inline-flex;
     align-items: center;
-
     justify-content: center;
-
-    border-radius: 50%;
-
-    background: #b22222;
-
-    color: white;
-
+    height: 42px;             /* Match the height of About & User circles */
+    padding: 0 20px;          /* Clean side padding for the text */
+    background-color: white;
+    color: black !important;  /* Overrides default link colors */
     text-decoration: none;
-
-    font-size: 1.4rem;
-
     font-weight: bold;
-
-    transition: 0.2s;
+    border-radius: 6px;       /* Sleek rectangular button corners */
+    border: 2px solid black;  /* Bold black border to look distinct */
+    box-sizing: border-box;
+    transition: 0.2s ease;
 }
 
+/* ABOUT BUTTON (Circular) */
+.about-btn {
+    width: 42px;
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: red;
+    color: black !important;
+    text-decoration: none;
+    font-size: 1.4rem;
+    font-weight: bold;
+    border: 2px solid black;
+    box-sizing: border-box;
+    transition: 0.2s ease;
+}
 
+/* USER / LOGIN BUTTON (Circular) */
+.user-icon-btn {
+    width: 42px;              
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    border-radius: 50%;
+    background-color: white;
+    color: black !important;
+    font-size: 18px;
+    border: 2px solid black;
+    box-sizing: border-box;
+    transition: 0.2s ease;
+}
+
+/* Global Header Buttons Hover States */
+.contact-btn:hover,
+.about-btn:hover,
 .user-icon-btn:hover {
-
-    background: #ffcccc;
-
     transform: scale(1.05);
-
+    opacity: 0.9;
     cursor: pointer;
+    color: black !important; /* Prevents global hover rules from changing text color */
 }
 
+/* ===================================== */
 
 .about-page {
     min-height: calc(100vh - 260px);
@@ -617,7 +588,6 @@ main {
     width: 100%;
     border-collapse: collapse;
     overflow: hidden;
-
     border-radius: 10px;
 }
 
@@ -643,8 +613,7 @@ main {
 }
 
 .login-page {
-    min-height: calc(100vh - 200px); /* adjusts for header + footer */
-
+    min-height: calc(100vh - 200px);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -654,3 +623,15 @@ main {
     min-height: calc(100vh - 200px);
 }
 
+.checkbox-box.checked {
+    background-color: white !important;
+}
+
+.checkbox-box.checked::after {
+    content: "✓" !important;
+    font-size: 12px !important;
+    color: #cc0000 !important;
+    font-weight: bold !important;
+    display: block !important;
+    line-height: 1 !important;
+}

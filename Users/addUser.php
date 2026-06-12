@@ -1,4 +1,3 @@
-<title> Add User </title>
 <?php
 // Adds a WL User through UI (Superuser only)
 
@@ -58,7 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 }
 ?>
 
-
+<title> Add User </title>
 
 <main class="add-user-page">
 

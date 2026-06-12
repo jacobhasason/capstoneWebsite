@@ -1,39 +1,58 @@
+
 .fab {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background-color: #007bff;
-  color: white;
-  font-size: 30px;
-  text-align: center;
-  line-height: 60px;   /* centers the + vertically */
-  text-decoration: none;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-  z-index: 1000;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #007bff;
+    color: white;
+    font-size: 30px;
+    text-align: center;
+    line-height: 60px;   /* centers the + vertically */
+    text-decoration: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    z-index: 1000;
 }
 
 .fab:hover {
-  background-color: #0056b3;
-  transform: scale(1.1);
+    background-color: #0056b3;
+    transform: scale(1.1);
 }
 
-/* The horizontal container */
+.error-text {
+    color: red;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+
+
 .drop-row {
     display: flex !important;
     flex-direction: row !important;
     justify-content: space-between; 
-    align-items: flex-end; 
+    align-items: flex-start; 
     width: 100%;
     margin: 20px 0;
     clear: both;
 }
 
+.drop-group {
+    display: flex;
+    flex-direction: column;
+    width: 150px;
+}
 
-/* The actual square */
+.drop-group label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+}
+
 .drop-area {
+    position: relative;
     width: 150px; 
     height: 150px;
     border: 2px dashed #5d93e1; 
@@ -52,19 +71,32 @@
 .drop-area:hover {
     background-color: #eef5ff;
 }
-/* Each box + label wrapper */
-.drop-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    width: 100%;
-    margin: 20px 0;
+
+.drop-message {
+    color: #666;
+    font-size: 0.75rem; 
+    pointer-events: none; 
 }
 
-.drop-group {
-    display: flex;
-    flex-direction: column;
-    width: 150px;
+#preview-container img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.remove-file {
+    position: absolute;
+    top: 5px;
+    right: 8px;
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    display: none;
 }
 
 .file-column {
@@ -94,70 +126,6 @@
 }
 
 
-/* Make the labels for the boxes bold to like other labels */
-.drop-group label {
-    font-weight: bold;
-    margin-bottom: 5px;
-    font-size: 0.9rem;
-}
-
-.drop-message {
-    color: #666;
-    font-size: 0.75rem; 
-    pointer-events: none; 
-}
-
-
-#preview-container img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: cover;
-    border-radius: 4px;
-}
-
-
-
-.field select {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: white;
-    width: 200px; 
-    font-size: 0.95rem;
-    cursor: pointer;
-}
-
-
-.field select:focus {
-    border-color: var(--accent-blue);
-    outline: none;
-    box-shadow: 0 0 5px rgba(93, 147, 225, 0.5);
-}
-
-
-.submit-btn {
-    align-self: flex-end;    /* The magic line that moves it to the right */
-    padding: 12px 25px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    margin-top: 20px;        /* Spacing from the dropdown above it */
-    transition: background-color 0.3s, transform 0.2s;
-}
-
-.submit-btn:hover {
-    background-color: #0056b3;
-    transform: translateY(-2px); /* Slight lift effect */
-}
-
-.submit-btn:active {
-    transform: translateY(0);
-}
-
 .field {
     display: flex;
     align-items: center;
@@ -171,34 +139,43 @@
     gap: 10px;
 }
 
-.error-text {
-    color: red;
-    font-size: 12px;
-    white-space: nowrap;
+.field select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    width: 200px; 
+    font-size: 0.95rem;
+    cursor: pointer;
 }
 
-.remove-file {
-    position: absolute;
-    top: 5px;
-    right: 8px;
-    background: red;
+.field select:focus {
+    border-color: var(--accent-blue);
+    outline: none;
+    box-shadow: 0 0 5px rgba(93, 147, 225, 0.5);
+}
+
+.submit-btn {
+    align-self: flex-end;    /* Moves it to the right inside a flex container */
+    padding: 12px 25px;
+    background-color: #007bff;
     color: white;
     border: none;
-    border-radius: 50%;
-    width: 22px;
-    height: 22px;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: bold;
     cursor: pointer;
-    display: none;
+    margin-top: 20px;        
+    transition: background-color 0.3s, transform 0.2s;
 }
 
-.drop-area {
-    position: relative;
+.submit-btn:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px); /* Slight lift effect */
 }
 
-.listing-search-wrap {
-    position: relative;
-    display: inline-block;
-    vertical-align: top;
+.submit-btn:active {
+    transform: translateY(0);
 }
 
 .listing-search-wrap {
@@ -217,15 +194,11 @@
     position: absolute;
     top: 100%;
     left: 0;
-
     width: 100%;
-
     background: white;
     border: 1px solid #888;
-
     max-height: 160px;
     overflow-y: auto;
-
     z-index: 1000;
     box-sizing: border-box;
 }
@@ -238,6 +211,8 @@
     cursor: default;
 }
 
+
+
 .topic-tree {
     border: 1px solid #ddd;
     border-radius: 12px;
@@ -248,20 +223,17 @@
     font-family: Arial, sans-serif;
 }
 
-/* reset list styling */
 .topic-tree ul {
     list-style: none;
     padding-left: 18px;
     margin: 6px 0;
 }
 
-/* each row */
 .topic-tree li {
     margin: 4px 0;
     position: relative;
 }
 
-/* category label row */
 .topic-tree label {
     display: flex;
     align-items: center;
@@ -272,15 +244,18 @@
     transition: background 0.15s ease;
 }
 
-/* hover effect */
 .topic-tree label:hover {
     background: #e9f2ff;
 }
 
-/* checkbox styling */
 .topic-tree input[type="checkbox"] {
     transform: scale(1.1);
     accent-color: #2b6fff;
+}
+
+.topic-tree input[type="checkbox"]:checked + span,
+.topic-tree input[type="checkbox"]:checked {
+    font-weight: 500;
 }
 
 .topic-header {
@@ -289,7 +264,6 @@
     gap: 8px;
 }
 
-/* collapse button */
 .tree-toggle {
     background: none;
     border: none;
@@ -298,28 +272,78 @@
     padding: 0;
 }
 
-.topic-category-header {
-    font-weight: bold;
-}
-
 .tree-toggle:hover {
     color: #2b6fff;
 }
 
-/* nested subtopics indentation line effect */
+.topic-category-header {
+    font-weight: bold;
+}
+
+/* Nested subtopics indentation line effect */
 .topic-tree ul ul {
     border-left: 2px solid #e0e0e0;
     margin-left: 10px;
     padding-left: 14px;
 }
 
-/* smoother hide/show */
 .hidden {
     display: none;
 }
 
-/* selected highlight */
-.topic-tree input[type="checkbox"]:checked + span,
-.topic-tree input[type="checkbox"]:checked {
-    font-weight: 500;
+
+
+.textarea-field {
+    width: 30%;
+    height: 120px;          
+    box-sizing: border-box;
+    resize: vertical;       
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: Arial, sans-serif;
+    font-size: 0.95rem;
+    
+    /* Layout & Text Wrapping Management */
+    white-space: pre-wrap;  
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+.field-top-align {
+    align-items: flex-start !important;
+}
+
+.field-top-align label {
+    margin-top: 8px;
+}
+
+/* Target the dynamically generated related listing dropdowns */
+.related-listing-select {
+    width: 260px;               /* fixed width */
+    max-width: 100%;            
+    box-sizing: border-box;     /* ensures padding/borders stay inside the width */
+    
+    /* Layout & Overflow Management */
+    white-space: nowrap;        /* puts text onto a single line within the box */
+    overflow: hidden;           /* yeets any text exceeding the width */
+    text-overflow: ellipsis;    /* adds '...' to long names when not active */
+}
+
+.related-listing-select option {
+    width: 260px;
+    max-width: 260px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;       
+}
+.textarea-input-style {
+    width: 100%;
+    max-width: 500px;
+    height: 38px;
+    min-height: 38px;
+    resize: both;
+    padding: 8px;
+    box-sizing: border-box;
+    font-family: inherit;
 }

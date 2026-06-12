@@ -13,10 +13,16 @@
 
     </div>
 
-    <!-- RIGHT SIDE -->
     <div class="header-right">
 
-        <!-- ABOUT -->
+        <a href="https://www.cwu.edu/about/directory/computer-science/boris-kovalerchuk.php"
+           class="contact-btn"
+           title="Contact">
+
+            Contact
+
+        </a>
+
         <a href="controller.php?page=about"
            class="about-btn"
            title="About">
@@ -25,7 +31,6 @@
 
         </a>
 
-        <!-- USER -->
         <?php if (isset($_SESSION["userID"])): ?>
 
             <a href="controller.php?page=usersPage"
@@ -51,5 +56,5 @@
     </div>
 
     <link rel="stylesheet" href="styles/main.css"> 
-    
+
 </header>

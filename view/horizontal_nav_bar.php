@@ -119,7 +119,7 @@ foreach ($topics as $t) {
                 <li>
                     <a href="#" class="filter-item" data-type="medium" data-value="paper">
                         <span class="checkbox-box"></span>
-                        Papers
+                        Articles
                     </a>
                 </li>
 
